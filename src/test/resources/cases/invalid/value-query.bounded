@@ -1,0 +1,4 @@
+value Money {
+  function format;
+  query exchangeRate;
+}
