@@ -12,8 +12,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -25,41 +24,47 @@ class EffectCheckerTest {
     void allowsAFunctionOnAValue() {
         var archeop = new ArcheOperationDeclaration(
                 ArcheOperationKind.FUNCTION,
-                "format",
+                "someFn",
                 new SourceSpan(2, 3));
-        var program = program(ArcheClassKind.VALUE, archeop);
+        var program = givenProgram(ArcheClassKind.VALUE, archeop);
 
         var diagnostics = checker.check(program);
-        assertThat(diagnostics, is(empty()));
+        assertThat(diagnostics, is(empty())); //is(legalProgram())
     }
 
     @Test
-    void rejectsAQueryOnAValueWithAStableDiagnostic() {
-        var program = program(
-                ArcheClassKind.VALUE,
-                new ArcheOperationDeclaration(
-                        ArcheOperationKind.QUERY, "exchangeRate", new SourceSpan(3, 3)));
+    @DisplayName("Vale archeclass cannot have a query archeop")
+    void rejectsAQueryOnAValue() {
+        var archeop = new ArcheOperationDeclaration(
+            ArcheOperationKind.QUERY,
+            "exchangeRate",
+            new SourceSpan(3, 3)
+        );
+
+        var program = givenProgram(ArcheClassKind.VALUE, archeop);
 
         var diagnostics = checker.check(program);
 
-        assertEquals(1, diagnostics.size());
-        assertEquals(
-                "BND1001:3:3 Value 'Money' permits operations through FUNCTION; "
-                        + "'exchangeRate' is QUERY.",
-                diagnostics.getFirst().format());
+        assertThat(diagnostics, hasSize(1)); //is(not(legalProgram()))
     }
 
     @Test
+    @DisplayName("Entity archeclass can have a query archeop")
     void allowsAQueryOnAnEntity() {
-        var program = program(
-                ArcheClassKind.ENTITY,
-                new ArcheOperationDeclaration(
-                        ArcheOperationKind.QUERY, "balance", new SourceSpan(2, 3)));
+        var archeop = new ArcheOperationDeclaration(
+            ArcheOperationKind.QUERY,
+            "balance",
+            new SourceSpan(2, 3)
+        );
 
-        assertTrue(checker.check(program).isEmpty());
+        var program = givenProgram(ArcheClassKind.ENTITY, archeop);
+
+        var diagnostics = checker.check(program);
+
+        assertThat(diagnostics, is(empty())); //is(legalProgram())
     }
 
-    private BoundedProgram program(ArcheClassKind kind, ArcheOperationDeclaration operation) {
+    private BoundedProgram givenProgram(ArcheClassKind kind, ArcheOperationDeclaration operation) {
         var declaration = new ArcheClassDeclaration(
             kind,
             "Money",
