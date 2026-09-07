@@ -1,9 +1,9 @@
 package dev.bounded.compiler.ast;
 
-import java.util.Objects;
+import static java.util.Objects.requireNonNull;
 
 public record BoundedProgram(ArcheClassDeclaration archeClass) {
     public BoundedProgram {
-        Objects.requireNonNull(archeClass, "archeClass");
+        requireNonNull(archeClass, "archeClass");
     }
 }

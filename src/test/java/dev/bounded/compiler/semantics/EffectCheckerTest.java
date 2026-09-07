@@ -6,10 +6,14 @@ import dev.bounded.compiler.ast.ArcheOperationDeclaration;
 import dev.bounded.compiler.ast.ArcheOperationKind;
 import dev.bounded.compiler.ast.BoundedProgram;
 import dev.bounded.compiler.ast.SourceSpan;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -17,13 +21,16 @@ class EffectCheckerTest {
     private final EffectChecker checker = new EffectChecker();
 
     @Test
+    @DisplayName("Value archeclass can have function acheop")
     void allowsAFunctionOnAValue() {
-        var program = program(
-                ArcheClassKind.VALUE,
-                new ArcheOperationDeclaration(
-                        ArcheOperationKind.FUNCTION, "format", new SourceSpan(2, 3)));
+        var archeop = new ArcheOperationDeclaration(
+                ArcheOperationKind.FUNCTION,
+                "format",
+                new SourceSpan(2, 3));
+        var program = program(ArcheClassKind.VALUE, archeop);
 
-        assertTrue(checker.check(program).isEmpty());
+        var diagnostics = checker.check(program);
+        assertThat(diagnostics, is(empty()));
     }
 
     @Test
@@ -52,11 +59,13 @@ class EffectCheckerTest {
         assertTrue(checker.check(program).isEmpty());
     }
 
-    private BoundedProgram program(
-            ArcheClassKind kind,
-            ArcheOperationDeclaration operation
-    ) {
-        return new BoundedProgram(new ArcheClassDeclaration(
-                kind, "Money", List.of(operation), new SourceSpan(1, 1)));
+    private BoundedProgram program(ArcheClassKind kind, ArcheOperationDeclaration operation) {
+        var declaration = new ArcheClassDeclaration(
+            kind,
+            "Money",
+            List.of(operation),
+            new SourceSpan(1, 1)
+        );
+        return new BoundedProgram(declaration);
     }
 }

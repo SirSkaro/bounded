@@ -3,6 +3,8 @@ package dev.bounded.compiler.ast;
 import java.util.List;
 import java.util.Objects;
 
+import static java.util.Objects.requireNonNull;
+
 public record ArcheClassDeclaration(
         ArcheClassKind kind,
         String name,
@@ -10,9 +12,9 @@ public record ArcheClassDeclaration(
         SourceSpan span
 ) {
     public ArcheClassDeclaration {
-        Objects.requireNonNull(kind, "kind");
-        Objects.requireNonNull(name, "name");
+        requireNonNull(kind, "kind");
+        requireNonNull(name, "name");
         operations = List.copyOf(operations);
-        Objects.requireNonNull(span, "span");
+        requireNonNull(span, "span");
     }
 }
