@@ -1,50 +1,46 @@
 package dev.bounded.compiler.semantics;
 
-import dev.bounded.compiler.ast.ArcheClassDeclaration;
-import dev.bounded.compiler.ast.ArcheClassKind;
-import dev.bounded.compiler.ast.ArcheOperationDeclaration;
-import dev.bounded.compiler.ast.ArcheOperationKind;
-import dev.bounded.compiler.ast.BoundedProgram;
-import dev.bounded.compiler.ast.SourceSpan;
-import dev.bounded.compiler.diagnostics.DiagnosticCode;
+import dev.bounded.compiler.ast.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.Arrays;
-import java.util.List;
 
+import static dev.bounded.compiler.ast.ArcheClassKind.VALUE;
+import static dev.bounded.compiler.ast.ArcheOperationKind.QUERY;
 import static dev.bounded.compiler.diagnostics.DiagnosticCode.EFFECT_NOT_ALLOWED;
 import static dev.bounded.compiler.semantics.ValidEffectCheckMatcher.valid;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 class EffectCheckerTest {
     private final EffectChecker checker = new EffectChecker();
 
-    @Test
-    @DisplayName("Value archeclass can have function acheop")
-    void allowsAFunctionOnAValue() {
-        var archeop = new ArcheOperationDeclaration(
-                ArcheOperationKind.FUNCTION,
-                "someFn",
-                new SourceSpan(2, 3));
-        var program = givenProgram(ArcheClassKind.VALUE, archeop);
+    @ParameterizedTest(name = "{0} archeclass can have a {1} archeop")
+    @CsvSource({
+        "VALUE, FUNCTION",
+        "ENTITY, FUNCTION",
+        "ENTITY, QUERY"
+    })
+    @DisplayName("Allowed archeclass and archeop combinations")
+    void allowsLegalOperation(ArcheClassKind archeClassKind, ArcheOperationKind operationKind) {
+        var archeop = givenArcheOp(operationKind);
+        var program = givenProgram(archeClassKind, archeop);
 
         var result = checker.check(program);
         assertThat(result, is(valid()));
     }
 
-    @Test
-    @DisplayName("Vale archeclass cannot have a query archeop")
-    void rejectsAQueryOnAValue() {
-        var archeop = new ArcheOperationDeclaration(
-            ArcheOperationKind.QUERY,
-            "someQuery",
-            new SourceSpan(3, 3)
-        );
-
-        var program = givenProgram(ArcheClassKind.VALUE, archeop);
+    @ParameterizedTest(name = "{0} archeclass cannot have a {1} archeop")
+    @CsvSource({
+        "VALUE, QUERY"
+    })
+    @DisplayName("Disallowed archeclass and archeop combinations")
+    void rejectsIllegalOperation(ArcheClassKind archeClassKind, ArcheOperationKind operationKind) {
+        var archeop = givenArcheOp(operationKind);
+        var program = givenProgram(archeClassKind, archeop);
 
         var result = checker.check(program);
 
@@ -53,30 +49,14 @@ class EffectCheckerTest {
     }
 
     @Test
-    @DisplayName("Entity archeclass can have a query archeop")
-    void allowsAQueryOnAnEntity() {
-        var archeop = new ArcheOperationDeclaration(
-            ArcheOperationKind.QUERY,
-            "someQuery",
-            new SourceSpan(2, 3)
-        );
-
-        var program = givenProgram(ArcheClassKind.ENTITY, archeop);
-
-        var result = checker.check(program);
-
-        assertThat(result, is(valid()));
-    }
-
-    @Test
     @DisplayName("An illegal effect produces a diagnostic with the correct code, span, and message")
     void constructsDiagnosticForIllegalEffect() {
         var archeop = new ArcheOperationDeclaration(
-            ArcheOperationKind.QUERY,
+            QUERY,
             "exchangeRate",
             new SourceSpan(3, 7)
         );
-        var program = givenProgram(ArcheClassKind.VALUE, archeop);
+        var program = givenProgram(VALUE, archeop);
 
         var result = checker.check(program);
 
@@ -95,16 +75,16 @@ class EffectCheckerTest {
     @DisplayName("All illegal effects get a corresponding diagnostic")
     void recordsDiagnosticsForMultipleIllegalOperations() {
         var firstQuery = new ArcheOperationDeclaration(
-            ArcheOperationKind.QUERY,
+            QUERY,
             "exchangeRate",
             new SourceSpan(2, 3)
         );
         var secondQuery = new ArcheOperationDeclaration(
-            ArcheOperationKind.QUERY,
+            QUERY,
             "balance",
             new SourceSpan(3, 3)
         );
-        var program = givenProgram(ArcheClassKind.VALUE, firstQuery, secondQuery);
+        var program = givenProgram(VALUE, firstQuery, secondQuery);
 
         var result = checker.check(program);
 
@@ -122,6 +102,14 @@ class EffectCheckerTest {
             new SourceSpan(1, 1)
         );
         return new BoundedProgram(declaration);
+    }
+
+    private ArcheOperationDeclaration givenArcheOp(ArcheOperationKind kind) {
+        return new ArcheOperationDeclaration(
+            kind,
+            "someOp",
+            new SourceSpan(2, 3)
+        );
     }
 
 }
