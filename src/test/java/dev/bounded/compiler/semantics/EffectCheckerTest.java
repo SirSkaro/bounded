@@ -10,6 +10,7 @@ import dev.bounded.compiler.diagnostics.DiagnosticCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static dev.bounded.compiler.diagnostics.DiagnosticCode.EFFECT_NOT_ALLOWED;
@@ -90,13 +91,37 @@ class EffectCheckerTest {
         )));
     }
 
-    private BoundedProgram givenProgram(ArcheClassKind kind, ArcheOperationDeclaration operation) {
+    @Test
+    @DisplayName("All illegal effects get a corresponding diagnostic")
+    void recordsDiagnosticsForMultipleIllegalOperations() {
+        var firstQuery = new ArcheOperationDeclaration(
+            ArcheOperationKind.QUERY,
+            "exchangeRate",
+            new SourceSpan(2, 3)
+        );
+        var secondQuery = new ArcheOperationDeclaration(
+            ArcheOperationKind.QUERY,
+            "balance",
+            new SourceSpan(3, 3)
+        );
+        var program = givenProgram(ArcheClassKind.VALUE, firstQuery, secondQuery);
+
+        var result = checker.check(program);
+
+        assertThat(result, is(not(valid())));
+        assertThat(result.diagnostics(), hasSize(2));
+        assertThat(result.diagnostics().get(0).span(), is(firstQuery.span()));
+        assertThat(result.diagnostics().get(1).span(), is(secondQuery.span()));
+    }
+
+    private BoundedProgram givenProgram(ArcheClassKind kind, ArcheOperationDeclaration ...operations) {
         var declaration = new ArcheClassDeclaration(
             kind,
             "Money",
-            List.of(operation),
+            Arrays.asList(operations),
             new SourceSpan(1, 1)
         );
         return new BoundedProgram(declaration);
     }
+
 }
