@@ -11,6 +11,10 @@ public record EffectCheckResult(List<Diagnostic> diagnostics) {
         diagnostics = copyOf(diagnostics);
     }
 
+    public static EffectCheckResult validResult() {
+        return new EffectCheckResult(List.of());
+    }
+
     public boolean isValid() {
         return diagnostics.isEmpty();
     }

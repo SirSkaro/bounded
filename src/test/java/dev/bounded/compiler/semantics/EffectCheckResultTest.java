@@ -19,9 +19,24 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class EffectCheckResultTest {
 
     @Test
+    @DisplayName("Constructor rejects a null diagnostics list")
+    void rejectsNullDiagnosticsList() {
+        assertThrows(NullPointerException.class, () -> new EffectCheckResult(null));
+    }
+
+    @Test
+    @DisplayName("Constructor rejects a diagnostics list containing null")
+    void rejectsNullDiagnostic() {
+        List<Diagnostic> diagnostics = new ArrayList<>();
+        diagnostics.add(null);
+
+        assertThrows(NullPointerException.class, () -> new EffectCheckResult(diagnostics));
+    }
+
+    @Test
     @DisplayName("A result without diagnostics is valid")
     void isValidWithoutDiagnostics() {
-        var result = new EffectCheckResult(List.of());
+        var result = EffectCheckResult.validResult();
         assertThat(result, is(valid()));
     }
 
@@ -49,10 +64,11 @@ class EffectCheckResultTest {
     @DisplayName("The diagnostics list cannot be modified")
     void exposesImmutableDiagnostics() {
         var result = new EffectCheckResult(List.of(givenDiagnostic()));
+        var immutableDiagnostics = result.diagnostics();
 
-        assertThrows(UnsupportedOperationException.class, () -> result.diagnostics().add(givenDiagnostic()));
-        assertThrows(UnsupportedOperationException.class, () -> result.diagnostics().set(0, givenDiagnostic()));
-        assertThrows(UnsupportedOperationException.class, () -> result.diagnostics().removeFirst());
+        assertThrows(UnsupportedOperationException.class, () -> immutableDiagnostics.add(givenDiagnostic()));
+        assertThrows(UnsupportedOperationException.class, () -> immutableDiagnostics.set(0, givenDiagnostic()));
+        assertThrows(UnsupportedOperationException.class, immutableDiagnostics::removeFirst);
     }
 
     private Diagnostic givenDiagnostic() {
