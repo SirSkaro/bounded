@@ -11,10 +11,9 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static dev.bounded.compiler.semantics.ValidEffectCheckMatcher.valid;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class EffectCheckerTest {
     private final EffectChecker checker = new EffectChecker();
@@ -28,8 +27,8 @@ class EffectCheckerTest {
                 new SourceSpan(2, 3));
         var program = givenProgram(ArcheClassKind.VALUE, archeop);
 
-        var diagnostics = checker.check(program);
-        assertThat(diagnostics, is(empty())); //is(legalProgram())
+        var result = checker.check(program);
+        assertThat(result, is(valid()));
     }
 
     @Test
@@ -37,15 +36,16 @@ class EffectCheckerTest {
     void rejectsAQueryOnAValue() {
         var archeop = new ArcheOperationDeclaration(
             ArcheOperationKind.QUERY,
-            "exchangeRate",
+            "someQuery",
             new SourceSpan(3, 3)
         );
 
         var program = givenProgram(ArcheClassKind.VALUE, archeop);
 
-        var diagnostics = checker.check(program);
+        var result = checker.check(program);
 
-        assertThat(diagnostics, hasSize(1)); //is(not(legalProgram()))
+        assertThat(result, is(not(valid())));
+        assertThat(result.diagnostics(), hasSize(1));
     }
 
     @Test
@@ -53,15 +53,15 @@ class EffectCheckerTest {
     void allowsAQueryOnAnEntity() {
         var archeop = new ArcheOperationDeclaration(
             ArcheOperationKind.QUERY,
-            "balance",
+            "someQuery",
             new SourceSpan(2, 3)
         );
 
         var program = givenProgram(ArcheClassKind.ENTITY, archeop);
 
-        var diagnostics = checker.check(program);
+        var result = checker.check(program);
 
-        assertThat(diagnostics, is(empty())); //is(legalProgram())
+        assertThat(result, is(valid()));
     }
 
     private BoundedProgram givenProgram(ArcheClassKind kind, ArcheOperationDeclaration operation) {

@@ -22,9 +22,9 @@ public final class BoundedCompiler {
         }
 
         var program = parseResult.program().orElseThrow();
-        var semanticDiagnostics = effectChecker.check(program);
-        if (!semanticDiagnostics.isEmpty()) {
-            return new CompilationResult(semanticDiagnostics, List.of(), List.of());
+        var effectCheckResult = effectChecker.check(program);
+        if (!effectCheckResult.isValid()) {
+            return new CompilationResult(effectCheckResult.diagnostics(), List.of(), List.of());
         }
 
         var generatedSource = backend.generate(program);

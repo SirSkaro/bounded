@@ -5,10 +5,9 @@ import dev.bounded.compiler.diagnostics.Diagnostic;
 import dev.bounded.compiler.diagnostics.DiagnosticCode;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public final class EffectChecker {
-    public List<Diagnostic> check(BoundedProgram program) {
+    public EffectCheckResult check(BoundedProgram program) {
         var archeClass = program.archeClass();
         var maximumEffect = archeClass.kind().maximumEffect();
         var diagnostics = new ArrayList<Diagnostic>();
@@ -28,7 +27,7 @@ public final class EffectChecker {
             }
         }
 
-        return List.copyOf(diagnostics);
+        return new EffectCheckResult(diagnostics);
     }
 
     private String titleCase(String value) {
