@@ -4,11 +4,15 @@ import dev.bounded.compiler.ast.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.Arrays;
+import java.util.stream.Stream;
 
+import static dev.bounded.compiler.ast.ArcheClassKind.ENTITY;
 import static dev.bounded.compiler.ast.ArcheClassKind.VALUE;
+import static dev.bounded.compiler.ast.ArcheOperationKind.FUNCTION;
 import static dev.bounded.compiler.ast.ArcheOperationKind.QUERY;
 import static dev.bounded.compiler.diagnostics.DiagnosticCode.EFFECT_NOT_ALLOWED;
 import static dev.bounded.compiler.semantics.ValidEffectCheckMatcher.valid;
@@ -19,11 +23,7 @@ class EffectCheckerTest {
     private final EffectChecker checker = new EffectChecker();
 
     @ParameterizedTest(name = "{0} archeclass can have a {1} archeop")
-    @CsvSource({
-        "VALUE, FUNCTION",
-        "ENTITY, FUNCTION",
-        "ENTITY, QUERY"
-    })
+    @MethodSource("allowedCombinations")
     @DisplayName("Allowed archeclass and archeop combinations")
     void allowsLegalOperation(ArcheClassKind archeClassKind, ArcheOperationKind operationKind) {
         var archeop = givenArcheOp(operationKind);
@@ -32,11 +32,16 @@ class EffectCheckerTest {
         var result = checker.check(program);
         assertThat(result, is(valid()));
     }
+    private static Stream<Arguments> allowedCombinations() {
+        return Stream.of(
+            Arguments.of(VALUE, FUNCTION),
+            Arguments.of(ENTITY, FUNCTION),
+            Arguments.of(ENTITY, QUERY)
+        );
+    }
 
     @ParameterizedTest(name = "{0} archeclass cannot have a {1} archeop")
-    @CsvSource({
-        "VALUE, QUERY"
-    })
+    @MethodSource("disallowedCombinations")
     @DisplayName("Disallowed archeclass and archeop combinations")
     void rejectsIllegalOperation(ArcheClassKind archeClassKind, ArcheOperationKind operationKind) {
         var archeop = givenArcheOp(operationKind);
@@ -46,6 +51,11 @@ class EffectCheckerTest {
 
         assertThat(result, is(not(valid())));
         assertThat(result.diagnostics(), hasSize(1));
+    }
+    private static Stream<Arguments> disallowedCombinations() {
+        return Stream.of(
+            Arguments.of(VALUE, QUERY)
+        );
     }
 
     @Test
