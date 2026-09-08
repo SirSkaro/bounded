@@ -2,6 +2,7 @@ package dev.bounded.compiler.semantics;
 
 import dev.bounded.compiler.ast.*;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -22,40 +23,48 @@ import static org.hamcrest.Matchers.*;
 class EffectCheckerTest {
     private final EffectChecker checker = new EffectChecker();
 
-    @ParameterizedTest(name = "{0} archeclass can have a {1} archeop")
-    @MethodSource("allowedCombinations")
+    @Nested
     @DisplayName("Allowed archeclass and archeop combinations")
-    void allowsLegalOperation(ArcheClassKind archeClassKind, ArcheOperationKind operationKind) {
-        var archeop = givenArcheOp(operationKind);
-        var program = givenProgram(archeClassKind, archeop);
+    class AllowedOperations {
+        @ParameterizedTest(name = "{0} archeclass can have a {1} archeop")
+        @MethodSource("allowedCombinations")
+        void allowsLegalOperation(ArcheClassKind archeClassKind, ArcheOperationKind operationKind) {
+            var archeop = givenArcheOp(operationKind);
+            var program = givenProgram(archeClassKind, archeop);
 
-        var result = checker.check(program);
-        assertThat(result, is(valid()));
-    }
-    private static Stream<Arguments> allowedCombinations() {
-        return Stream.of(
-            Arguments.of(VALUE, FUNCTION),
-            Arguments.of(ENTITY, FUNCTION),
-            Arguments.of(ENTITY, QUERY)
-        );
+            var result = checker.check(program);
+            assertThat(result, is(valid()));
+        }
+
+        static Stream<Arguments> allowedCombinations() {
+            return Stream.of(
+                Arguments.of(VALUE, FUNCTION),
+                Arguments.of(ENTITY, FUNCTION),
+                Arguments.of(ENTITY, QUERY)
+            );
+        }
     }
 
-    @ParameterizedTest(name = "{0} archeclass cannot have a {1} archeop")
-    @MethodSource("disallowedCombinations")
+    @Nested
     @DisplayName("Disallowed archeclass and archeop combinations")
-    void rejectsIllegalOperation(ArcheClassKind archeClassKind, ArcheOperationKind operationKind) {
-        var archeop = givenArcheOp(operationKind);
-        var program = givenProgram(archeClassKind, archeop);
+    class DisallowedOperations {
+        @ParameterizedTest(name = "{0} archeclass cannot have a {1} archeop")
+        @MethodSource("disallowedCombinations")
+        void rejectsIllegalOperation(ArcheClassKind archeClassKind, ArcheOperationKind operationKind) {
+            var archeop = givenArcheOp(operationKind);
+            var program = givenProgram(archeClassKind, archeop);
 
-        var result = checker.check(program);
+            var result = checker.check(program);
 
-        assertThat(result, is(not(valid())));
-        assertThat(result.diagnostics(), hasSize(1));
-    }
-    private static Stream<Arguments> disallowedCombinations() {
-        return Stream.of(
-            Arguments.of(VALUE, QUERY)
-        );
+            assertThat(result, is(not(valid())));
+            assertThat(result.diagnostics(), hasSize(1));
+        }
+
+        static Stream<Arguments> disallowedCombinations() {
+            return Stream.of(
+                Arguments.of(VALUE, QUERY)
+            );
+        }
     }
 
     @Test
