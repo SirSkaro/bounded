@@ -1,10 +1,10 @@
 package dev.bounded.compiler.api;
 
-import java.util.Objects;
+import static java.util.Objects.requireNonNull;
 
 public record SourceFile(String name, String content) {
     public SourceFile {
-        Objects.requireNonNull(name, "name");
-        Objects.requireNonNull(content, "content");
+        requireNonNull(name, "name");
+        requireNonNull(content, "content");
     }
 }
