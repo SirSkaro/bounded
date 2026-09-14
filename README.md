@@ -25,11 +25,22 @@ shows the complete compiler plumbing without prematurely deciding how Bounded bo
 mvn clean verify
 ```
 
-The tests demonstrate three levels:
+For incremental grammar development, add an accepted or rejected source example to
+`BoundedGrammarTest`, then update `Bounded.g4` and run:
 
-1. `EffectCheckerTest` constructs the AST by hand and tests semantic rules directly.
+```bash
+mvn -Dtest=BoundedGrammarTest test
+```
+
+These tests use the generated lexer and parser directly, checking syntax acceptance
+and parse-tree structure without running AST mapping or the compiler pipeline.
+
+The tests demonstrate four levels:
+
+1. `BoundedGrammarTest` tests the language defined by `Bounded.g4` using source examples.
 2. `BoundedParserFacadeTest` proves that ANTLR source becomes the intended AST with source spans.
-3. `FixtureCompilationTest` compiles real `.bounded` fixtures, compares a stable `.diag` file,
+3. `EffectCheckerTest` constructs the AST by hand and tests semantic rules directly.
+4. `FixtureCompilationTest` compiles real `.bounded` fixtures, compares a stable `.diag` file,
    generates Java, invokes `javac`, loads the resulting class, and calls it reflectively.
 
 ## Run the compiler
