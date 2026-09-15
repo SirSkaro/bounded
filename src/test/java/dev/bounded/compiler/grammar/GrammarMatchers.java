@@ -12,4 +12,8 @@ final class GrammarMatchers {
     static Matcher<GrammarResult> rejected() {
         return new GrammarAcceptanceMatcher(false);
     }
+
+    static Matcher<OperationFacade> operation(String kind, String name) {
+        return new OperationMatcher(kind, name);
+    }
 }

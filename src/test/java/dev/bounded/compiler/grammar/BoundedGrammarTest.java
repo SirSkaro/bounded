@@ -11,6 +11,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.stream.Stream;
 
 import static dev.bounded.compiler.grammar.GrammarMatchers.accepted;
+import static dev.bounded.compiler.grammar.GrammarMatchers.operation;
 import static dev.bounded.compiler.grammar.GrammarMatchers.rejected;
 import static org.junit.jupiter.api.Named.named;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -33,7 +34,8 @@ class BoundedGrammarTest {
     @ParameterizedTest(name = "Accepts {0}")
     @MethodSource("validPrograms")
     void acceptsValidPrograms(String source) {
-        assertThat(parse(source), is(accepted()));
+        var parseVerdict = parse(source);
+        assertThat(parseVerdict, is(accepted()));
     }
 
     private static Stream<Named<String>> invalidPrograms() {
@@ -57,12 +59,13 @@ class BoundedGrammarTest {
     @ParameterizedTest(name = "Rejects {0}")
     @MethodSource("invalidPrograms")
     void rejectsInvalidPrograms(String source) {
-        assertThat(parse(source), is(rejected()));
+        var parseVerdict = parse(source);
+        assertThat(parseVerdict, is(rejected()));
     }
 
     @Test
-    @DisplayName("Recognizes the class kind and name and preserves operation order")
-    void recognizesClassAndOperationsInSourceOrder() {
+    @DisplayName("Recognizes the structure of an entity declaration")
+    void recognizesTheStructureOfAnEntityDeclaration() {
         var result = parse("""
                 entity Account {
                     function deposit;
@@ -71,11 +74,12 @@ class BoundedGrammarTest {
                 """);
 
         assertThat(result, is(accepted()));
-        assertThat(result.classKind(), is("entity"));
-        assertThat(result.className(), is("Account"));
-        assertThat(result.operations(), contains(
-                new OperationFacade("function", "deposit"),
-                new OperationFacade("query", "balance")
+        var declaration = result.archeClass();
+        assertThat(declaration.kind(), is("entity"));
+        assertThat(declaration.name(), is("Account"));
+        assertThat(declaration.operations(), contains(
+            operation("function", "deposit"),
+            operation("query", "balance")
         ));
     }
 
