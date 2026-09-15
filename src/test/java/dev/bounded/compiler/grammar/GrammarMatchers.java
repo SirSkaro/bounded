@@ -5,11 +5,11 @@ import org.hamcrest.Matcher;
 final class GrammarMatchers {
     private GrammarMatchers() {}
 
-    static Matcher<GrammarResult> accepted() {
+    static Matcher<GrammarParseResult> accepted() {
         return new GrammarAcceptanceMatcher(true);
     }
 
-    static Matcher<GrammarResult> rejected() {
+    static Matcher<GrammarParseResult> rejected() {
         return new GrammarAcceptanceMatcher(false);
     }
 
