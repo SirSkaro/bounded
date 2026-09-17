@@ -6,12 +6,21 @@ import dev.bounded.compiler.diagnostics.Diagnostic;
 import java.util.List;
 import java.util.Optional;
 
-public record ParseResult(
-        Optional<BoundedProgram> program,
-        List<Diagnostic> diagnostics
-) {
+import static java.util.List.copyOf;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
+
+public record ParseResult(Optional<BoundedProgram> program, List<Diagnostic> diagnostics) {
     public ParseResult {
-        program = program == null ? Optional.empty() : program;
-        diagnostics = List.copyOf(diagnostics);
+        diagnostics = copyOf(diagnostics);
     }
+
+    public static ParseResult validResult(BoundedProgram program) {
+        return new ParseResult(of(program), List.of());
+    }
+
+    public static ParseResult invalidResult(List<Diagnostic> diagnostics) {
+        return new ParseResult(empty(), diagnostics);
+    }
+
 }

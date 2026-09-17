@@ -101,7 +101,10 @@ class BoundedGrammarTest {
 
         @DisplayName("Accepts an operation without an enclosing class")
         @ParameterizedTest(name = "Accepts {0} as an operation")
-        @ValueSource(strings = {"function deposit;", "query balance;"})
+        @ValueSource(strings = {
+                "function deposit;",
+                "query balance;"
+        })
         void acceptsOperations(String source) {
             assertThat(parse(source, BoundedParser::archeOperation), is(accepted()));
         }

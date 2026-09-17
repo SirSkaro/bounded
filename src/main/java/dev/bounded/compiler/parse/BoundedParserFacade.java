@@ -3,12 +3,13 @@ package dev.bounded.compiler.parse;
 import dev.bounded.compiler.api.SourceFile;
 import dev.bounded.compiler.grammar.BoundedLexer;
 import dev.bounded.compiler.grammar.BoundedParser;
-import org.antlr.v4.runtime.ANTLRErrorListener;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CodePointCharStream;
-import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.*;
 
 import java.util.Optional;
+
+import static dev.bounded.compiler.parse.ParseResult.invalidResult;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 
 public final class BoundedParserFacade {
     private final BoundedAstMapper mapper = new BoundedAstMapper();
@@ -16,39 +17,38 @@ public final class BoundedParserFacade {
     public ParseResult parse(SourceFile sourceFile) {
         var input = CharStreams.fromString(sourceFile.content(), sourceFile.name());
         var errors = new SyntaxErrorCollector();
+        var parsedInput = parseWithListeners(input, errors);
 
-        var lexer = lexerWithListeners(input, errors);
-        var parser = parserWithListeners(lexer, errors);
-
-        var parseTree = parser.program();
-        var diagnostics = errors.diagnostics();
-        if (!diagnostics.isEmpty()) {
-            return new ParseResult(Optional.empty(), diagnostics);
-        }
-
-        return new ParseResult(Optional.of(mapper.map(parseTree)), diagnostics);
+        return resultOf(parsedInput, errors);
     }
 
-    private BoundedLexer lexerWithListeners(CodePointCharStream input, ANTLRErrorListener... listeners) {
+    private BoundedParser parseWithListeners(CodePointCharStream input, ANTLRErrorListener... listeners) {
         var lexer = new BoundedLexer(input);
-
-        lexer.removeErrorListeners();
-        for(var listener: listeners) {
-            lexer.addErrorListener(listener);
-        }
-
-        return lexer;
-    }
-
-    private BoundedParser parserWithListeners(BoundedLexer lexer, ANTLRErrorListener... listeners) {
         var parser = new BoundedParser(new CommonTokenStream(lexer));
 
-        parser.removeErrorListeners();
-        for(var listener: listeners) {
-            lexer.addErrorListener(listener);
-        }
+        setListeners(lexer, listeners);
+        setListeners(parser, listeners);
 
         return parser;
+    }
+
+    private ParseResult resultOf(BoundedParser parsedInput, SyntaxErrorCollector errors) {
+        var parseTree = parsedInput.program();
+        var diagnostics = errors.diagnostics();
+
+        if (!diagnostics.isEmpty()) {
+            return  invalidResult(diagnostics);
+        }
+
+        var ast = mapper.map(parseTree);
+        return ParseResult.validResult(ast);
+    }
+
+    private void setListeners(Recognizer<?, ?> recognizer, ANTLRErrorListener... listeners) {
+        recognizer.removeErrorListeners();
+        for(var listener: listeners) {
+            recognizer.addErrorListener(listener);
+        }
     }
 
 }
