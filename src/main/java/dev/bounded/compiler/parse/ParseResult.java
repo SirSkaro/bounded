@@ -7,11 +7,23 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.util.List.copyOf;
+import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 
 public record ParseResult(Optional<BoundedProgram> program, List<Diagnostic> diagnostics) {
     public ParseResult {
+        requireNonNull(program);
+        requireNonNull(diagnostics);
+
+        if(program.isEmpty() && diagnostics.isEmpty()) {
+            throw new IllegalArgumentException("Cannot have an invalid program with no diagnostics");
+        }
+
+        if(program.isPresent() && !diagnostics.isEmpty()) {
+            throw new IllegalArgumentException("Cannot have an valid program with error diagnostics");
+        }
+
         diagnostics = copyOf(diagnostics);
     }
 
