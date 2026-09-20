@@ -17,11 +17,11 @@ public final class BoundedCompiler {
 
     public CompilationResult compile(SourceFile sourceFile, Path outputRoot) throws IOException {
         var parseResult = parser.parse(sourceFile);
-        if (!parseResult.diagnostics().isEmpty()) {
+        if (!parseResult.isValid()) {
             return new CompilationResult(parseResult.diagnostics(), List.of(), List.of());
         }
 
-        var program = parseResult.program().orElseThrow();
+        var program = parseResult.program();
         var effectCheckResult = effectChecker.check(program);
         if (!effectCheckResult.isValid()) {
             return new CompilationResult(effectCheckResult.diagnostics(), List.of(), List.of());

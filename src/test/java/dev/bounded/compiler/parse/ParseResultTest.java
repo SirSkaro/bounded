@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static dev.bounded.compiler.ast.ArcheClassKind.VALUE;
 import static dev.bounded.compiler.diagnostics.DiagnosticCode.SYNTAX_ERROR;
@@ -19,6 +18,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -29,7 +29,7 @@ class ParseResultTest {
         var expectedProgram = givenProgram();
 
         var result = validResult(expectedProgram);
-        var actualProgram = result.program().orElseThrow();
+        var actualProgram = result.program();
 
         assertThat(actualProgram, is(sameInstance(expectedProgram)));
     }
@@ -53,7 +53,7 @@ class ParseResultTest {
     void hasNoProgramForAnInvalidResult() {
         var result = invalidResult(List.of(givenDiagnostic()));
 
-        assertThat(result.program(), is(Optional.empty()));
+        assertThat(result.program(), is(nullValue()));
     }
 
     @Test
@@ -72,7 +72,7 @@ class ParseResultTest {
     void copiesDiagnostics() {
         var diagnostic = givenDiagnostic();
         var diagnostics = new ArrayList<>(List.of(diagnostic));
-        var result = new ParseResult(Optional.empty(), diagnostics);
+        var result = invalidResult(diagnostics);
 
         diagnostics.clear();
 
@@ -85,15 +85,13 @@ class ParseResultTest {
         var result = invalidResult(List.of(givenDiagnostic()));
         var diagnostics = result.diagnostics();
 
-        assertThrows(UnsupportedOperationException.class, () -> diagnostics.add(givenDiagnostic()));
-        assertThrows(UnsupportedOperationException.class, () -> diagnostics.set(0, givenDiagnostic()));
         assertThrows(UnsupportedOperationException.class, diagnostics::removeFirst);
     }
 
     @Test
     @DisplayName("Rejects a null diagnostics list")
     void rejectsNullDiagnostics() {
-        assertThrows(NullPointerException.class, () -> new ParseResult(Optional.empty(), null));
+        assertThrows(NullPointerException.class, () -> invalidResult(null));
     }
 
     @Test
@@ -102,25 +100,29 @@ class ParseResultTest {
         var diagnostics = new ArrayList<Diagnostic>();
         diagnostics.add(null);
 
-        assertThrows(NullPointerException.class, () -> new ParseResult(Optional.empty(), diagnostics));
+        assertThrows(NullPointerException.class, () -> invalidResult(diagnostics));
     }
 
     @Test
-    @DisplayName("Rejects null optional of program")
-    void rejectsANullOptional() {
-        assertThrows(NullPointerException.class, () -> new ParseResult(null, List.of()));
+    @DisplayName("Rejects an empty diagnostics list")
+    void rejectsAnInvalidResultWithoutDiagnostics() {
+        assertThrows(IllegalArgumentException.class, () -> invalidResult(List.of()));
     }
 
     @Test
-    @DisplayName("Rejects invariant of empty program with no diagnostics")
-    void rejectsBothEmpty() {
-        assertThrows(IllegalArgumentException.class, () -> new ParseResult(Optional.empty(), List.of()));
+    @DisplayName("A result created with a program is valid")
+    void reportsAValidResult() {
+        var result = validResult(givenProgram());
+
+        assertThat(result.isValid(), is(true));
     }
 
     @Test
-    @DisplayName("Rejects invariant of valid program with error diagnostics")
-    void rejectsBothPopulated() {
-        assertThrows(IllegalArgumentException.class, () -> new ParseResult(Optional.of(givenProgram()), List.of(givenDiagnostic())));
+    @DisplayName("A result created with diagnostics is invalid")
+    void reportsAnInvalidResult() {
+        var result = invalidResult(List.of(givenDiagnostic()));
+
+        assertThat(result.isValid(), is(false));
     }
 
     private BoundedProgram givenProgram() {

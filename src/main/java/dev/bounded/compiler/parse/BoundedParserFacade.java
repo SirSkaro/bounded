@@ -5,11 +5,7 @@ import dev.bounded.compiler.grammar.BoundedLexer;
 import dev.bounded.compiler.grammar.BoundedParser;
 import org.antlr.v4.runtime.*;
 
-import java.util.Optional;
-
 import static dev.bounded.compiler.parse.ParseResult.invalidResult;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
 
 public final class BoundedParserFacade {
     private final BoundedAstMapper mapper = new BoundedAstMapper();
@@ -37,7 +33,7 @@ public final class BoundedParserFacade {
         var diagnostics = errors.diagnostics();
 
         if (!diagnostics.isEmpty()) {
-            return  invalidResult(diagnostics);
+            return invalidResult(diagnostics);
         }
 
         var ast = mapper.map(parseTree);

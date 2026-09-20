@@ -22,8 +22,8 @@ class BoundedParserFacadeTest {
 
         var result = parser.parse(source);
 
-        assertTrue(result.diagnostics().isEmpty());
-        var archeClass = result.program().orElseThrow().archeClass();
+        assertTrue(result.isValid());
+        var archeClass = result.program().archeClass();
         assertEquals(ArcheClassKind.VALUE, archeClass.kind());
         assertEquals("Money", archeClass.name());
         assertEquals(new SourceSpan(1, 1), archeClass.span());
