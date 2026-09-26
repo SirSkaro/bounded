@@ -1,8 +1,11 @@
 package dev.bounded.compiler.ast;
 
+import static dev.bounded.compiler.ast.EffectGrade.FUNCTION;
+import static dev.bounded.compiler.ast.EffectGrade.QUERY;
+
 public enum ArcheClassKind {
-    VALUE(EffectGrade.FUNCTION),
-    ENTITY(EffectGrade.QUERY);
+    VALUE(FUNCTION),
+    ENTITY(QUERY);
 
     private final EffectGrade maximumEffect;
 
