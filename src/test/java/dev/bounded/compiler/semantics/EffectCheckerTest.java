@@ -1,5 +1,8 @@
 package dev.bounded.compiler.semantics;
 
+import dev.bounded.compiler.locale.LocaleSensitiveTest;
+import org.junit.jupiter.api.parallel.Isolated;
+
 import dev.bounded.compiler.ast.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -20,6 +23,7 @@ import static dev.bounded.compiler.semantics.ValidEffectCheckMatcher.valid;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
+@Isolated
 class EffectCheckerTest {
     private final EffectChecker checker = new EffectChecker();
 
@@ -67,7 +71,7 @@ class EffectCheckerTest {
         }
     }
 
-    @Test
+    @LocaleSensitiveTest
     @DisplayName("An illegal effect produces a diagnostic with the correct code, span, and message")
     void constructsDiagnosticForIllegalEffect() {
         var archeop = new ArcheOperationDeclaration(

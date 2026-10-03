@@ -5,6 +5,7 @@ import dev.bounded.compiler.diagnostics.Diagnostic;
 import dev.bounded.compiler.diagnostics.DiagnosticCode;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public final class EffectChecker {
     public EffectCheckResult check(BoundedProgram program) {
@@ -31,6 +32,6 @@ public final class EffectChecker {
     }
 
     private String titleCase(String value) {
-        return value.charAt(0) + value.substring(1).toLowerCase();
+        return value.charAt(0) + value.substring(1).toLowerCase(Locale.ROOT);
     }
 }

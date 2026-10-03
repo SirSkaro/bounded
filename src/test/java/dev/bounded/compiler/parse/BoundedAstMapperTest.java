@@ -4,14 +4,12 @@ import dev.bounded.compiler.ast.ArcheClassKind;
 import dev.bounded.compiler.ast.ArcheOperationDeclaration;
 import dev.bounded.compiler.ast.ArcheOperationKind;
 import dev.bounded.compiler.ast.SourceSpan;
+import dev.bounded.compiler.locale.LocaleSensitiveTest;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.parallel.Isolated;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.MethodSource;
-
-import java.util.stream.Stream;
 
 import static dev.bounded.compiler.grammar.BoundedParser.ENTITY;
 import static dev.bounded.compiler.grammar.BoundedParser.FUNCTION;
@@ -23,26 +21,29 @@ import static dev.bounded.compiler.parse.MapperContextFixtures.operation;
 import static dev.bounded.compiler.parse.MapperContextFixtures.program;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
 
+@Isolated
 class BoundedAstMapperTest {
     private final BoundedAstMapper mapper = new BoundedAstMapper();
 
-    private static Stream<Arguments> classKinds() {
-        return Stream.of(
-                arguments(VALUE, ArcheClassKind.VALUE),
-                arguments(ENTITY, ArcheClassKind.ENTITY)
-        );
-    }
-    @DisplayName("Maps class kinds from the supplied context")
-    @ParameterizedTest(name = "Maps the class kind to {1}")
-    @MethodSource("classKinds")
-    void mapsClassKinds(int tokenType, ArcheClassKind expectedKind) {
-        var context = program(archeClass(tokenType, "Account"));
+    @LocaleSensitiveTest
+    @DisplayName("Maps a value context to the AST class kind under every locale")
+    void mapsValueClassKind() {
+        var context = program(archeClass(VALUE, "Account"));
 
         var kind = mapper.map(context).archeClass().kind();
 
-        assertThat(kind, is(expectedKind));
+        assertThat(kind, is(ArcheClassKind.VALUE));
+    }
+
+    @LocaleSensitiveTest
+    @DisplayName("Maps a entity context to the AST class kind under every locale")
+    void mapsEntityClassKind() {
+        var context = program(archeClass(ENTITY, "Account"));
+
+        var kind = mapper.map(context).archeClass().kind();
+
+        assertThat(kind, is(ArcheClassKind.ENTITY));
     }
 
     @Test
@@ -56,24 +57,30 @@ class BoundedAstMapperTest {
         assertThat(name, is(expectedName));
     }
 
-    private static Stream<Arguments> operationKinds() {
-        return Stream.of(
-                arguments(FUNCTION, ArcheOperationKind.FUNCTION),
-                arguments(QUERY, ArcheOperationKind.QUERY)
-        );
-    }
-    @DisplayName("Maps operation kinds from the supplied context")
-    @ParameterizedTest(name = "Maps the operation kind to {1}")
-    @MethodSource("operationKinds")
-    void mapsOperationKinds(int tokenType, ArcheOperationKind expectedKind) {
-        var context = program(archeClass(ENTITY, "Account", operation(tokenType, "balance")));
+    @LocaleSensitiveTest
+    @DisplayName("Maps a function context to the AST operation kind under every locale")
+    void mapsFunctionOperationKind() {
+        var context = program(archeClass(ENTITY, "Account", operation(FUNCTION, "balance")));
 
         var operation = mapper.map(context)
                 .archeClass()
                 .operations()
                 .getFirst();
 
-        assertThat(operation.kind(), is(expectedKind));
+        assertThat(operation.kind(), is(ArcheOperationKind.FUNCTION));
+    }
+
+    @LocaleSensitiveTest
+    @DisplayName("Maps a query context to the AST operation kind under every locale")
+    void mapsQueryOperationKind() {
+        var context = program(archeClass(ENTITY, "Account", operation(QUERY, "balance")));
+
+        var operation = mapper.map(context)
+                .archeClass()
+                .operations()
+                .getFirst();
+
+        assertThat(operation.kind(), is(ArcheOperationKind.QUERY));
     }
 
     @Test

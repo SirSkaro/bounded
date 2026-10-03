@@ -23,10 +23,10 @@ final class BoundedAstMapper {
 
     private ArcheClassDeclaration toDeclaration(ArcheClassContext archeClassContext) {
         return new ArcheClassDeclaration(
-                ArcheClassKind.valueOf(archeClassContext.archeClassKind().getText().toUpperCase()),
-                archeClassContext.IDENTIFIER().getText(),
-                toDeclarations(archeClassContext.archeOperation()),
-                spanOf(archeClassContext.getStart())
+            ArcheClassKind.fromKeyword(archeClassContext.archeClassKind().getText()),
+            archeClassContext.IDENTIFIER().getText(),
+            toDeclarations(archeClassContext.archeOperation()),
+            spanOf(archeClassContext.getStart())
         );
     }
 
@@ -42,7 +42,7 @@ final class BoundedAstMapper {
 
     private ArcheOperationDeclaration toDeclaration(ArcheOperationContext context) {
         return new ArcheOperationDeclaration(
-            ArcheOperationKind.valueOf(context.archeOperationKind().getText().toUpperCase()),
+            ArcheOperationKind.fromKeyword(context.archeOperationKind().getText()),
             context.IDENTIFIER().getText(),
             spanOf(context.getStart())
         );

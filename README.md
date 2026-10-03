@@ -43,6 +43,42 @@ The tests demonstrate four levels:
 4. `FixtureCompilationTest` compiles real `.bounded` fixtures, compares a stable `.diag` file,
    generates Java, invokes `javac`, loads the resulting class, and calls it reflectively.
 
+## Locale-sensitive tests
+
+Use `@LocaleSensitiveTest` from `dev.bounded.compiler.locale` instead of `@Test`
+for behavior that must stay consistent across default locales. The containing
+class must have `@Isolated`; nested tests can inherit isolation from an enclosing
+test container. The extension rejects missing isolation.
+
+```java
+@Isolated
+class KeywordTest {
+    @LocaleSensitiveTest
+    @DisplayName("Recognizes entity independently of the default locale")
+    void recognizesEntity() {
+        assertThat(ArcheClassKind.fromKeyword("entity"), is(ArcheClassKind.ENTITY));
+    }
+}
+```
+
+The global list lives in `src/test/resources/locale-sensitive-test.properties`:
+
+```properties
+locales=ROOT,tr-TR,ar-EG,de-DE
+```
+
+`ROOT` denotes `Locale.ROOT`; other entries are BCP 47 language tags.
+`@LocaleSensitiveTest({"ROOT", "tr-TR"})` replaces the global list for that method.
+Each locale appears as a separate invocation in the test runner.
+
+The locale is set before `@BeforeEach` and restored after `@AfterEach`, including
+when setup, assertions, or teardown fail. Default, display, and format locales
+are restored independently. Constructors and `@BeforeAll` run outside this
+per-invocation locale scope. Invocations run sequentially.
+
+Do not combine `@LocaleSensitiveTest` with `@Test` or `@ParameterizedTest` on the
+same method. Ordinary and parameterized tests can coexist elsewhere in the class.
+
 ## Run the compiler
 
 Package the executable compiler JAR:

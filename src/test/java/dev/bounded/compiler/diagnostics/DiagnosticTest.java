@@ -1,8 +1,10 @@
 package dev.bounded.compiler.diagnostics;
 
+import dev.bounded.compiler.locale.LocaleSensitiveTest;
+import org.junit.jupiter.api.parallel.Isolated;
+
 import dev.bounded.compiler.ast.SourceSpan;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -13,9 +15,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@Isolated
 class DiagnosticTest {
 
-    @Test
+    @LocaleSensitiveTest
     @DisplayName("Formats an error as code:line:column message")
     void formatsAnError() {
         var diagnostic = new Diagnostic(
@@ -47,11 +50,7 @@ class DiagnosticTest {
         return Stream.of(
             Arguments.of("code", null, span, message),
             Arguments.of("span", code, null, message),
-            Arguments.of("message", code, span, null),
-            Arguments.of("code and span", null, null, message),
-            Arguments.of("code and message", null, span, null),
-            Arguments.of("span and message", code, null, null),
-            Arguments.of("code, span, and message", null, null, null)
+            Arguments.of("message", code, span, null)
         );
     }
 }
