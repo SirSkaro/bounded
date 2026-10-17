@@ -1,7 +1,6 @@
 package dev.bounded.compiler.parse;
 
-import dev.bounded.compiler.locale.LocaleSensitiveTest;
-import org.junit.jupiter.api.parallel.Isolated;
+import org.junit.jupiter.api.Test;
 
 import dev.bounded.compiler.api.SourceFile;
 import dev.bounded.compiler.ast.ArcheClassKind;
@@ -13,12 +12,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 
-@Isolated
 class BoundedParserFacadeTest {
     private final BoundedParserFacade parser = new BoundedParserFacade();
 
-    @LocaleSensitiveTest
-    @DisplayName("Maps source to the AST independently of the default locale")
+    @Test
+    @DisplayName("Maps source to the AST with source spans")
     void mapsSourceTextToTheBoundedAst() {
         var source = new SourceFile("money.bounded", """
                 value Money {

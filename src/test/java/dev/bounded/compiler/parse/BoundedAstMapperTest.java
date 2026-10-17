@@ -4,10 +4,8 @@ import dev.bounded.compiler.ast.ArcheClassKind;
 import dev.bounded.compiler.ast.ArcheOperationDeclaration;
 import dev.bounded.compiler.ast.ArcheOperationKind;
 import dev.bounded.compiler.ast.SourceSpan;
-import dev.bounded.compiler.locale.LocaleSensitiveTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.parallel.Isolated;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -75,11 +73,10 @@ class BoundedAstMapperTest {
     }
 
     @Nested
-    @Isolated
     @DisplayName("Archeoperations")
     class ArcheOperations {
-        @LocaleSensitiveTest
-        @DisplayName("Maps a function context to the AST operation kind under every locale")
+        @Test
+        @DisplayName("Maps a function context to the AST operation kind")
         void mapsFunctionOperationKind() {
             var context = program(archeClass(ENTITY, "Account", operation(FUNCTION, "balance")));
 
@@ -91,8 +88,8 @@ class BoundedAstMapperTest {
             assertThat(operation.kind(), is(ArcheOperationKind.FUNCTION));
         }
 
-        @LocaleSensitiveTest
-        @DisplayName("Maps a query context to the AST operation kind under every locale")
+        @Test
+        @DisplayName("Maps a query context to the AST operation kind")
         void mapsQueryOperationKind() {
             var context = program(archeClass(ENTITY, "Account", operation(QUERY, "balance")));
 

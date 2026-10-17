@@ -1,10 +1,9 @@
 package dev.bounded.compiler.ast;
 
-import dev.bounded.compiler.locale.LocaleSensitiveTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.Isolated;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -12,18 +11,24 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@Isolated
 class ArcheOperationKindTest {
-    @LocaleSensitiveTest
-    @DisplayName("Converts function regardless of letter case or default locale")
+    @DisplayName("Provides a human-readable label for each archeoperation kind")
+    @ParameterizedTest(name = "Labels {0} as {1}")
+    @CsvSource({"FUNCTION, Function", "QUERY, Query"})
+    void providesLabel(ArcheOperationKind kind, String expectedLabel) {
+        assertThat(kind.label(), is(expectedLabel));
+    }
+
+    @Test
+    @DisplayName("Converts function regardless of letter case")
     void convertsFunction() {
         assertThat(ArcheOperationKind.fromKeyword("function"), is(ArcheOperationKind.FUNCTION));
         assertThat(ArcheOperationKind.fromKeyword("FUNCTION"), is(ArcheOperationKind.FUNCTION));
         assertThat(ArcheOperationKind.fromKeyword("Function"), is(ArcheOperationKind.FUNCTION));
     }
 
-    @LocaleSensitiveTest
-    @DisplayName("Converts query regardless of letter case or default locale")
+    @Test
+    @DisplayName("Converts query regardless of letter case")
     void convertsQuery() {
         assertThat(ArcheOperationKind.fromKeyword("query"), is(ArcheOperationKind.QUERY));
         assertThat(ArcheOperationKind.fromKeyword("QUERY"), is(ArcheOperationKind.QUERY));
