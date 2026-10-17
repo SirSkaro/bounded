@@ -28,11 +28,10 @@ class BoundedAstMapperTest {
     private final BoundedAstMapper mapper = new BoundedAstMapper();
 
     @Nested
-    @Isolated
     @DisplayName("Archeclasses")
     class ArcheClasses {
-        @LocaleSensitiveTest
-        @DisplayName("Maps a value context to the AST class kind under every locale")
+        @Test
+        @DisplayName("Maps a value context to the AST class kind")
         void mapsValueClassKind() {
             var context = program(archeClass(VALUE, "Account"));
 
@@ -41,8 +40,8 @@ class BoundedAstMapperTest {
             assertThat(kind, is(ArcheClassKind.VALUE));
         }
 
-        @LocaleSensitiveTest
-        @DisplayName("Maps a entity context to the AST class kind under every locale")
+        @Test
+        @DisplayName("Maps an entity context to the AST class kind")
         void mapsEntityClassKind() {
             var context = program(archeClass(ENTITY, "Account"));
 

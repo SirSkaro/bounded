@@ -1,9 +1,9 @@
 package dev.bounded.compiler.ast;
 
-import java.util.Locale;
-
 import static dev.bounded.compiler.ast.EffectGrade.FUNCTION;
 import static dev.bounded.compiler.ast.EffectGrade.QUERY;
+import static java.util.Arrays.stream;
+import static java.util.Objects.requireNonNull;
 
 public enum ArcheClassKind {
     VALUE(FUNCTION, "Value"),
@@ -18,7 +18,11 @@ public enum ArcheClassKind {
     }
 
     public static ArcheClassKind fromKeyword(String keyword) {
-        return valueOf(keyword.toUpperCase(Locale.ROOT));
+        requireNonNull(keyword, "keyword");
+        return stream(values())
+                .filter(kind -> kind.name().equalsIgnoreCase(keyword))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Unknown archeclass keyword: " + keyword));
     }
 
     public EffectGrade maximumEffect() {
