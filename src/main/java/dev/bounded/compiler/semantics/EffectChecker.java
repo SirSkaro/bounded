@@ -5,7 +5,6 @@ import dev.bounded.compiler.diagnostics.Diagnostic;
 import dev.bounded.compiler.diagnostics.DiagnosticCode;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 public final class EffectChecker {
     public EffectCheckResult check(BoundedProgram program) {
@@ -20,7 +19,7 @@ public final class EffectChecker {
                         operation.span(),
                         "%s '%s' permits operations through %s; '%s' is %s."
                                 .formatted(
-                                        titleCase(archeClass.kind().name()),
+                                        archeClass.kind().label(),
                                         archeClass.name(),
                                         maximumEffect,
                                         operation.name(),
@@ -29,9 +28,5 @@ public final class EffectChecker {
         }
 
         return new EffectCheckResult(diagnostics);
-    }
-
-    private String titleCase(String value) {
-        return value.charAt(0) + value.substring(1).toLowerCase(Locale.ROOT);
     }
 }

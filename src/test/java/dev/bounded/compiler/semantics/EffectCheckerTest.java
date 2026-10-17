@@ -1,8 +1,5 @@
 package dev.bounded.compiler.semantics;
 
-import dev.bounded.compiler.locale.LocaleSensitiveTest;
-import org.junit.jupiter.api.parallel.Isolated;
-
 import dev.bounded.compiler.ast.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -23,13 +20,19 @@ import static dev.bounded.compiler.semantics.ValidEffectCheckMatcher.valid;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-@Isolated
 class EffectCheckerTest {
     private final EffectChecker checker = new EffectChecker();
 
     @Nested
     @DisplayName("Allowed archeclass and archeop combinations")
     class AllowedOperations {
+        static Stream<Arguments> allowedCombinations() {
+            return Stream.of(
+                Arguments.of(VALUE, FUNCTION),
+                Arguments.of(ENTITY, FUNCTION),
+                Arguments.of(ENTITY, QUERY)
+            );
+        }
         @ParameterizedTest(name = "{0} archeclass can have a {1} archeop")
         @MethodSource("allowedCombinations")
         void allowsLegalOperation(ArcheClassKind archeClassKind, ArcheOperationKind operationKind) {
@@ -39,19 +42,16 @@ class EffectCheckerTest {
             var result = checker.check(program);
             assertThat(result, is(valid()));
         }
-
-        static Stream<Arguments> allowedCombinations() {
-            return Stream.of(
-                Arguments.of(VALUE, FUNCTION),
-                Arguments.of(ENTITY, FUNCTION),
-                Arguments.of(ENTITY, QUERY)
-            );
-        }
     }
 
     @Nested
     @DisplayName("Disallowed archeclass and archeop combinations")
     class DisallowedOperations {
+        static Stream<Arguments> disallowedCombinations() {
+            return Stream.of(
+                Arguments.of(VALUE, QUERY)
+            );
+        }
         @ParameterizedTest(name = "{0} archeclass cannot have a {1} archeop")
         @MethodSource("disallowedCombinations")
         void rejectsIllegalOperation(ArcheClassKind archeClassKind, ArcheOperationKind operationKind) {
@@ -63,15 +63,9 @@ class EffectCheckerTest {
             assertThat(result, is(not(valid())));
             assertThat(result.diagnostics(), hasSize(1));
         }
-
-        static Stream<Arguments> disallowedCombinations() {
-            return Stream.of(
-                Arguments.of(VALUE, QUERY)
-            );
-        }
     }
 
-    @LocaleSensitiveTest
+    @Test
     @DisplayName("An illegal effect produces a diagnostic with the correct code, span, and message")
     void constructsDiagnosticForIllegalEffect() {
         var archeop = new ArcheOperationDeclaration(
@@ -82,15 +76,14 @@ class EffectCheckerTest {
         var program = givenProgram(VALUE, archeop);
 
         var result = checker.check(program);
-
         assertThat(result.diagnostics(), hasSize(1));
-        var diagnostic = result.diagnostics().getFirst();
 
+        var diagnostic = result.diagnostics().getFirst();
         assertThat(diagnostic.code(), is(EFFECT_NOT_ALLOWED));
         assertThat(diagnostic.span().line(), is(3));
         assertThat(diagnostic.span().column(), is(7));
         assertThat(diagnostic.message(), is(equalTo(
-            "Value 'Money' permits operations through FUNCTION; 'exchangeRate' is QUERY."
+    "Value 'Money' permits operations through FUNCTION; 'exchangeRate' is QUERY."
         )));
     }
 
