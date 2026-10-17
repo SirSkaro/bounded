@@ -1,10 +1,11 @@
 package dev.bounded.compiler.api;
 
+import dev.bounded.compiler.diagnostics.Diagnostic;
 import dev.bounded.compiler.locale.LocaleSensitiveTest;
-import org.junit.jupiter.api.parallel.Isolated;
-
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.api.parallel.Isolated;
 
 import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
@@ -51,7 +52,7 @@ class FixtureCompilationTest {
         }
     }
 
-    @LocaleSensitiveTest
+    @Test
     @DisplayName("Produces stable diagnostics and no artifacts for an invalid fixture")
     void matchesTheExpectedDiagnosticAndEmitsNoArtifactsForAnInvalidFixture()
             throws Exception {
@@ -62,7 +63,7 @@ class FixtureCompilationTest {
 
         assertThat(result.succeeded(), is(false));
         var actualDiagnostics = result.diagnostics().stream()
-                .map(diagnostic -> diagnostic.format())
+                .map(Diagnostic::format)
                 .toList();
         var expectedDiagnostics = Files.readAllLines(
                 fixturePath("cases/invalid/value-query.diag"),
