@@ -1,32 +1,45 @@
 package dev.bounded.compiler.semantics;
 
+import dev.bounded.compiler.ast.ArcheClassDeclaration;
+import dev.bounded.compiler.ast.ArcheOperationDeclaration;
 import dev.bounded.compiler.ast.BoundedProgram;
 import dev.bounded.compiler.diagnostics.Diagnostic;
 import dev.bounded.compiler.diagnostics.DiagnosticCode;
 
-import java.util.ArrayList;
+import static java.lang.String.format;
+import static java.util.function.Predicate.not;
 
 public final class EffectChecker {
+
     public EffectCheckResult check(BoundedProgram program) {
         var archeClass = program.archeClass();
-        var maximumEffect = archeClass.kind().maximumEffect();
-        var diagnostics = new ArrayList<Diagnostic>();
-
-        for (var operation : archeClass.operations()) {
-            if (!maximumEffect.allows(operation.kind().effectGrade())) {
-                diagnostics.add(new Diagnostic(
-                        DiagnosticCode.EFFECT_NOT_ALLOWED,
-                        operation.span(),
-                        "%s '%s' permits operations through %s; '%s' is %s."
-                                .formatted(
-                                        archeClass.kind().label(),
-                                        archeClass.name(),
-                                        maximumEffect,
-                                        operation.name(),
-                                        operation.kind().effectGrade())));
-            }
-        }
+        var diagnostics = archeClass.operations().stream()
+                .filter(not(archeOp -> effectAllowed(archeClass, archeOp)))
+                .map(archeOp -> constructDiagnostic(archeClass, archeOp))
+                .toList();
 
         return new EffectCheckResult(diagnostics);
+    }
+
+    private boolean effectAllowed(ArcheClassDeclaration archeClass, ArcheOperationDeclaration operation) {
+        var maximumEffect = archeClass.kind().maximumEffect();
+        var declaredEffect = operation.kind().effectGrade();
+        return maximumEffect.allows(declaredEffect);
+    }
+
+    private Diagnostic constructDiagnostic(ArcheClassDeclaration archeClass, ArcheOperationDeclaration operation) {
+        var message = format("%s '%s' permits operations through %s; '%s' is %s.",
+            archeClass.kind().label(),
+            archeClass.name(),
+            archeClass.kind().maximumEffect(),
+            operation.name(),
+            operation.kind().effectGrade()
+        );
+
+        return new Diagnostic(
+            DiagnosticCode.EFFECT_NOT_ALLOWED,
+            operation.span(),
+            message
+        );
     }
 }
