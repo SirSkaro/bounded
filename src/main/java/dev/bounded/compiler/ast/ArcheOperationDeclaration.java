@@ -10,6 +10,9 @@ public record ArcheOperationDeclaration(
     public ArcheOperationDeclaration {
         requireNonNull(kind, "kind");
         requireNonNull(name, "name");
+        if (name.isBlank()) {
+            throw new IllegalArgumentException("name must not be blank");
+        }
         requireNonNull(span, "span");
     }
 }

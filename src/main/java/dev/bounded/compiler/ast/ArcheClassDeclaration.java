@@ -13,6 +13,9 @@ public record ArcheClassDeclaration(
     public ArcheClassDeclaration {
         requireNonNull(kind, "kind");
         requireNonNull(name, "name");
+        if (name.isBlank()) {
+            throw new IllegalArgumentException("name must not be blank");
+        }
         operations = List.copyOf(operations);
         requireNonNull(span, "span");
     }

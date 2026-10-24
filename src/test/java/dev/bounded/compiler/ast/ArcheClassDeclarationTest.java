@@ -4,6 +4,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.EmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.ArrayList;
@@ -42,6 +44,14 @@ class ArcheClassDeclarationTest {
     void rejectsNullInputs(String description, ArcheClassKind kind, String name,
                            List<ArcheOperationDeclaration> operations, SourceSpan span) {
         assertThrows(NullPointerException.class, () -> new ArcheClassDeclaration(kind, name, operations, span));
+    }
+
+    @DisplayName("Rejects blank names")
+    @ParameterizedTest(name = "Rejects blank name [{index}]")
+    @EmptySource
+    @ValueSource(strings = {" ", "   ", "\t", "\n", " \t\r\n", "\u2003"})
+    void rejectsBlankNames(String name) {
+        assertThrows(IllegalArgumentException.class, () -> new ArcheClassDeclaration(VALUE, name, List.of(), span));
     }
 
     @Test
