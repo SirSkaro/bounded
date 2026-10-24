@@ -1,6 +1,6 @@
 package dev.bounded.compiler.ast;
 
-import java.util.Objects;
+import static java.util.Objects.requireNonNull;
 
 public record ArcheOperationDeclaration(
         ArcheOperationKind kind,
@@ -8,8 +8,8 @@ public record ArcheOperationDeclaration(
         SourceSpan span
 ) {
     public ArcheOperationDeclaration {
-        Objects.requireNonNull(kind, "kind");
-        Objects.requireNonNull(name, "name");
-        Objects.requireNonNull(span, "span");
+        requireNonNull(kind, "kind");
+        requireNonNull(name, "name");
+        requireNonNull(span, "span");
     }
 }
