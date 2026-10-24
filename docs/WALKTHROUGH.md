@@ -22,9 +22,8 @@ value Money {
 }
 ```
 
-For this slice, the rule is: a value has maximum effect grade `FUNCTION`, so a `QUERY`
-exceeds its ceiling. An entity has maximum effect grade `QUERY`, so it may declare either
-a function or a query.
+For this slice, a value may declare functions but not queries. An entity may declare
+either a function or a query.
 
 Nothing else is being decided yet: no parameters, return types, bodies, calls, or runtime
 meaning for an ArcheOperation.
@@ -47,29 +46,29 @@ var program = new BoundedProgram(new ArcheClassDeclaration(
 At this point, no parser is involved. The Java expression says exactly what the compiler
 should eventually learn from the source text.
 
-`ArcheClassKind` owns its maximum effect:
+`ArcheClassKind` owns the maximum operation kind it permits:
 
 ```java
-VALUE(EffectGrade.FUNCTION),
-ENTITY(EffectGrade.QUERY);
+VALUE(ArcheOperationKind.FUNCTION, "Value"),
+ENTITY(ArcheOperationKind.QUERY, "Entity");
 ```
 
-`ArcheOperationKind` owns its required effect:
+`ArcheOperationKind` exposes its numeric effect grade through `effectGrade()`:
 
 ```java
-FUNCTION(EffectGrade.FUNCTION),
-QUERY(EffectGrade.QUERY);
+FUNCTION(0, "Function"),
+QUERY(1, "Query");
 ```
 
-That gives the checker a general comparison instead of a special-case conditional such as
-`if value and query`. When `COMMAND` and `ACTION` arrive, the same relation can grow with them.
+`ArcheClassKind.allows(operationKind)` compares the requested operation's grade with
+its ceiling. The checker asks that domain question without comparing grades itself.
 
 ## 3. Test the semantic checker before parsing
 
-`EffectChecker` compares each operation's required grade with its ArcheClass ceiling:
+`EffectChecker` asks whether the ArcheClass kind permits each operation kind:
 
 ```java
-if (!maximumEffect.allows(operation.kind().effectGrade())) {
+if (!archeClass.kind().allows(operation.kind())) {
     diagnostics.add(...);
 }
 ```

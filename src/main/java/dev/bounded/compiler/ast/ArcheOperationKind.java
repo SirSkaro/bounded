@@ -4,13 +4,13 @@ import static java.util.Arrays.stream;
 import static java.util.Objects.requireNonNull;
 
 public enum ArcheOperationKind {
-    FUNCTION(EffectGrade.FUNCTION, "Function"),
-    QUERY(EffectGrade.QUERY, "Query");
+    FUNCTION(0, "Function"),
+    QUERY(1, "Query");
 
-    private final EffectGrade effectGrade;
+    private final int effectGrade;
     private final String label;
 
-    ArcheOperationKind(EffectGrade effectGrade, String label) {
+    ArcheOperationKind(int effectGrade, String label) {
         this.effectGrade = effectGrade;
         this.label = label;
     }
@@ -23,7 +23,7 @@ public enum ArcheOperationKind {
                 .orElseThrow(() -> new IllegalArgumentException("Unknown archeoperation keyword: " + keyword));
     }
 
-    public EffectGrade effectGrade() {
+    public int effectGrade() {
         return effectGrade;
     }
 

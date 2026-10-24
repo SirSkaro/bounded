@@ -22,18 +22,16 @@ public final class EffectChecker {
     }
 
     private boolean effectAllowed(ArcheClassDeclaration archeClass, ArcheOperationDeclaration operation) {
-        var maximumEffect = archeClass.kind().maximumEffect();
-        var declaredEffect = operation.kind().effectGrade();
-        return maximumEffect.allows(declaredEffect);
+        return archeClass.kind().allows(operation.kind());
     }
 
     private Diagnostic constructDiagnostic(ArcheClassDeclaration archeClass, ArcheOperationDeclaration operation) {
         var message = format("%s '%s' permits operations through %s; '%s' is %s.",
             archeClass.kind().label(),
             archeClass.name(),
-            archeClass.kind().maximumEffect(),
+            archeClass.kind().maximumOperationKind(),
             operation.name(),
-            operation.kind().effectGrade()
+            operation.kind()
         );
 
         return new Diagnostic(

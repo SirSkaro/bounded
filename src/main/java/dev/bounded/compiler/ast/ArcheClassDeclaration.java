@@ -1,7 +1,6 @@
 package dev.bounded.compiler.ast;
 
 import java.util.List;
-import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 

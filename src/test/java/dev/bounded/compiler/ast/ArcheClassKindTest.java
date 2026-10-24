@@ -11,6 +11,18 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ArcheClassKindTest {
+    @DisplayName("Determines which operation kinds an archeclass may declare")
+    @ParameterizedTest(name = "{0} allows {1}: {2}")
+    @CsvSource({
+        "VALUE, FUNCTION, true",
+        "VALUE, QUERY, false",
+        "ENTITY, FUNCTION, true",
+        "ENTITY, QUERY, true"
+    })
+    void allowsOperationKinds(ArcheClassKind classKind, ArcheOperationKind operationKind, boolean expected) {
+        assertThat(classKind.allows(operationKind), is(expected));
+    }
+
     @DisplayName("Provides a human-readable label for each archeclass kind")
     @ParameterizedTest(name = "Labels {0} as {1}")
     @CsvSource({"VALUE, Value", "ENTITY, Entity"})

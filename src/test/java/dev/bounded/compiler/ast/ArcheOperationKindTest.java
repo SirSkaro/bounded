@@ -7,11 +7,20 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import static dev.bounded.compiler.ast.ArcheOperationKind.FUNCTION;
+import static dev.bounded.compiler.ast.ArcheOperationKind.QUERY;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.lessThan;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ArcheOperationKindTest {
+    @Test
+    @DisplayName("Functions have a lower effect grade than queries")
+    void ordersEffectGrades() {
+        assertThat(FUNCTION.effectGrade(), is(lessThan(QUERY.effectGrade())));
+    }
+
     @DisplayName("Provides a human-readable label for each archeoperation kind")
     @ParameterizedTest(name = "Labels {0} as {1}")
     @CsvSource({"FUNCTION, Function", "QUERY, Query"})
@@ -22,17 +31,17 @@ class ArcheOperationKindTest {
     @Test
     @DisplayName("Converts function regardless of letter case")
     void convertsFunction() {
-        assertThat(ArcheOperationKind.fromKeyword("function"), is(ArcheOperationKind.FUNCTION));
-        assertThat(ArcheOperationKind.fromKeyword("FUNCTION"), is(ArcheOperationKind.FUNCTION));
-        assertThat(ArcheOperationKind.fromKeyword("Function"), is(ArcheOperationKind.FUNCTION));
+        assertThat(ArcheOperationKind.fromKeyword("function"), is(FUNCTION));
+        assertThat(ArcheOperationKind.fromKeyword("FUNCTION"), is(FUNCTION));
+        assertThat(ArcheOperationKind.fromKeyword("Function"), is(FUNCTION));
     }
 
     @Test
     @DisplayName("Converts query regardless of letter case")
     void convertsQuery() {
-        assertThat(ArcheOperationKind.fromKeyword("query"), is(ArcheOperationKind.QUERY));
-        assertThat(ArcheOperationKind.fromKeyword("QUERY"), is(ArcheOperationKind.QUERY));
-        assertThat(ArcheOperationKind.fromKeyword("Query"), is(ArcheOperationKind.QUERY));
+        assertThat(ArcheOperationKind.fromKeyword("query"), is(QUERY));
+        assertThat(ArcheOperationKind.fromKeyword("QUERY"), is(QUERY));
+        assertThat(ArcheOperationKind.fromKeyword("Query"), is(QUERY));
     }
 
     @DisplayName("Rejects text that is not a keyword")
