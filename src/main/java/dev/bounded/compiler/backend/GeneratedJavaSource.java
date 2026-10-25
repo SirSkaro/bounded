@@ -1,10 +1,11 @@
 package dev.bounded.compiler.backend;
 
-import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 public record GeneratedJavaSource(String qualifiedClassName, String content) {
     public GeneratedJavaSource {
-        Objects.requireNonNull(qualifiedClassName, "qualifiedClassName");
-        Objects.requireNonNull(content, "content");
+        requireNonNull(qualifiedClassName, "qualifiedClassName");
+        requireNonNull(content, "content");
     }
 }
