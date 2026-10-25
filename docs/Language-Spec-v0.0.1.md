@@ -319,7 +319,7 @@ Initial policy:
 - a future trusted-pure foreign declaration may permit selected JVM operations inside `fn` ArcheOps;
 - the compiler and linker must not claim guarantees they cannot enforce against foreign bytecode.
 
-The first implementation SHOULD avoid solving foreign purity, Spring compatibility, proxying, reflection, JPMS emission, or direct JVM bytecode verification.
+The first implementation SHOULD avoid solving foreign purity, Spring compatibility, proxying, reflection, JPMS emission, or implementing a custom JVM bytecode verifier.
 
 ## 11. Diagnostics and tooling
 
@@ -386,15 +386,16 @@ The milestone does not require expressions, generics, inheritance, exceptions, c
 
 Use a deliberately familiar bootstrap stack:
 
-- Java 21;
-- Maven or Gradle, with preference given to whichever minimizes project friction;
+- Java 25;
+- Maven;
 - ANTLR for lexing and parsing;
 - sealed interfaces and records for the AST;
-- JUnit for automated tests;
-- generated Java source as the first executable backend;
-- ASM only after the semantics are stable enough to justify direct bytecode emission.
+- JUnit and Hamcrest for automated tests;
+- direct JVM bytecode emission using the standard JDK Class-File API.
 
-Generating Java before emitting bytecode directly preserves the JVM goal while keeping the early work focused on Bounded's semantics. The generated source can be compiled with the JDK compiler and inspected during debugging.
+The backend consumes the validated AST and produces class bytes in memory; a separate writer persists the class files. Generated classes explicitly target Java 25. This replaces the initial generated-Java experiment and requires no external bytecode library or preview flags. Emitted classes can be inspected with the Class-File API or `javap`.
+
+The current vertical slice emits metadata for archeclass and operation declarations. Runtime lowering for operation bodies remains deferred until their semantics are defined. The semantic milestone in Section 12 remains the language's central objective.
 
 Suggested source structure:
 
@@ -474,15 +475,15 @@ Human-readable compiler output can be snapshot-tested as golden text. Stable dia
 
 ### 14.5 Backend tests
 
-After Java generation exists:
+Backend unit tests construct ASTs directly:
 
-1. compile Bounded source;
-2. inspect the generated Java;
-3. compile the Java using the JDK compiler;
-4. load or run the result;
-5. assert observable behavior.
+1. generate class bytes with the JDK Class-File API;
+2. inspect the emitted class version and structure;
+3. verify the bytes with `ClassFile.verify`;
+4. load the class with an isolated class loader;
+5. assert observable behavior and public signatures.
 
-Later direct-bytecode tests can use ASM to inspect class shape and an isolated class loader or subprocess to execute generated classes.
+Test filesystem output separately, including package paths, exact byte preservation, and I/O failures. Test result invariants and defensive copying, including mutable byte arrays. End-to-end fixture tests compile Bounded source, load generated classes, and ensure invalid programs emit no artifacts.
 
 ### 14.6 Regression rule
 
@@ -519,7 +520,7 @@ This draft does not yet specify:
 - persistence;
 - framework integration;
 - foreign JVM purity declarations;
-- direct bytecode emission;
+- complete JVM lowering for operation bodies;
 - package management;
 - incremental compilation;
 - custom user-defined ArcheClasses;
@@ -548,7 +549,7 @@ These are deferred so the first implementation can test the language's architect
 4. Add ArcheClass ceiling validation against hand-built AST objects.
 5. Add ANTLR only when the semantic tests establish what the parser must produce.
 6. Add fixture-based compilation tests before implementing architecture authorization.
-7. Defer JVM code generation until `BND100`, `BND110`, and `BND200` are demonstrated end to end.
+7. Keep JVM emission limited to the metadata shell while developing the semantic checks; add operation-body lowering as the corresponding semantics are established.
 
 ## 19. Intellectual foundation
 

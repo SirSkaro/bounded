@@ -9,12 +9,10 @@ import static java.util.List.copyOf;
 
 public record CompilationResult(
         List<Diagnostic> diagnostics,
-        List<Path> generatedSourceFiles,
         List<Path> generatedClassFiles
 ) {
     public CompilationResult {
         diagnostics = copyOf(diagnostics);
-        generatedSourceFiles = copyOf(generatedSourceFiles);
         generatedClassFiles = copyOf(generatedClassFiles);
     }
 

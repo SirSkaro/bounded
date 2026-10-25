@@ -153,13 +153,14 @@ actual formatted diagnostics
 compare with value-query.diag
 ```
 
-The valid fixture continues into the backend. The invalid fixture asserts that no generated
-source or class output exists. A semantically invalid Bounded program must never reach `javac`.
+The valid fixture continues into the backend. The invalid fixture asserts that no output
+exists. A semantically invalid Bounded program must stop before bytecode generation.
 
-## 7. Cross the backend boundary into Java source
+## 7. Cross the backend boundary into JVM bytecode
 
-The Java AST objects still exist only inside the running compiler. `JavaSourceBackend` performs
-the missing translation. For this slice it converts the validated `Money` declaration into:
+`JvmBackend` translates the validated AST into class bytes using the JDK 25 Class-File API.
+For this slice, the emitted `bounded.generated.Bounded_Money` class has behavior equivalent to
+the following Java. This is an illustration; the compiler does not generate this source text.
 
 ```java
 package bounded.generated;
@@ -182,33 +183,23 @@ public final class Bounded_Money {
 These methods expose metadata because the slice has no operation bodies. Generating pretend
 runtime behavior here would silently make language decisions that the specification has not made.
 
-## 8. Invoke `javac` through the Java Compiler API
+The class builder fixes the version at Java 25 and declares a public final class extending
+`Object`. The constructor invokes `Object`'s constructor. The class-kind method loads the
+enum name as a string constant and returns it.
 
-`JavaClassCompiler` obtains the compiler bundled with the running JDK:
+The operations method creates an array of `Map.Entry` objects, fills it with operation names
+and kinds, and invokes `Map.ofEntries`. An empty archeclass uses `Map.of`. The backend also
+emits the generic signature so reflection sees `Map<String, String>` rather than a raw map.
 
-```java
-var compiler = ToolProvider.getSystemJavaCompiler();
-```
+`GeneratedClass` pairs the qualified class name with the resulting byte array. Both its
+constructor and bytecode accessor copy the array so callers cannot change the stored result.
 
-It writes the generated source under `generated-sources`, supplies that file to `javac`, and
-sets the class output directory with `-d`:
+## 8. Write and verify the class file
 
-```java
-var task = compiler.getTask(
-        null,
-        fileManager,
-        compilerDiagnostics,
-        options,
-        null,
-        compilationUnits);
-
-task.call();
-```
-
-The resulting files are:
+`ClassFileWriter` creates package directories under `classes` and writes the bytecode.
+It returns the path of the generated artifact:
 
 ```text
-generated-sources/bounded/generated/Bounded_Money.java
 classes/bounded/generated/Bounded_Money.class
 ```
 
@@ -218,7 +209,12 @@ The `.class` file begins with the four-byte JVM class-file magic number:
 CA FE BA BE
 ```
 
-The end-to-end test then creates a `URLClassLoader`, loads
+Backend unit tests construct ASTs directly and check `ClassFile.of().verify(bytecode)`.
+They inspect the class version and load the class to test its modifiers, constructor,
+generic signature, and metadata methods. Writer tests separately check paths, exact bytes,
+replacement of existing files, and filesystem failures.
+
+The end-to-end test creates an isolated `URLClassLoader`, loads
 `bounded.generated.Bounded_Money`, and invokes its metadata methods with reflection. That proves
 the result is not merely a file bearing a `.class` extension; it is a JVM-loadable class.
 
@@ -229,8 +225,8 @@ the result is not merely a file bearing a `.class` extension; it is a JVM-loadab
 ```text
 syntax diagnostics?   -> stop; no artifacts
 semantic diagnostics? -> stop; no artifacts
-backend diagnostics?  -> report generated-Java/javac failure
-otherwise              -> return generated .java and .class paths
+backend diagnostics?  -> report BND9001; no artifacts
+otherwise              -> write and return generated .class paths
 ```
 
 The public result is deliberately modest:
@@ -238,13 +234,13 @@ The public result is deliberately modest:
 ```java
 public record CompilationResult(
         List<Diagnostic> diagnostics,
-        List<Path> generatedSourceFiles,
         List<Path> generatedClassFiles
 ) {}
 ```
 
-A later compiler will likely carry more structured phase results internally. This is enough for
-the CLI, tests, and eventually a Maven plugin without committing to a large public API now.
+The result defensively copies both lists. A Class-File API generation failure is reported at
+the original archeclass's span; it has no generated-Java location. Filesystem failures propagate
+as `IOException`. The CLI prints diagnostics or the paths of generated classes.
 
 ## What the slice teaches without deciding
 
@@ -254,8 +250,8 @@ This project proves that the architecture works:
 - the grammar can remain a replaceable input adapter;
 - stable diagnostics can be tested as compiler output;
 - invalid programs stop before code generation;
-- a validated model can be lowered to generated Java;
-- the JDK can turn that Java into interoperable bytecode.
+- a validated model can be lowered directly to JVM bytecode;
+- the emitted class can be verified, loaded, and called using the JDK.
 
 It intentionally leaves the difficult next questions visible rather than answering them by
 accident. The next meaningful slice is likely operation bodies plus operation calls, because that

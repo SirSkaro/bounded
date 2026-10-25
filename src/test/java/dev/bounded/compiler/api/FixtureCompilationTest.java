@@ -33,14 +33,13 @@ class FixtureCompilationTest {
                 temporaryDirectory.resolve("valid"));
 
         assertThat(result.succeeded(), is(true));
-        assertThat(result.generatedSourceFiles(), hasSize(1));
         assertThat(result.generatedClassFiles(), hasSize(1));
-        assertThat(Files.exists(result.generatedSourceFiles().getFirst()), is(true));
+        assertThat(Files.exists(temporaryDirectory.resolve("valid/generated-sources")), is(false));
         assertThat(Files.exists(result.generatedClassFiles().getFirst()), is(true));
 
         var classesRoot = temporaryDirectory.resolve("valid/classes");
         try (var classLoader = new URLClassLoader(
-                new java.net.URL[]{classesRoot.toUri().toURL()})) {
+                new java.net.URL[]{classesRoot.toUri().toURL()}, ClassLoader.getPlatformClassLoader())) {
             var generatedClass = classLoader.loadClass("bounded.generated.Bounded_Money");
             assertThat(generatedClass.getMethod("boundedArcheClassKind").invoke(null), is("VALUE"));
 
@@ -70,7 +69,6 @@ class FixtureCompilationTest {
                 StandardCharsets.UTF_8);
 
         assertThat(actualDiagnostics, is(expectedDiagnostics));
-        assertThat(result.generatedSourceFiles(), is(empty()));
         assertThat(result.generatedClassFiles(), is(empty()));
         assertThat(Files.exists(outputRoot), is(false));
     }
