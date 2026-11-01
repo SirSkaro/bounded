@@ -1,4 +1,4 @@
-<mxfile host="drawio-plugin" compressed="false" modified="2026-11-01T00:02:13.222Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36" version="22.1.22" etag="Bh1949_DdkyVBb-C26gp" type="embed" pages="3">
+<mxfile host="drawio-plugin" compressed="false" modified="2026-11-01T22:59:22.586Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36" etag="eLpLetNO1HWxBYh3Z76W" version="22.1.22" type="embed" pages="4">
   <diagram id="flow" name="1. Compiler flow">
     <mxGraphModel dx="952" dy="659" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1080" background="#F8FAFC" math="0" shadow="0">
       <root>
@@ -477,6 +477,297 @@
         </mxCell>
         <mxCell id="footer" value="Snapshot: 2026-10-31  |  Production code only  |  Package prefix: dev.bounded.compiler" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=13;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
           <mxGeometry x="60" y="798" width="1280" height="25" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="target-clean-architecture" name="4. Target - Clean Architecture (draft)">
+    <mxGraphModel dx="952" dy="659" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1920" background="#F8FAFC" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="draft-label" value="BOUNDED  /  TARGET ARCHITECTURE  /  DRAFT" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=14;fontColor=#52657B;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="60" y="30" width="1680" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="title" value="Policy owns the ports; details implement them" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=32;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="60" y="68" width="1680" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" value="Proposed dependencies and ownership. Runtime order remains parse -&gt; check -&gt; generate -&gt; write." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=17;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="60" y="125" width="1680" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="cli-driver" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="100" y="195" width="340" height="155" as="geometry" />
+        </mxCell>
+        <mxCell id="cli-driver-title" value="cli.BoundedCli" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=20;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="cli-driver" vertex="1" connectable="0">
+          <mxGeometry x="18" y="12" width="304" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="cli-driver-body" value="Driving adapter&#xa;Reads source; invokes CompileProgram&#xa;Formats results and exit status" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=15;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="cli-driver" vertex="1" connectable="0">
+          <mxGeometry x="18" y="50" width="304" height="93" as="geometry" />
+        </mxCell>
+        <mxCell id="main" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#FFF1D6;strokeColor=#B58635;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="900" y="195" width="820" height="155" as="geometry" />
+        </mxCell>
+        <mxCell id="main-title" value="cli.Main  |  composition root" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=20;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="main" vertex="1" connectable="0">
+          <mxGeometry x="18" y="12" width="784" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="main-body" value="Constructs BoundedParserFacade, EffectChecker, JvmBackend and ClassFileWriter.&#xa;Injects them into BoundedCompiler through its four port interfaces.&#xa;Hands the CLI a CompileProgram; adapter selection happens only here." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=16;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="main" vertex="1" connectable="0">
+          <mxGeometry x="18" y="50" width="784" height="93" as="geometry" />
+        </mxCell>
+        <mxCell id="api-boundary" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#F5F1FF;strokeColor=#8B6CD1;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="60" y="425" width="990" height="850" as="geometry" />
+        </mxCell>
+        <mxCell id="api-heading" value="api  |  application policy + owned contracts" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=23;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="85" y="441" width="940" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="adapters-boundary" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="1150" y="425" width="600" height="850" as="geometry" />
+        </mxCell>
+        <mxCell id="adapters-heading" value="Implementations selected by main" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=22;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="1175" y="441" width="550" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="inbound" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#EEE8FF;strokeColor=#8B6CD1;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="100" y="510" width="340" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="inbound-title" value="api.CompileProgram  &lt;&lt;port&gt;&gt;" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=18;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="inbound" vertex="1" connectable="0">
+          <mxGeometry x="18" y="12" width="304" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="inbound-body" value="compile(CompilationRequest)&#xa;    -&gt; CompilationResult&#xa;Request and response are owned by api" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=15;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="inbound" vertex="1" connectable="0">
+          <mxGeometry x="18" y="50" width="304" height="88" as="geometry" />
+        </mxCell>
+        <mxCell id="compiler" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#EEE8FF;strokeColor=#8B6CD1;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="100" y="795" width="340" height="285" as="geometry" />
+        </mxCell>
+        <mxCell id="compiler-title" value="api.BoundedCompiler" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=21;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="compiler" vertex="1" connectable="0">
+          <mxGeometry x="18" y="12" width="304" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="compiler-body" value="Implements CompileProgram&#xa;&#xa;Receives four ports in its constructor.&#xa;Owns ordering and failure handling.&#xa;Calls interfaces, not concrete adapters.&#xa;Returns api.CompilationResult." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=15;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="compiler" vertex="1" connectable="0">
+          <mxGeometry x="18" y="50" width="304" height="223" as="geometry" />
+        </mxCell>
+        <mxCell id="source-ownership" value="SourceFile stays in api.&#xa;Ports and their result types are grouped&#xa;by capability within api." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=15;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="105" y="1140" width="330" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="parser-port" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#EEE8FF;strokeColor=#8B6CD1;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="570" y="510" width="430" height="145" as="geometry" />
+        </mxCell>
+        <mxCell id="parser-port-title" value="api.parse.Parser" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=19;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="parser-port" vertex="1" connectable="0">
+          <mxGeometry x="18" y="12" width="394" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="parser-port-body" value="parse(SourceFile) -&gt; ParseResult&#xa;Owns ParseResult: AST or diagnostics" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=15;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="parser-port" vertex="1" connectable="0">
+          <mxGeometry x="18" y="50" width="394" height="83" as="geometry" />
+        </mxCell>
+        <mxCell id="checker-port" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#EEE8FF;strokeColor=#8B6CD1;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="570" y="700" width="430" height="145" as="geometry" />
+        </mxCell>
+        <mxCell id="checker-port-title" value="api.check.SemanticChecker" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=19;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="checker-port" vertex="1" connectable="0">
+          <mxGeometry x="18" y="12" width="394" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="checker-port-body" value="check(BoundedProgram) -&gt; CheckResult&#xa;Owns CheckResult: semantic diagnostics" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=15;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="checker-port" vertex="1" connectable="0">
+          <mxGeometry x="18" y="50" width="394" height="83" as="geometry" />
+        </mxCell>
+        <mxCell id="generator-port" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#EEE8FF;strokeColor=#8B6CD1;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="570" y="890" width="430" height="145" as="geometry" />
+        </mxCell>
+        <mxCell id="generator-port-title" value="api.generate.CodeGenerator" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=19;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="generator-port" vertex="1" connectable="0">
+          <mxGeometry x="18" y="12" width="394" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="generator-port-body" value="generate(BoundedProgram) -&gt; GenerationResult&#xa;Owns GenerationResult + GeneratedClass" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=15;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="generator-port" vertex="1" connectable="0">
+          <mxGeometry x="18" y="50" width="394" height="83" as="geometry" />
+        </mxCell>
+        <mxCell id="writer-port" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#EEE8FF;strokeColor=#8B6CD1;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="570" y="1080" width="430" height="145" as="geometry" />
+        </mxCell>
+        <mxCell id="writer-port-title" value="api.write.ArtifactWriter" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=19;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="writer-port" vertex="1" connectable="0">
+          <mxGeometry x="18" y="12" width="394" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="writer-port-body" value="write(GeneratedClass, OutputTarget) -&gt; WriteResult&#xa;Owns OutputTarget + WriteResult" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=15;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="writer-port" vertex="1" connectable="0">
+          <mxGeometry x="18" y="50" width="394" height="83" as="geometry" />
+        </mxCell>
+        <mxCell id="parser" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#E0F2FE;strokeColor=#4387B9;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="1200" y="510" width="500" height="145" as="geometry" />
+        </mxCell>
+        <mxCell id="parser-title" value="parse.BoundedParserFacade" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=20;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="parser" vertex="1" connectable="0">
+          <mxGeometry x="18" y="12" width="464" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="parser-body" value="ANTLR + generated grammar stay here.&#xa;Consumes api.SourceFile.&#xa;Returns api.parse.ParseResult." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=16;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="parser" vertex="1" connectable="0">
+          <mxGeometry x="18" y="50" width="464" height="83" as="geometry" />
+        </mxCell>
+        <mxCell id="checker" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#DEF7EC;strokeColor=#39876C;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="1200" y="700" width="500" height="145" as="geometry" />
+        </mxCell>
+        <mxCell id="checker-title" value="semantics.EffectChecker" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=20;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="checker" vertex="1" connectable="0">
+          <mxGeometry x="18" y="12" width="464" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="checker-body" value="Pure policy service behind SemanticChecker.&#xa;Uses the effect rules owned by ast.&#xa;Returns api.check.CheckResult." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=16;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="checker" vertex="1" connectable="0">
+          <mxGeometry x="18" y="50" width="464" height="83" as="geometry" />
+        </mxCell>
+        <mxCell id="generator" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#FFF1D6;strokeColor=#B58635;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="1200" y="890" width="500" height="145" as="geometry" />
+        </mxCell>
+        <mxCell id="generator-title" value="backend.JvmBackend" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=20;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="generator" vertex="1" connectable="0">
+          <mxGeometry x="18" y="12" width="464" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="generator-body" value="The JDK Class-File API stays here.&#xa;Produces the API-owned GeneratedClass.&#xa;Returns api.generate.GenerationResult." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=16;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="generator" vertex="1" connectable="0">
+          <mxGeometry x="18" y="50" width="464" height="83" as="geometry" />
+        </mxCell>
+        <mxCell id="writer" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#FFF1D6;strokeColor=#B58635;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="1200" y="1080" width="500" height="145" as="geometry" />
+        </mxCell>
+        <mxCell id="writer-title" value="backend.ClassFileWriter" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=20;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="writer" vertex="1" connectable="0">
+          <mxGeometry x="18" y="12" width="464" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="writer-body" value="Filesystem access stays here.&#xa;Accepts API-owned output contracts.&#xa;Returns api.write.WriteResult." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=16;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="writer" vertex="1" connectable="0">
+          <mxGeometry x="18" y="50" width="464" height="83" as="geometry" />
+        </mxCell>
+        <mxCell id="cli-invokes-port" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;jumpStyle=arc;jumpSize=8;strokeWidth=2;strokeColor=#64748B;dashed=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="cli-driver" target="inbound" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="30" y="272.5" />
+              <mxPoint x="30" y="585" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="invoke-label" value="invokes" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=14;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="42" y="370" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="main-wires-core" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;jumpStyle=arc;jumpSize=8;strokeWidth=2;strokeColor=#A76E26;dashed=1;exitX=0.1;exitY=1;exitDx=0;exitDy=0;entryX=0.931;entryY=0;entryDx=0;entryDy=0;" parent="1" source="main" target="api-boundary" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="constructs-core" value="constructs + injects" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=14;fontColor=#A76E26;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="775" y="374" width="205" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="main-wires-adapters" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;jumpStyle=arc;jumpSize=8;strokeWidth=2;strokeColor=#A76E26;dashed=1;exitX=0.7;exitY=1;exitDx=0;exitDy=0;entryX=0.54;entryY=0;entryDx=0;entryDy=0;" parent="1" source="main" target="adapters-boundary" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="constructs-adapters" value="constructs" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=14;fontColor=#A76E26;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="1490" y="374" width="150" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="compiler-implements-inbound" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=0;startArrow=none;jumpStyle=arc;jumpSize=8;strokeWidth=2;strokeColor=#4F6AB1;dashed=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" parent="1" source="compiler" target="inbound" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="implements-entry-label" value="implements" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=14;fontColor=#4F6AB1;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="285" y="710" width="130" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="compiler-uses-parser" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;jumpStyle=arc;jumpSize=8;strokeWidth=2;strokeColor=#64748B;dashed=0;exitX=1;exitY=0.12;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="compiler" target="parser-port" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="490" y="829.2" />
+              <mxPoint x="490" y="582.5" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="compiler-uses-checker" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;jumpStyle=arc;jumpSize=8;strokeWidth=2;strokeColor=#64748B;dashed=0;exitX=1;exitY=0.33;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="compiler" target="checker-port" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="515" y="889.05" />
+              <mxPoint x="515" y="772.5" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="compiler-uses-generator" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;jumpStyle=arc;jumpSize=8;strokeWidth=2;strokeColor=#64748B;dashed=0;exitX=1;exitY=0.6;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="compiler" target="generator-port" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="540" y="966" />
+              <mxPoint x="540" y="962.5" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="compiler-uses-writer" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;jumpStyle=arc;jumpSize=8;strokeWidth=2;strokeColor=#64748B;dashed=0;exitX=1;exitY=0.86;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="compiler" target="writer-port" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="515" y="1040.1" />
+              <mxPoint x="515" y="1152.5" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="parser-implements" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=0;startArrow=none;jumpStyle=arc;jumpSize=8;strokeWidth=2;strokeColor=#4F6AB1;dashed=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="parser" target="parser-port" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="parser-implements-label" value="implements" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=14;fontColor=#4F6AB1;fontStyle=0;align=center;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="1013" y="540" width="173" height="29" as="geometry" />
+        </mxCell>
+        <mxCell id="checker-implements" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=0;startArrow=none;jumpStyle=arc;jumpSize=8;strokeWidth=2;strokeColor=#4F6AB1;dashed=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="checker" target="checker-port" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="checker-implements-label" value="implements" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=14;fontColor=#4F6AB1;fontStyle=0;align=center;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="1013" y="730" width="173" height="29" as="geometry" />
+        </mxCell>
+        <mxCell id="generator-implements" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=0;startArrow=none;jumpStyle=arc;jumpSize=8;strokeWidth=2;strokeColor=#4F6AB1;dashed=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="generator" target="generator-port" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="generator-implements-label" value="implements" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=14;fontColor=#4F6AB1;fontStyle=0;align=center;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="1013" y="920" width="173" height="29" as="geometry" />
+        </mxCell>
+        <mxCell id="writer-implements" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=0;startArrow=none;jumpStyle=arc;jumpSize=8;strokeWidth=2;strokeColor=#4F6AB1;dashed=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="writer" target="writer-port" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="writer-implements-label" value="implements" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=14;fontColor=#4F6AB1;fontStyle=0;align=center;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="1013" y="1110" width="173" height="29" as="geometry" />
+        </mxCell>
+        <mxCell id="domain-boundary" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#F0F7F5;strokeColor=#66A18D;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="60" y="1390" width="1690" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="domain-heading" value="Inner model  |  shared by API contracts and implementations" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=22;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="85" y="1405" width="1600" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="domain-ast" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#E8EDFF;strokeColor=#677DB5;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="100" y="1460" width="530" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="domain-ast-title" value="ast" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=20;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="domain-ast" vertex="1" connectable="0">
+          <mxGeometry x="18" y="12" width="494" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="domain-ast-body" value="BoundedProgram, declarations and SourceSpan&#xa;Kinds own their effect grades and ceilings" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=16;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="domain-ast" vertex="1" connectable="0">
+          <mxGeometry x="18" y="50" width="494" height="63" as="geometry" />
+        </mxCell>
+        <mxCell id="domain-diagnostics" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#F1F5F9;strokeColor=#7D8DA2;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="810" y="1460" width="390" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="domain-diagnostics-title" value="diagnostics" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=20;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="domain-diagnostics" vertex="1" connectable="0">
+          <mxGeometry x="18" y="12" width="354" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="domain-diagnostics-body" value="Diagnostic / DiagnosticCode&#xa;Depends on ast.SourceSpan" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=16;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="domain-diagnostics" vertex="1" connectable="0">
+          <mxGeometry x="18" y="50" width="354" height="63" as="geometry" />
+        </mxCell>
+        <mxCell id="domain-note" value="These packages depend on neither api&#xa;nor adapters. Sharing their types does&#xa;not introduce a dependency on details." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=16;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="1270" y="1478" width="420" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="diagnostics-uses-ast" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;jumpStyle=arc;jumpSize=8;strokeWidth=2;strokeColor=#64748B;dashed=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="domain-diagnostics" target="domain-ast" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="source-span-label" value="SourceSpan" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=14;fontColor=#52657B;fontStyle=0;align=center;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="653" y="1475" width="130" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="api-uses-domain" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;jumpStyle=arc;jumpSize=8;strokeWidth=2;strokeColor=#64748B;dashed=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.293;entryY=0;entryDx=0;entryDy=0;" parent="1" source="api-boundary" target="domain-boundary" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="api-model-label" value="uses inner model types" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=14;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="577" y="1315" width="230" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="adapters-use-domain" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;jumpStyle=arc;jumpSize=8;strokeWidth=2;strokeColor=#64748B;dashed=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.823;entryY=0;entryDx=0;entryDy=0;" parent="1" source="adapters-boundary" target="domain-boundary" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="adapter-model-label" value="uses inner model types" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=14;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="1471" y="1315" width="230" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="inversion-note" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#EEE8FF;strokeColor=#8B6CD1;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="60" y="1665" width="1690" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="inversion-title" value="Control can flow outward while source dependencies point to the port." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=21;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="85" y="1680" width="1630" height="33" as="geometry" />
+        </mxCell>
+        <mxCell id="runtime-example" value="Runtime call:  BoundedCompiler -&gt; Parser -&gt; BoundedParserFacade" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=17;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="85" y="1725" width="1630" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="dependency-example" value="Source dependency:  BoundedCompiler -&gt; api.parse.Parser &lt;- BoundedParserFacade" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=17;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="85" y="1757" width="1630" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="legend" value="Solid arrow = uses type   |   Blue dashed hollow arrow = implements   |   Amber dashed arrow = startup construction / injection" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=14;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="60" y="1817" width="1690" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="scope" value="Draft only. Names and signatures are provisional; keep each port small and its result contracts with it. No implementation changes are shown as completed." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=13;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="60" y="1853" width="1690" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="reference" value="Design reference: Robert C. Martin, The Clean Architecture (2012)  |  blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=12;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="60" y="1885" width="1690" height="25" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
