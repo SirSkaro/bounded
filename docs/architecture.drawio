@@ -1,0 +1,484 @@
+<mxfile host="drawio-plugin" compressed="false" modified="2026-11-01T00:02:13.222Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36" version="22.1.22" etag="Bh1949_DdkyVBb-C26gp" type="embed" pages="3">
+  <diagram id="flow" name="1. Compiler flow">
+    <mxGraphModel dx="952" dy="659" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1080" background="#F8FAFC" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="page-number" value="BOUNDED  /  CURRENT ARCHITECTURE  /  01" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=14;fontColor=#52657B;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="60" y="30" width="1480" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="page-title" value="From source text to a JVM class" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=32;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="60" y="68" width="1480" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="page-subtitle" value="Work and data flow. BoundedCompiler invokes each stage directly; stages do not call one another." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=16;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="60" y="122" width="1480" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="source" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="70" y="200" width="260" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="source-title" value="Bounded source" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=20;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="source" vertex="1" connectable="0">
+          <mxGeometry x="18" y="12" width="224" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="source-body" value=".bounded file on disk" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=16;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="source" vertex="1" connectable="0">
+          <mxGeometry x="18" y="50" width="224" height="43" as="geometry" />
+        </mxCell>
+        <mxCell id="cli" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="400" y="200" width="310" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="cli-title" value="cli.BoundedCli" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=20;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="cli" vertex="1" connectable="0">
+          <mxGeometry x="18" y="12" width="274" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="cli-body" value="Reads the file&#xa;Reports results and exit status" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=16;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="cli" vertex="1" connectable="0">
+          <mxGeometry x="18" y="50" width="274" height="63" as="geometry" />
+        </mxCell>
+        <mxCell id="api" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#EEE8FF;strokeColor=#8B6CD1;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="860" y="200" width="600" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="api-title" value="api.BoundedCompiler" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=20;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="api" vertex="1" connectable="0">
+          <mxGeometry x="18" y="12" width="564" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="api-body" value="Receives SourceFile + output directory&#xa;Coordinates parsing, checking, generation and writing" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=16;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="api" vertex="1" connectable="0">
+          <mxGeometry x="18" y="50" width="564" height="63" as="geometry" />
+        </mxCell>
+        <mxCell id="read-source" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;jumpStyle=arc;jumpSize=8;strokeWidth=2;strokeColor=#64748B;dashed=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.42;entryDx=0;entryDy=0;" parent="1" source="source" target="cli" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="compile" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;jumpStyle=arc;jumpSize=8;strokeWidth=2;strokeColor=#64748B;dashed=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="cli" target="api" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="source-label" value="read" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=13;fontColor=#52657B;fontStyle=0;align=center;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="338" y="230" width="52" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="compile-label" value="SourceFile + Path" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=13;fontColor=#52657B;fontStyle=0;align=center;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="715" y="227" width="140" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="pipeline" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="60" y="405" width="1480" height="330" as="geometry" />
+        </mxCell>
+        <mxCell id="pipeline-title" value="Executed in order by BoundedCompiler" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=18;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="85" y="426" width="1400" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="parse" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#E0F2FE;strokeColor=#4387B9;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="90" y="495" width="300" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="parse-title" value="1  Parse" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=20;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="parse" vertex="1" connectable="0">
+          <mxGeometry x="18" y="12" width="264" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="parse-body" value="parse.BoundedParserFacade&#xa;Lexer / parser -&gt; AST mapper&#xa;Returns ParseResult" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=15;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="parse" vertex="1" connectable="0">
+          <mxGeometry x="18" y="50" width="264" height="73" as="geometry" />
+        </mxCell>
+        <mxCell id="check" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#DEF7EC;strokeColor=#39876C;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="460" y="495" width="300" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="check-title" value="2  Check effects" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=20;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="check" vertex="1" connectable="0">
+          <mxGeometry x="18" y="12" width="264" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="check-body" value="semantics.EffectChecker&#xa;Checks the archeclass ceiling&#xa;Returns EffectCheckResult" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=15;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="check" vertex="1" connectable="0">
+          <mxGeometry x="18" y="50" width="264" height="73" as="geometry" />
+        </mxCell>
+        <mxCell id="generate" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#FFF1D6;strokeColor=#B58635;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="830" y="495" width="300" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="generate-title" value="3  Generate bytecode" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=20;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="generate" vertex="1" connectable="0">
+          <mxGeometry x="18" y="12" width="264" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="generate-body" value="backend.JvmBackend&#xa;Uses the JDK Class-File API&#xa;Returns GeneratedClass" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=15;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="generate" vertex="1" connectable="0">
+          <mxGeometry x="18" y="50" width="264" height="73" as="geometry" />
+        </mxCell>
+        <mxCell id="write" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#FFF1D6;strokeColor=#B58635;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="1200" y="495" width="300" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="write-title" value="4  Write class file" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=20;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="write" vertex="1" connectable="0">
+          <mxGeometry x="18" y="12" width="264" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="write-body" value="backend.ClassFileWriter&#xa;Writes under outputRoot/classes&#xa;Returns the generated Path" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=15;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="write" vertex="1" connectable="0">
+          <mxGeometry x="18" y="50" width="264" height="73" as="geometry" />
+        </mxCell>
+        <mxCell id="coordinate" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;jumpStyle=arc;jumpSize=8;strokeWidth=2;strokeColor=#64748B;dashed=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.743;entryY=0;entryDx=0;entryDy=0;" parent="1" source="api" target="pipeline" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="coordinate-label" value="coordinates" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=14;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="1176" y="353" width="140" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="ast-flow" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;jumpStyle=arc;jumpSize=8;strokeWidth=2;strokeColor=#64748B;dashed=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="parse" target="check" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="validated-flow" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;jumpStyle=arc;jumpSize=8;strokeWidth=2;strokeColor=#64748B;dashed=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="check" target="generate" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="bytes-flow" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;jumpStyle=arc;jumpSize=8;strokeWidth=2;strokeColor=#64748B;dashed=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="generate" target="write" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ast-label" value="AST" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=12;fontColor=#52657B;fontStyle=0;align=center;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="392" y="527" width="66" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="valid-label" value="valid AST" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=12;fontColor=#52657B;fontStyle=0;align=center;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="762" y="527" width="66" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="bytes-label" value="bytecode" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=12;fontColor=#52657B;fontStyle=0;align=center;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="1132" y="527" width="66" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="flow-note" value="The effect checker validates the same AST. JvmBackend creates bytes in memory; ClassFileWriter owns the write." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=15;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="90" y="665" width="1390" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="early-exit" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#FFF0F0;strokeColor=#C54444;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="90" y="815" width="330" height="145" as="geometry" />
+        </mxCell>
+        <mxCell id="early-exit-title" value="Failure paths" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=20;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="early-exit" vertex="1" connectable="0">
+          <mxGeometry x="18" y="12" width="294" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="early-exit-body" value="Syntax, effect or generation errors:&#xa;diagnostics and no class paths.&#xa;Filesystem errors propagate." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=15;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="early-exit" vertex="1" connectable="0">
+          <mxGeometry x="18" y="50" width="294" height="83" as="geometry" />
+        </mxCell>
+        <mxCell id="result" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#EEE8FF;strokeColor=#8B6CD1;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="500" y="815" width="640" height="145" as="geometry" />
+        </mxCell>
+        <mxCell id="result-title" value="api.CompilationResult" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=20;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="result" vertex="1" connectable="0">
+          <mxGeometry x="18" y="12" width="604" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="result-body" value="Assembled by BoundedCompiler&#xa;Diagnostics + generated class paths&#xa;Returned to the CLI for reporting" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=16;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="result" vertex="1" connectable="0">
+          <mxGeometry x="18" y="50" width="604" height="83" as="geometry" />
+        </mxCell>
+        <mxCell id="class-path" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;jumpStyle=arc;jumpSize=8;strokeWidth=2;strokeColor=#64748B;dashed=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="write" target="result" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1350" y="887.5" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="path-label" value="class path" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=14;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="1365" y="755" width="110" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="footer" value="Snapshot: 2026-10-31  |  Production code only  |  Package prefix: dev.bounded.compiler" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=13;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="60" y="1028" width="1480" height="25" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="packages" name="2. Package dependencies">
+    <mxGraphModel dx="952" dy="659" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1330" background="#F8FAFC" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="page-number" value="BOUNDED  /  CURRENT ARCHITECTURE  /  02" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=14;fontColor=#52657B;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="60" y="30" width="1680" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="page-title" value="Which packages depend on which?" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=32;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="60" y="68" width="1680" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="page-subtitle" value="An arrow points from the consumer to the dependency. Red arrows show the existing api / parse cycle." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=16;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="60" y="122" width="1680" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="stages-panel" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="40" y="190" width="1040" height="1045" as="geometry" />
+        </mxCell>
+        <mxCell id="stages-panel-title" value="Orchestration and technology" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=20;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="65" y="210" width="980" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="models-panel" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="1110" y="190" width="650" height="1045" as="geometry" />
+        </mxCell>
+        <mxCell id="models-panel-title" value="Shared model dependencies" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=20;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="1135" y="210" width="600" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="models-note" value="Same packages as on the left; drawn separately for clarity." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=15;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="1135" y="251" width="600" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="cli" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="395" y="270" width="320" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="cli-title" value="cli" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=20;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="cli" vertex="1" connectable="0">
+          <mxGeometry x="18" y="12" width="284" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="cli-body" value="BoundedCli" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=16;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="cli" vertex="1" connectable="0">
+          <mxGeometry x="18" y="50" width="284" height="33" as="geometry" />
+        </mxCell>
+        <mxCell id="api" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#EEE8FF;strokeColor=#8B6CD1;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="395" y="445" width="320" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="api-title" value="api" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=20;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="api" vertex="1" connectable="0">
+          <mxGeometry x="18" y="12" width="284" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="api-body" value="BoundedCompiler&#xa;SourceFile / CompilationResult" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=16;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="api" vertex="1" connectable="0">
+          <mxGeometry x="18" y="50" width="284" height="63" as="geometry" />
+        </mxCell>
+        <mxCell id="parse" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#E0F2FE;strokeColor=#4387B9;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="80" y="685" width="290" height="145" as="geometry" />
+        </mxCell>
+        <mxCell id="parse-title" value="parse" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=20;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="parse" vertex="1" connectable="0">
+          <mxGeometry x="18" y="12" width="254" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="parse-body" value="BoundedParserFacade&#xa;BoundedAstMapper&#xa;ParseResult / SyntaxErrorCollector" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=14;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="parse" vertex="1" connectable="0">
+          <mxGeometry x="18" y="50" width="254" height="83" as="geometry" />
+        </mxCell>
+        <mxCell id="semantics" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#DEF7EC;strokeColor=#39876C;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="440" y="685" width="250" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="semantics-title" value="semantics" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=20;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="semantics" vertex="1" connectable="0">
+          <mxGeometry x="18" y="12" width="214" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="semantics-body" value="EffectChecker&#xa;EffectCheckResult" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=16;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="semantics" vertex="1" connectable="0">
+          <mxGeometry x="18" y="50" width="214" height="63" as="geometry" />
+        </mxCell>
+        <mxCell id="backend" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#FFF1D6;strokeColor=#B58635;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="760" y="685" width="290" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="backend-title" value="backend" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=20;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="backend" vertex="1" connectable="0">
+          <mxGeometry x="18" y="12" width="254" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="backend-body" value="JvmBackend / GeneratedClass&#xa;ClassFileWriter" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=15;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="backend" vertex="1" connectable="0">
+          <mxGeometry x="18" y="50" width="254" height="63" as="geometry" />
+        </mxCell>
+        <mxCell id="grammar" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#E0F2FE;strokeColor=#4387B9;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="80" y="945" width="290" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="grammar-title" value="grammar" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=20;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="grammar" vertex="1" connectable="0">
+          <mxGeometry x="18" y="12" width="254" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="grammar-body" value="Generated BoundedLexer&#xa;Generated BoundedParser" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=15;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="grammar" vertex="1" connectable="0">
+          <mxGeometry x="18" y="50" width="254" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="antlr" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#F3F4F6;strokeColor=#9CA3AF;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="80" y="1120" width="290" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="antlr-title" value="ANTLR runtime" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=20;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="antlr" vertex="1" connectable="0">
+          <mxGeometry x="18" y="12" width="254" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="antlr-body" value="External library" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=16;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="antlr" vertex="1" connectable="0">
+          <mxGeometry x="18" y="50" width="254" height="33" as="geometry" />
+        </mxCell>
+        <mxCell id="classfile" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#F3F4F6;strokeColor=#9CA3AF;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="760" y="945" width="290" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="classfile-title" value="JDK Class-File API" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=19;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="classfile" vertex="1" connectable="0">
+          <mxGeometry x="18" y="12" width="254" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="classfile-body" value="java.lang.classfile&#xa;java.lang.constant" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=16;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="classfile" vertex="1" connectable="0">
+          <mxGeometry x="18" y="50" width="254" height="58" as="geometry" />
+        </mxCell>
+        <mxCell id="cli-api" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;jumpStyle=arc;jumpSize=8;strokeWidth=2;strokeColor=#64748B;dashed=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="cli" target="api" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="api-parse" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;jumpStyle=arc;jumpSize=8;strokeWidth=2.5;strokeColor=#C54444;dashed=0;exitX=0.12;exitY=1;exitDx=0;exitDy=0;entryX=0.62;entryY=0;entryDx=0;entryDy=0;" parent="1" source="api" target="parse" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="433.4" y="620" />
+              <mxPoint x="259.8" y="620" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="parse-api" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;jumpStyle=arc;jumpSize=8;strokeWidth=2.5;strokeColor=#C54444;dashed=1;exitX=0.2;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=0.35;entryDx=0;entryDy=0;" parent="1" source="parse" target="api" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="138" y="488.75" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cycle-explanation" value="PACKAGE CYCLE&#xa;api -&gt; parse -&gt; api" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=17;fontColor=#C54444;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="80" y="370" width="270" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="sourcefile-dependency" value="uses SourceFile" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=15;fontColor=#C54444;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="165" y="451" width="210" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="parser-dependency" value="uses parser" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=14;fontColor=#C54444;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="275" y="588" width="145" height="27" as="geometry" />
+        </mxCell>
+        <mxCell id="api-semantics" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;jumpStyle=arc;jumpSize=8;strokeWidth=2;strokeColor=#64748B;dashed=0;exitX=0.53;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="api" target="semantics" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="api-backend" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;jumpStyle=arc;jumpSize=8;strokeWidth=2;strokeColor=#64748B;dashed=0;exitX=0.9;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="api" target="backend" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="683" y="620" />
+              <mxPoint x="905" y="620" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="parse-grammar" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;jumpStyle=arc;jumpSize=8;strokeWidth=2;strokeColor=#64748B;dashed=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="parse" target="grammar" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="grammar-antlr" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;jumpStyle=arc;jumpSize=8;strokeWidth=2;strokeColor=#64748B;dashed=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="grammar" target="antlr" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="parse-antlr" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;jumpStyle=arc;jumpSize=8;strokeWidth=2;strokeColor=#64748B;dashed=0;exitX=0;exitY=0.7;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="parse" target="antlr" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="55" y="786.5" />
+              <mxPoint x="55" y="1167.5" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="backend-classfile" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;jumpStyle=arc;jumpSize=8;strokeWidth=2;strokeColor=#64748B;dashed=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="backend" target="classfile" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="generated-note" value="generated parser types" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=14;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="245" y="875" width="220" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="cli-model" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="1460" y="335" width="260" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="cli-model-title" value="cli" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=20;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="cli-model" vertex="1" connectable="0">
+          <mxGeometry x="18" y="12" width="224" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="cli-model-body" value="Renders diagnostic messages" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=15;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="cli-model" vertex="1" connectable="0">
+          <mxGeometry x="18" y="50" width="224" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="model-consumers" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="1150" y="500" width="240" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="model-consumers-title" value="api / parse / semantics" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=16;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="model-consumers" vertex="1" connectable="0">
+          <mxGeometry x="18" y="12" width="204" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="model-consumers-body" value="Each package uses both&#xa;shared models." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=15;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="model-consumers" vertex="1" connectable="0">
+          <mxGeometry x="18" y="50" width="204" height="63" as="geometry" />
+        </mxCell>
+        <mxCell id="diagnostics" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#F1F5F9;strokeColor=#7D8DA2;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="1460" y="530" width="260" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="diagnostics-title" value="diagnostics" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=20;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="diagnostics" vertex="1" connectable="0">
+          <mxGeometry x="18" y="12" width="224" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="diagnostics-body" value="Diagnostic&#xa;DiagnosticCode" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=16;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="diagnostics" vertex="1" connectable="0">
+          <mxGeometry x="18" y="50" width="224" height="63" as="geometry" />
+        </mxCell>
+        <mxCell id="backend-model" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#FFF1D6;strokeColor=#B58635;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="1150" y="900" width="240" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="backend-model-title" value="backend" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=20;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="backend-model" vertex="1" connectable="0">
+          <mxGeometry x="18" y="12" width="204" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="backend-model-body" value="Consumes the AST" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=16;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="backend-model" vertex="1" connectable="0">
+          <mxGeometry x="18" y="50" width="204" height="43" as="geometry" />
+        </mxCell>
+        <mxCell id="ast" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#E8EDFF;strokeColor=#677DB5;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="1460" y="890" width="260" height="155" as="geometry" />
+        </mxCell>
+        <mxCell id="ast-title" value="ast" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=20;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="ast" vertex="1" connectable="0">
+          <mxGeometry x="18" y="12" width="224" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ast-body" value="Program, declarations, kinds&#xa;and SourceSpan&#xa;No other Bounded dependencies" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=14;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="ast" vertex="1" connectable="0">
+          <mxGeometry x="18" y="50" width="224" height="93" as="geometry" />
+        </mxCell>
+        <mxCell id="cli-diagnostics" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;jumpStyle=arc;jumpSize=8;strokeWidth=2;strokeColor=#64748B;dashed=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="cli-model" target="diagnostics" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="consumers-diagnostics" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;jumpStyle=arc;jumpSize=8;strokeWidth=2;strokeColor=#64748B;dashed=0;exitX=1;exitY=0.4;exitDx=0;exitDy=0;entryX=0;entryY=0.16;entryDx=0;entryDy=0;" parent="1" source="model-consumers" target="diagnostics" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="consumers-ast" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;jumpStyle=arc;jumpSize=8;strokeWidth=2;strokeColor=#64748B;dashed=0;exitX=1;exitY=0.8;exitDx=0;exitDy=0;entryX=0;entryY=0.2;entryDx=0;entryDy=0;" parent="1" source="model-consumers" target="ast" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1420" y="600" />
+              <mxPoint x="1420" y="921" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="diagnostics-ast" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;jumpStyle=arc;jumpSize=8;strokeWidth=2;strokeColor=#64748B;dashed=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="diagnostics" target="ast" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="span-label" value="uses SourceSpan" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=14;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="1605" y="752" width="140" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="backend-ast" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;jumpStyle=arc;jumpSize=8;strokeWidth=2;strokeColor=#64748B;dashed=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.62;entryDx=0;entryDy=0;" parent="1" source="backend-model" target="ast" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="shared-note" value="The grouped arrows apply to each named consumer.&#xa;Repeated package names represent the same packages.&#xa;Ordinary JDK dependencies and intra-package edges are omitted." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=15;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="1140" y="1100" width="590" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="footer" value="Snapshot: 2026-10-31  |  Production code only  |  Package prefix: dev.bounded.compiler" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=13;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="60" y="1278" width="1680" height="25" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="cycle" name="3. API-parser cycle">
+    <mxGraphModel dx="952" dy="659" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="850" background="#F8FAFC" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="page-number" value="BOUNDED  /  CURRENT ARCHITECTURE  /  03" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=14;fontColor=#52657B;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="60" y="30" width="1280" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="page-title" value="Why api and parse form a package cycle" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=32;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="60" y="68" width="1280" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="page-subtitle" value="The two directions involve different classes. SourceFile itself has no dependency on the parser." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=16;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="60" y="122" width="1280" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="api-package" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#EEE8FF;strokeColor=#8B6CD1;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="70" y="245" width="520" height="365" as="geometry" />
+        </mxCell>
+        <mxCell id="api-label" value="dev.bounded.compiler.api" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=22;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="95" y="267" width="470" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="compiler" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="100" y="330" width="460" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="compiler-title" value="BoundedCompiler" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=20;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="compiler" vertex="1" connectable="0">
+          <mxGeometry x="18" y="12" width="424" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="compiler-body" value="Constructs BoundedParserFacade&#xa;Calls parse(sourceFile)" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=15;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="compiler" vertex="1" connectable="0">
+          <mxGeometry x="18" y="50" width="424" height="43" as="geometry" />
+        </mxCell>
+        <mxCell id="sourcefile" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="100" y="475" width="460" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="sourcefile-title" value="SourceFile" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=20;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="sourcefile" vertex="1" connectable="0">
+          <mxGeometry x="18" y="12" width="424" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="sourcefile-body" value="record SourceFile(String name, String content)" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=15;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="sourcefile" vertex="1" connectable="0">
+          <mxGeometry x="18" y="50" width="424" height="43" as="geometry" />
+        </mxCell>
+        <mxCell id="parse-package" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#E0F2FE;strokeColor=#4387B9;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="810" y="245" width="520" height="365" as="geometry" />
+        </mxCell>
+        <mxCell id="parse-label" value="dev.bounded.compiler.parse" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=22;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="835" y="267" width="470" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="parser" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="840" y="375" width="460" height="145" as="geometry" />
+        </mxCell>
+        <mxCell id="parser-title" value="BoundedParserFacade" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=20;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="parser" vertex="1" connectable="0">
+          <mxGeometry x="18" y="12" width="424" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="parser-body" value="Accepts api.SourceFile&#xa;parse(SourceFile) -&gt; ParseResult" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=16;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="parser" vertex="1" connectable="0">
+          <mxGeometry x="18" y="50" width="424" height="83" as="geometry" />
+        </mxCell>
+        <mxCell id="compiler-parser" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;jumpStyle=arc;jumpSize=8;strokeWidth=2.5;strokeColor=#C54444;dashed=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" parent="1" source="compiler" target="parser" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="660" y="382.5" />
+              <mxPoint x="660" y="411.25" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="calls-label" value="constructs + calls" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=15;fontColor=#C54444;fontStyle=0;align=center;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="605" y="329" width="195" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="parser-sourcefile" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;jumpStyle=arc;jumpSize=8;strokeWidth=2.5;strokeColor=#C54444;dashed=1;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="parser" target="sourcefile" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="735" y="483.75" />
+              <mxPoint x="735" y="527.5" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="accepts-label" value="accepts SourceFile" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=15;fontColor=#C54444;fontStyle=0;align=center;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="595" y="556" width="200" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="explanation" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#FFF0F0;strokeColor=#C54444;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="100" y="665" width="1200" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="explanation-title" value="Package dependency: api -&gt; parse -&gt; api" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=21;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="explanation" vertex="1" connectable="0">
+          <mxGeometry x="18" y="12" width="1164" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="explanation-body" value="BoundedCompiler uses a parser class; that parser class uses an API record.&#xa;This is the current structure, with no proposed package moves applied." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=17;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="explanation" vertex="1" connectable="0">
+          <mxGeometry x="18" y="50" width="1164" height="53" as="geometry" />
+        </mxCell>
+        <mxCell id="footer" value="Snapshot: 2026-10-31  |  Production code only  |  Package prefix: dev.bounded.compiler" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=13;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="60" y="798" width="1280" height="25" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

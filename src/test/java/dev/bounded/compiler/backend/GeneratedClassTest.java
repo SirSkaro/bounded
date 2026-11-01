@@ -13,13 +13,13 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class GeneratedClassTest {
+
     private static Stream<Arguments> invalidConstructorArguments() {
         return Stream.of(
                 Arguments.of("null class name", null, new byte[]{1, 2, 3}),
                 Arguments.of("null bytecode", "bounded.generated.Bounded_Amount", null)
         );
     }
-
     @DisplayName("Rejects null constructor inputs")
     @ParameterizedTest(name = "Rejects {0}")
     @MethodSource("invalidConstructorArguments")
