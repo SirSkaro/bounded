@@ -75,6 +75,26 @@ Violations fail the check and are printed in the Maven output. PMD also writes `
 and an HTML report at `target/reports/pmd.html`. The initial setup adds the checks without
 refactoring existing code to satisfy them.
 
+## Mutation testing
+
+[PIT](https://pitest.org/quickstart/maven/) runs during `mvn verify` with its `DEFAULTS`
+mutators. It mutates handwritten production classes, excluding the ANTLR-generated grammar
+package, and uses the existing JUnit tests, including the compiler fixtures.
+
+The initial mutation score is **95.79%**: 91 of 95 mutants were killed, three survived,
+and one had no test coverage. The `pitest.mutationThreshold` property in [`pom.xml`](pom.xml)
+sets that baseline as the minimum score. A lower score fails the build. PIT compares scores
+to two decimal places, and mutations without test coverage count against the score.
+
+Run mutation testing on its own:
+
+```bash
+mvn test-compile org.pitest:pitest-maven:mutationCoverage
+```
+
+Open `target/pit-reports/index.html` to see surviving mutations and the tests that killed
+others. PIT also writes `target/pit-reports/mutations.xml` for automated analysis.
+
 ## Locale-sensitive tests
 
 Use `@LocaleSensitiveTest` from `dev.bounded.compiler.locale` instead of `@Test`
