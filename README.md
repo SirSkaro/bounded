@@ -56,10 +56,10 @@ The tests exercise several boundaries:
 
 ## Maintainability checks
 
-PMD runs during `mvn verify` using two root-level rulesets:
+PMD runs during `mvn verify` using two rulesets in `pmd/`:
 
-- [`pmd-ruleset.xml`](pmd-ruleset.xml) checks handwritten production and test Java sources.
-- [`pmd-production-ruleset.xml`](pmd-production-ruleset.xml) adds a coupling limit for production
+- [`pmd-ruleset.xml`](pmd/pmd-ruleset.xml) checks handwritten production and test Java sources.
+- [`pmd-production-ruleset.xml`](pmd/pmd-production-ruleset.xml) adds a coupling limit for production
   classes. Tests are excluded from this rule because fixtures often bring several components together.
 
 ANTLR-generated sources are excluded from both rulesets. The design checks use these thresholds:
