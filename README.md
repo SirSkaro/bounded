@@ -77,14 +77,13 @@ refactoring existing code to satisfy them.
 
 ## Mutation testing
 
-[PIT](https://pitest.org/quickstart/maven/) runs during `mvn verify` with its `DEFAULTS`
+[PIT](https://pitest.org/quickstart/maven/) runs during `mvn verify` with its `ALL`
 mutators. It mutates handwritten production classes, excluding the ANTLR-generated grammar
 package, and uses the existing JUnit tests, including the compiler fixtures.
 
-The initial mutation score is **95.79%**: 91 of 95 mutants were killed, three survived,
-and one had no test coverage. The `pitest.mutationThreshold` property in [`pom.xml`](pom.xml)
-sets that baseline as the minimum score. A lower score fails the build. PIT compares scores
-to two decimal places, and mutations without test coverage count against the score.
+The `pitest.mutationThreshold` property in [`pom.xml`](pom.xml) sets **95%** as the minimum
+mutation score. A lower score fails the build. PIT compares scores to two decimal places,
+and mutations without test coverage count against the score.
 
 Run mutation testing on its own:
 
