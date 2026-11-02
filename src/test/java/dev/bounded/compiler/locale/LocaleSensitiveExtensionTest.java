@@ -61,7 +61,8 @@ class LocaleSensitiveExtensionTest {
     @Test
     @DisplayName("Restores distinct default, display, and format locales after a successful test")
     void restoresLocales() {
-        try (var original = LocaleSnapshot.capture()) {
+        var original = LocaleSnapshot.capture();
+        try {
             Locale.setDefault(Locale.CANADA);
             Locale.setDefault(Locale.Category.DISPLAY, Locale.JAPAN);
             Locale.setDefault(Locale.Category.FORMAT, Locale.GERMANY);
@@ -71,6 +72,8 @@ class LocaleSensitiveExtensionTest {
 
             assertThat(result.summary().getTotalFailureCount(), is(0L));
             assertThat(LocaleSnapshot.capture(), is(expected));
+        } finally {
+            original.restore();
         }
     }
 

@@ -165,7 +165,7 @@ class BoundedCliTest {
 
     private static Stream<Arguments> missingDependencies() {
         CompileProgram compiler = request -> fail("Construction must not invoke compilation");
-        var stream = new PrintStream(OutputStream.nullOutputStream());
+        var stream = new PrintStream(OutputStream.nullOutputStream(), false, UTF_8);
         return Stream.of(
                 Arguments.of("compiler", null, stream, stream),
                 Arguments.of("output stream", compiler, null, stream),

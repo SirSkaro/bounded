@@ -14,6 +14,7 @@ final class SyntaxErrorCollector extends BaseErrorListener {
     private final List<Diagnostic> diagnostics = new ArrayList<>();
 
     @Override
+    @SuppressWarnings("PMD.ExcessiveParameterList")
     public void syntaxError(
             Recognizer<?, ?> recognizer,
             Object offendingSymbol,

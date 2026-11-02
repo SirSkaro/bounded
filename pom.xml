@@ -98,6 +98,7 @@
                     <targetJdk>${maven.compiler.release}</targetJdk>
                     <rulesets>
                         <ruleset>${project.basedir}/pmd-ruleset.xml</ruleset>
+                        <ruleset>${project.basedir}/pmd-production-ruleset.xml</ruleset>
                     </rulesets>
                     <includeTests>true</includeTests>
                     <excludeRoots>
@@ -109,7 +110,7 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <id>check-complexity</id>
+                        <id>check-maintainability</id>
                         <phase>verify</phase>
                         <goals>
                             <goal>check</goal>

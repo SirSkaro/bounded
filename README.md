@@ -54,26 +54,43 @@ The tests exercise several boundaries:
 `BoundedCliTest` checks source loading, output, and exit statuses through a supplied `CompileProgram`.
 `CompilerArchitectureTest` uses ArchUnit to enforce the production dependency boundaries.
 
-## Complexity checks
+## Maintainability checks
 
-PMD runs during `mvn verify` using the root-level [`pmd-ruleset.xml`](pmd-ruleset.xml).
-It analyzes handwritten production and test Java sources, excluding ANTLR-generated sources.
-The rules use PMD's default reporting thresholds:
+PMD runs during `mvn verify` using two root-level rulesets:
 
-| Rule | Reports at or above |
+- [`pmd-ruleset.xml`](pmd-ruleset.xml) checks handwritten production and test Java sources.
+- [`pmd-production-ruleset.xml`](pmd-production-ruleset.xml) adds a coupling limit for production
+  classes. Tests are excluded from this rule because fixtures often bring several components together.
+
+ANTLR-generated sources are excluded from both rulesets. The design checks use these thresholds:
+
+| Rule | Reporting threshold |
 | --- | --- |
-| [Cyclomatic complexity](https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_design.html#cyclomaticcomplexity) | 10 per method or 80 per class |
-| [Cognitive complexity](https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_design.html#cognitivecomplexity) | 15 per method |
+| [Cyclomatic complexity](https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_design.html#cyclomaticcomplexity) | At least 10 per method or 80 per class |
+| [Cognitive complexity](https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_design.html#cognitivecomplexity) | At least 15 per method |
+| [NCSS count](https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_design.html#ncsscount) | At least 30 statements per method or 300 per class |
+| [NPath complexity](https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_design.html#npathcomplexity) | At least 200 execution paths |
+| [Excessive parameter list](https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_design.html#excessiveparameterlist) | More than 5 parameters |
+| [Coupling between objects](https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_design.html#couplingbetweenobjects) | More than 20 distinct types; production only |
+| [God class](https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_design.html#godclass) | PMD's combined complexity, cohesion, and foreign-data heuristic |
 
-Run the complexity check without running tests:
+The rules also detect unused imports, variables, private fields and methods, private parameters,
+and assignments; protect array encapsulation; encourage final fields, collection interfaces,
+and explicit overrides; and check exception handling, resource cleanup, string comparisons,
+ignored pure-method results, locales, and character sets.
+
+The parameter limit is suppressed only on the two ANTLR `syntaxError` overrides, whose six-argument
+signature is required by ANTLR. The collection-interface rule permits ArchUnit's `JavaClasses`,
+which its rule-checking API requires, alongside PMD's default allowance for `Properties`.
+
+Run the maintainability checks without running tests:
 
 ```bash
 mvn test-compile pmd:check
 ```
 
 Violations fail the check and are printed in the Maven output. PMD also writes `target/pmd.xml`
-and an HTML report at `target/reports/pmd.html`. The initial setup adds the checks without
-refactoring existing code to satisfy them.
+and an HTML report at `target/reports/pmd.html`.
 
 ## Mutation testing
 

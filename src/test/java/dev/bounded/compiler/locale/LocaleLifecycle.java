@@ -24,7 +24,7 @@ final class LocaleLifecycle implements BeforeEachCallback, AfterEachCallback {
     public void afterEach(ExtensionContext context) {
         var snapshot = context.getStore(NAMESPACE).remove(LocaleSnapshot.class, LocaleSnapshot.class);
         if (snapshot != null) {
-            snapshot.close();
+            snapshot.restore();
         }
     }
 }

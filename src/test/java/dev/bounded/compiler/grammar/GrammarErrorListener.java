@@ -11,6 +11,7 @@ final class GrammarErrorListener extends BaseErrorListener {
     private final List<String> errors = new ArrayList<>();
 
     @Override
+    @SuppressWarnings("PMD.ExcessiveParameterList")
     public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol,
                             int line, int charPositionInLine, String message,
                             RecognitionException exception) {
