@@ -1,4 +1,4 @@
-package dev.bounded.compiler.backend;
+package dev.bounded.compiler.api.generate;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

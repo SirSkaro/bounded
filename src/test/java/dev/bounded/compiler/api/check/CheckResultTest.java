@@ -1,4 +1,4 @@
-package dev.bounded.compiler.semantics;
+package dev.bounded.compiler.api.check;
 
 import dev.bounded.compiler.ast.SourceSpan;
 import dev.bounded.compiler.diagnostics.Diagnostic;
@@ -9,19 +9,19 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static dev.bounded.compiler.semantics.ValidEffectCheckMatcher.valid;
+import static dev.bounded.compiler.api.check.ValidCheckMatcher.valid;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class EffectCheckResultTest {
+class CheckResultTest {
 
     @Test
     @DisplayName("Constructor rejects a null diagnostics list")
     void rejectsNullDiagnosticsList() {
-        assertThrows(NullPointerException.class, () -> new EffectCheckResult(null));
+        assertThrows(NullPointerException.class, () -> new CheckResult(null));
     }
 
     @Test
@@ -30,20 +30,20 @@ class EffectCheckResultTest {
         List<Diagnostic> diagnostics = new ArrayList<>();
         diagnostics.add(null);
 
-        assertThrows(NullPointerException.class, () -> new EffectCheckResult(diagnostics));
+        assertThrows(NullPointerException.class, () -> new CheckResult(diagnostics));
     }
 
     @Test
     @DisplayName("A result without diagnostics is valid")
     void isValidWithoutDiagnostics() {
-        var result = EffectCheckResult.validResult();
+        var result = CheckResult.validResult();
         assertThat(result, is(valid()));
     }
 
     @Test
     @DisplayName("A result with diagnostics is invalid")
     void isInvalidWithDiagnostics() {
-        var result = new EffectCheckResult(List.of(givenDiagnostic()));
+        var result = new CheckResult(List.of(givenDiagnostic()));
         assertThat(result, is(not(valid())));
     }
 
@@ -52,7 +52,7 @@ class EffectCheckResultTest {
     void copiesDiagnostics() {
         var diagnostic = givenDiagnostic();
         var diagnostics = new ArrayList<>(List.of(diagnostic));
-        var result = new EffectCheckResult(diagnostics);
+        var result = new CheckResult(diagnostics);
 
         diagnostics.clear();
 
@@ -63,7 +63,7 @@ class EffectCheckResultTest {
     @Test
     @DisplayName("The diagnostics list cannot be modified")
     void exposesImmutableDiagnostics() {
-        var result = new EffectCheckResult(List.of(givenDiagnostic()));
+        var result = new CheckResult(List.of(givenDiagnostic()));
         var immutableDiagnostics = result.diagnostics();
 
         assertThrows(UnsupportedOperationException.class, () -> immutableDiagnostics.add(givenDiagnostic()));

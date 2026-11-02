@@ -481,18 +481,18 @@
       </root>
     </mxGraphModel>
   </diagram>
-  <diagram id="target-clean-architecture" name="4. Target - Clean Architecture (draft)">
+  <diagram id="target-clean-architecture" name="4. Ports and adapters">
     <mxGraphModel dx="952" dy="659" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1920" background="#F8FAFC" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="draft-label" value="BOUNDED  /  TARGET ARCHITECTURE  /  DRAFT" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=14;fontColor=#52657B;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+        <mxCell id="draft-label" value="BOUNDED  /  PORTS AND ADAPTERS  /  2026-11-01" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=14;fontColor=#52657B;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
           <mxGeometry x="60" y="30" width="1680" height="25" as="geometry" />
         </mxCell>
         <mxCell id="title" value="Policy owns the ports; details implement them" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=32;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
           <mxGeometry x="60" y="68" width="1680" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="subtitle" value="Proposed dependencies and ownership. Runtime order remains parse -&gt; check -&gt; generate -&gt; write." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=17;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+        <mxCell id="subtitle" value="API-owned ports and result contracts. Runtime order remains parse -&gt; check -&gt; generate -&gt; write." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=17;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
           <mxGeometry x="60" y="125" width="1680" height="35" as="geometry" />
         </mxCell>
         <mxCell id="cli-driver" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;fontFamily=Helvetica;fontColor=#172B4D;dashed=0;" parent="1" vertex="1">
@@ -727,7 +727,7 @@
         <mxCell id="domain-diagnostics-body" value="Diagnostic / DiagnosticCode&#xa;Depends on ast.SourceSpan" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=16;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="domain-diagnostics" vertex="1" connectable="0">
           <mxGeometry x="18" y="50" width="354" height="63" as="geometry" />
         </mxCell>
-        <mxCell id="domain-note" value="These packages depend on neither api&#xa;nor adapters. Sharing their types does&#xa;not introduce a dependency on details." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=16;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+        <mxCell id="domain-note" value="These packages depend on neither api&#xa;nor adapters. Each implementation uses&#xa;only the model types it needs." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=16;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
           <mxGeometry x="1270" y="1478" width="420" height="85" as="geometry" />
         </mxCell>
         <mxCell id="diagnostics-uses-ast" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;jumpStyle=arc;jumpSize=8;strokeWidth=2;strokeColor=#64748B;dashed=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="domain-diagnostics" target="domain-ast" edge="1">
@@ -763,7 +763,7 @@
         <mxCell id="legend" value="Solid arrow = uses type   |   Blue dashed hollow arrow = implements   |   Amber dashed arrow = startup construction / injection" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=14;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
           <mxGeometry x="60" y="1817" width="1690" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="scope" value="Draft only. Names and signatures are provisional; keep each port small and its result contracts with it. No implementation changes are shown as completed." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=13;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+        <mxCell id="scope" value="Implemented 2026-11-01. CompilerArchitectureTest enforces the dependency boundaries. Tabs 1-3 retain the pre-refactor snapshot." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=13;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
           <mxGeometry x="60" y="1853" width="1690" height="28" as="geometry" />
         </mxCell>
         <mxCell id="reference" value="Design reference: Robert C. Martin, The Clean Architecture (2012)  |  blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=12;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">

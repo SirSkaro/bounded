@@ -16,7 +16,7 @@ import static dev.bounded.compiler.ast.ArcheClassKind.VALUE;
 import static dev.bounded.compiler.ast.ArcheOperationKind.FUNCTION;
 import static dev.bounded.compiler.ast.ArcheOperationKind.QUERY;
 import static dev.bounded.compiler.diagnostics.DiagnosticCode.EFFECT_NOT_ALLOWED;
-import static dev.bounded.compiler.semantics.ValidEffectCheckMatcher.valid;
+import static dev.bounded.compiler.api.check.ValidCheckMatcher.valid;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 

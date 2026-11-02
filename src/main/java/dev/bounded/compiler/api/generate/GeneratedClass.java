@@ -1,4 +1,4 @@
-package dev.bounded.compiler.backend;
+package dev.bounded.compiler.api.generate;
 
 import static java.util.Objects.requireNonNull;
 

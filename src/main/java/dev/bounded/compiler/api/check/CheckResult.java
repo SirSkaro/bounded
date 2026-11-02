@@ -1,4 +1,4 @@
-package dev.bounded.compiler.semantics;
+package dev.bounded.compiler.api.check;
 
 import dev.bounded.compiler.diagnostics.Diagnostic;
 
@@ -6,13 +6,13 @@ import java.util.List;
 
 import static java.util.List.copyOf;
 
-public record EffectCheckResult(List<Diagnostic> diagnostics) {
-    public EffectCheckResult {
+public record CheckResult(List<Diagnostic> diagnostics) {
+    public CheckResult {
         diagnostics = copyOf(diagnostics);
     }
 
-    public static EffectCheckResult validResult() {
-        return new EffectCheckResult(List.of());
+    public static CheckResult validResult() {
+        return new CheckResult(List.of());
     }
 
     public boolean isValid() {

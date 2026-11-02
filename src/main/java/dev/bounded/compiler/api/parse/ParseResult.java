@@ -1,4 +1,4 @@
-package dev.bounded.compiler.parse;
+package dev.bounded.compiler.api.parse;
 
 import dev.bounded.compiler.ast.BoundedProgram;
 import dev.bounded.compiler.diagnostics.Diagnostic;

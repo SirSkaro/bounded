@@ -1,15 +1,18 @@
 package dev.bounded.compiler.parse;
 
 import dev.bounded.compiler.api.SourceFile;
+import dev.bounded.compiler.api.parse.ParseResult;
+import dev.bounded.compiler.api.parse.Parser;
 import dev.bounded.compiler.grammar.BoundedLexer;
 import dev.bounded.compiler.grammar.BoundedParser;
 import org.antlr.v4.runtime.*;
 
-import static dev.bounded.compiler.parse.ParseResult.invalidResult;
+import static dev.bounded.compiler.api.parse.ParseResult.invalidResult;
 
-public final class BoundedParserFacade {
+public final class BoundedParserFacade implements Parser {
     private final BoundedAstMapper mapper = new BoundedAstMapper();
 
+    @Override
     public ParseResult parse(SourceFile sourceFile) {
         var input = CharStreams.fromString(sourceFile.content(), sourceFile.name());
         var errors = new SyntaxErrorCollector();

@@ -1,5 +1,6 @@
 package dev.bounded.compiler.backend;
 
+import dev.bounded.compiler.api.generate.GeneratedClass;
 import dev.bounded.compiler.ast.ArcheClassDeclaration;
 import dev.bounded.compiler.ast.ArcheClassKind;
 import dev.bounded.compiler.ast.ArcheOperationDeclaration;
@@ -24,6 +25,7 @@ import static dev.bounded.compiler.ast.ArcheClassKind.ENTITY;
 import static dev.bounded.compiler.ast.ArcheClassKind.VALUE;
 import static dev.bounded.compiler.ast.ArcheOperationKind.FUNCTION;
 import static dev.bounded.compiler.ast.ArcheOperationKind.QUERY;
+import static dev.bounded.compiler.diagnostics.DiagnosticCode.JVM_BACKEND_FAILURE;
 import static java.lang.reflect.AccessFlag.FINAL;
 import static java.lang.reflect.AccessFlag.PRIVATE;
 import static java.lang.reflect.AccessFlag.PUBLIC;
@@ -34,6 +36,8 @@ import static org.hamcrest.Matchers.arrayContaining;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.startsWith;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class JvmBackendTest {
@@ -43,7 +47,7 @@ class JvmBackendTest {
     @Test
     @DisplayName("Names the generated class in the Bounded package")
     void namesGeneratedClass() {
-        var generatedClass = backend.generate(program(VALUE, List.of()));
+        var generatedClass = generate(program(VALUE, List.of()));
 
         assertThat(generatedClass.qualifiedClassName(), is("bounded.generated.Bounded_Amount"));
     }
@@ -51,7 +55,7 @@ class JvmBackendTest {
     @Test
     @DisplayName("Targets Java 25 regardless of the running JDK")
     void targetsJava25() {
-        var generatedClass = backend.generate(program(VALUE, List.of()));
+        var generatedClass = generate(program(VALUE, List.of()));
         var model = ClassFile.of().parse(generatedClass.bytecode());
 
         assertThat(model.majorVersion(), is(ClassFile.JAVA_25_VERSION));
@@ -122,7 +126,7 @@ class JvmBackendTest {
     @ParameterizedTest(name = "Verifies a class with {0} operations")
     @ValueSource(ints = {0, 1, 12})
     void generatesVerifiableBytecode(int operationCount) {
-        var generatedClass = backend.generate(program(VALUE, operations(operationCount)));
+        var generatedClass = generate(program(VALUE, operations(operationCount)));
 
         assertThat(ClassFile.of().verify(generatedClass.bytecode()), is(empty()));
     }
@@ -167,6 +171,29 @@ class JvmBackendTest {
     }
 
     private Class<?> load(BoundedProgram program) {
-        return new GeneratedClassLoader().load(backend.generate(program));
+        return new GeneratedClassLoader().load(generate(program));
+    }
+
+    private GeneratedClass generate(BoundedProgram program) {
+        var result = backend.generate(program);
+        assertThat(result.diagnostics(), is(empty()));
+        return result.generatedClass();
+    }
+
+    @Test
+    @DisplayName("Reports a Class-File API failure at the original archeclass span")
+    void reportsBytecodeGenerationFailure() {
+        var sourceSpan = new SourceSpan(2, 3);
+        var program = new BoundedProgram(new ArcheClassDeclaration(
+                VALUE, "A".repeat(65_536), List.of(), sourceSpan));
+
+        var result = backend.generate(program);
+
+        assertThat(result.isValid(), is(false));
+        assertThat(result.diagnostics(), hasSize(1));
+        var diagnostic = result.diagnostics().getFirst();
+        assertThat(diagnostic.code(), is(JVM_BACKEND_FAILURE));
+        assertThat(diagnostic.span(), is(sourceSpan));
+        assertThat(diagnostic.message(), startsWith("Could not generate JVM bytecode: "));
     }
 }

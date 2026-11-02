@@ -1,4 +1,4 @@
-package dev.bounded.compiler.parse;
+package dev.bounded.compiler.api.parse;
 
 import dev.bounded.compiler.ast.ArcheClassDeclaration;
 import dev.bounded.compiler.ast.BoundedProgram;
@@ -12,8 +12,8 @@ import java.util.List;
 
 import static dev.bounded.compiler.ast.ArcheClassKind.VALUE;
 import static dev.bounded.compiler.diagnostics.DiagnosticCode.SYNTAX_ERROR;
-import static dev.bounded.compiler.parse.ParseResult.invalidResult;
-import static dev.bounded.compiler.parse.ParseResult.validResult;
+import static dev.bounded.compiler.api.parse.ParseResult.invalidResult;
+import static dev.bounded.compiler.api.parse.ParseResult.validResult;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.empty;

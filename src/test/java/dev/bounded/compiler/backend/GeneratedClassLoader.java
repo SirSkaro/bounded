@@ -1,5 +1,7 @@
 package dev.bounded.compiler.backend;
 
+import dev.bounded.compiler.api.generate.GeneratedClass;
+
 final class GeneratedClassLoader extends ClassLoader {
     GeneratedClassLoader() {
         super(ClassLoader.getPlatformClassLoader());

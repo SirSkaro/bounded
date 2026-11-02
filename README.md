@@ -39,15 +39,20 @@ mvn -Dtest=BoundedGrammarTest test
 These tests use the generated lexer and parser directly, checking syntax acceptance
 and parse-tree structure without running AST mapping or the compiler pipeline.
 
-The tests demonstrate five levels:
+The tests exercise several boundaries:
 
 1. `BoundedGrammarTest` tests the language defined by `Bounded.g4` using source examples.
 2. `BoundedParserFacadeTest` proves that ANTLR source becomes the intended AST with source spans.
 3. `EffectCheckerTest` constructs the AST by hand and tests semantic rules directly.
 4. `JvmBackendTest` constructs ASTs directly, verifies emitted bytecode with the Class-File API,
    and checks class structure and behavior through an isolated class loader.
-5. `FixtureCompilationTest` compiles real `.bounded` fixtures, compares a stable `.diag` file,
+5. `BoundedCompilerTest` supplies port implementations to test ordering, data flow, and early exits
+   without invoking the parser, backend, or filesystem.
+6. `FixtureCompilationTest` compiles real `.bounded` fixtures, compares a stable `.diag` file,
    loads the resulting class, and calls it reflectively across the configured locales.
+
+`BoundedCliTest` checks source loading, output, and exit statuses through a supplied `CompileProgram`.
+`CompilerArchitectureTest` uses ArchUnit to enforce the production dependency boundaries.
 
 ## Locale-sensitive tests
 
@@ -123,6 +128,52 @@ java -jar target/bounded-0.0.1.jar \
 
 It reports `BND1001` and produces no output artifacts.
 
+## Architecture
+
+The fourth tab of [`docs/architecture.drawio`](docs/architecture.drawio) shows the implemented
+ports and adapters architecture. The first three tabs preserve the structure before this refactor.
+
+`api` owns the application policy, port interfaces, and boundary data. `BoundedCompiler`
+implements the inbound `CompileProgram` port and receives four outbound ports in its constructor:
+
+| Port | API-owned result | Implementation |
+| --- | --- | --- |
+| `api.CompileProgram` | `api.CompilationResult` | `api.BoundedCompiler` |
+| `api.parse.Parser` | `api.parse.ParseResult` | `parse.BoundedParserFacade` |
+| `api.check.SemanticChecker` | `api.check.CheckResult` | `semantics.EffectChecker` |
+| `api.generate.CodeGenerator` | `api.generate.GenerationResult` | `backend.JvmBackend` |
+| `api.write.ArtifactWriter` | `api.write.WriteResult` | `backend.ClassFileWriter` |
+
+`CompilationRequest` holds the `SourceFile` and an `api.write.OutputTarget`. Generated class names
+and bytes belong to `api.generate.GeneratedClass`. These contracts expose no ANTLR or Class-File
+API types. `ast` and `diagnostics` form the inner model and depend on neither the API nor adapters.
+Implementations use that model where needed; the writer only consumes API artifact contracts.
+
+`cli.Main` is the executable entry point and composition root. It constructs the implementations
+and injects them into `BoundedCompiler`. `BoundedCli` receives only the inbound port and output
+streams. The fixture tests live in the `cli` test package so they can use the same assembly as `Main`.
+
+With implementations of the four ports, a caller can assemble a compiler explicitly:
+
+```java
+CompileProgram compiler = new BoundedCompiler(parser, checker, generator, writer);
+var request = new CompilationRequest(sourceFile, new OutputTarget(outputDirectory));
+CompilationResult result = compiler.compile(request);
+```
+
+The [ArchUnit](https://www.archunit.org/userguide/html/000_Index.html) checks run as ordinary JUnit
+tests in Maven and the IDE. They check production classes, including generated grammar, while
+excluding test code. They enforce inward dependencies, independent adapter components, API-owned
+port results, composition in `Main`, and absence of cycles between compiler components. They also
+confine ANTLR, the Class-File API, and `Files` access to the appropriate implementations. New production
+packages must be included explicitly in the architecture rules.
+
+Run the architecture and compiler fixtures together:
+
+```bash
+mvn -Dtest=CompilerArchitectureTest,FixtureCompilationTest test
+```
+
 ## Compiler pipeline
 
 ```text
@@ -138,10 +189,10 @@ BoundedAstMapper -> syntax AST
 EffectChecker -> diagnostics or valid AST
         |
         v
-JvmBackend -> GeneratedClass (class name and bytecode)
+JvmBackend -> GenerationResult containing GeneratedClass
         |
         v
-ClassFileWriter -> generated .class
+ClassFileWriter -> generated .class and WriteResult
 ```
 
 `JvmBackend` translates the validated Bounded AST into class bytes in memory. `GeneratedClass`
@@ -149,8 +200,9 @@ defensively copies those bytes, and `ClassFileWriter` writes them under the outp
 `classes` tree. Compilation produces no intermediate Java source and does not invoke `javac`.
 
 `CompilationResult` contains diagnostics and generated class paths, both as unmodifiable lists.
-Bytecode generation failures use `BND9001` at the original archeclass's source span. Filesystem
-failures propagate as `IOException`.
+The backend translates bytecode generation failures into `BND9001` diagnostics at the original
+archeclass's source span. `BoundedCompiler` stops on any stage's diagnostics without knowing the
+implementation that produced them. Filesystem failures propagate as `IOException`.
 
 ## Deliberate simplifications
 

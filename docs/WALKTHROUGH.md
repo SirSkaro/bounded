@@ -79,6 +79,7 @@ if (!archeClass.kind().allows(operation.kind())) {
 - a value may not declare a query;
 - an entity may declare a query.
 
+The checker implements `api.check.SemanticChecker` and returns the API-owned `CheckResult`.
 The failure is data rather than an exception:
 
 ```text
@@ -193,11 +194,15 @@ emits the generic signature so reflection sees `Map<String, String>` rather than
 
 `GeneratedClass` pairs the qualified class name with the resulting byte array. Both its
 constructor and bytecode accessor copy the array so callers cannot change the stored result.
+It lives in `api.generate`, alongside the `CodeGenerator` port and `GenerationResult`.
+`JvmBackend` returns a valid generation result containing those bytes, or an invalid result with
+`BND9001` diagnostics when the Class-File API rejects the generated class.
 
 ## 8. Write and verify the class file
 
-`ClassFileWriter` creates package directories under `classes` and writes the bytecode.
-It returns the path of the generated artifact:
+`ClassFileWriter` implements `api.write.ArtifactWriter`. It uses the requested `OutputTarget`
+to create package directories under `classes` and write the bytecode. The returned `WriteResult`
+contains the path of the generated artifact:
 
 ```text
 classes/bounded/generated/Bounded_Money.class
@@ -241,6 +246,17 @@ public record CompilationResult(
 The result defensively copies both lists. A Class-File API generation failure is reported at
 the original archeclass's span; it has no generated-Java location. Filesystem failures propagate
 as `IOException`. The CLI prints diagnostics or the paths of generated classes.
+
+`BoundedCompiler` implements the inbound `CompileProgram` port and accepts a `CompilationRequest`.
+Its constructor receives `Parser`, `SemanticChecker`, `CodeGenerator`, and `ArtifactWriter`, all
+defined in `api` with their result contracts. It knows the stage order and failure policy, while
+the concrete implementations own parsing, semantic checks, bytecode generation, and file output.
+
+`cli.Main` constructs and connects these implementations. `BoundedCli` invokes `CompileProgram`,
+so a new driving adapter can use the same application policy with its own composition root.
+`FixtureCompilationTest` uses the production assembly, while `BoundedCompilerTest` supplies small
+port implementations to test orchestration independently. `CompilerArchitectureTest` prevents
+outward dependencies or component cycles from being reintroduced.
 
 ## What the slice teaches without deciding
 

@@ -1,19 +1,33 @@
 package dev.bounded.compiler.cli;
 
-import dev.bounded.compiler.api.BoundedCompiler;
+import dev.bounded.compiler.api.CompilationRequest;
+import dev.bounded.compiler.api.CompileProgram;
 import dev.bounded.compiler.api.SourceFile;
+import dev.bounded.compiler.api.write.OutputTarget;
 
+import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public final class BoundedCli {
-    private BoundedCli() {}
+import static java.util.Objects.requireNonNull;
 
-    public static void main(String[] args) throws Exception {
+public final class BoundedCli {
+    private final CompileProgram compiler;
+    private final PrintStream output;
+    private final PrintStream errors;
+
+    public BoundedCli(CompileProgram compiler, PrintStream output, PrintStream errors) {
+        this.compiler = requireNonNull(compiler, "compiler");
+        this.output = requireNonNull(output, "output");
+        this.errors = requireNonNull(errors, "errors");
+    }
+
+    public int run(String... args) throws IOException {
         if (args.length != 2) {
-            System.err.println("Usage: bounded <source.bounded> <output-directory>");
-            System.exit(2);
+            errors.println("Usage: bounded <source.bounded> <output-directory>");
+            return 2;
         }
 
         var sourcePath = Path.of(args[0]);
@@ -21,18 +35,16 @@ public final class BoundedCli {
         var sourceFile = new SourceFile(
                 sourcePath.toString(),
                 Files.readString(sourcePath, StandardCharsets.UTF_8));
-        var result = new BoundedCompiler().compile(sourceFile, outputRoot);
+        var result = compiler.compile(new CompilationRequest(sourceFile, new OutputTarget(outputRoot)));
 
         for (var diagnostic : result.diagnostics()) {
-            System.err.println(sourcePath + ":" + diagnostic.format());
+            errors.println(sourcePath + ":" + diagnostic.format());
         }
 
         for (var classFile : result.generatedClassFiles()) {
-            System.out.println("Generated " + classFile.toAbsolutePath());
+            output.println("Generated " + classFile.toAbsolutePath());
         }
 
-        if (!result.succeeded()) {
-            System.exit(1);
-        }
+        return result.succeeded() ? 0 : 1;
     }
 }

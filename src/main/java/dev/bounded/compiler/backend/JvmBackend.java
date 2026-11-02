@@ -1,8 +1,12 @@
 package dev.bounded.compiler.backend;
 
+import dev.bounded.compiler.api.generate.CodeGenerator;
+import dev.bounded.compiler.api.generate.GeneratedClass;
+import dev.bounded.compiler.api.generate.GenerationResult;
 import dev.bounded.compiler.ast.ArcheClassDeclaration;
 import dev.bounded.compiler.ast.ArcheOperationDeclaration;
 import dev.bounded.compiler.ast.BoundedProgram;
+import dev.bounded.compiler.diagnostics.Diagnostic;
 
 import java.lang.classfile.ClassBuilder;
 import java.lang.classfile.ClassFile;
@@ -14,6 +18,7 @@ import java.lang.constant.ClassDesc;
 import java.lang.constant.MethodTypeDesc;
 import java.util.List;
 
+import static dev.bounded.compiler.diagnostics.DiagnosticCode.JVM_BACKEND_FAILURE;
 import static java.lang.classfile.ClassFile.ACC_FINAL;
 import static java.lang.classfile.ClassFile.ACC_PRIVATE;
 import static java.lang.classfile.ClassFile.ACC_PUBLIC;
@@ -24,12 +29,25 @@ import static java.lang.constant.ConstantDescs.CD_Object;
 import static java.lang.constant.ConstantDescs.CD_String;
 import static java.lang.constant.ConstantDescs.CD_void;
 
-public final class JvmBackend {
+public final class JvmBackend implements CodeGenerator {
     private static final String GENERATED_PACKAGE = "bounded.generated";
     private static final ClassDesc MAP = ClassDesc.of("java.util.Map");
     private static final ClassDesc MAP_ENTRY = ClassDesc.of("java.util.Map$Entry");
 
-    public GeneratedClass generate(BoundedProgram program) {
+    @Override
+    public GenerationResult generate(BoundedProgram program) {
+        try {
+            return GenerationResult.validResult(generateClass(program));
+        } catch (IllegalArgumentException exception) {
+            var diagnostic = new Diagnostic(
+                    JVM_BACKEND_FAILURE,
+                    program.archeClass().span(),
+                    "Could not generate JVM bytecode: " + exception.getMessage());
+            return GenerationResult.invalidResult(List.of(diagnostic));
+        }
+    }
+
+    private GeneratedClass generateClass(BoundedProgram program) {
         var archeClass = program.archeClass();
         var className = GENERATED_PACKAGE + ".Bounded_" + archeClass.name();
         var bytecode = ClassFile.of().build(ClassDesc.of(className), builder -> {
