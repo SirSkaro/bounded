@@ -54,6 +54,27 @@ The tests exercise several boundaries:
 `BoundedCliTest` checks source loading, output, and exit statuses through a supplied `CompileProgram`.
 `CompilerArchitectureTest` uses ArchUnit to enforce the production dependency boundaries.
 
+## Complexity checks
+
+PMD runs during `mvn verify` using the root-level [`pmd-ruleset.xml`](pmd-ruleset.xml).
+It analyzes handwritten production and test Java sources, excluding ANTLR-generated sources.
+The rules use PMD's default reporting thresholds:
+
+| Rule | Reports at or above |
+| --- | --- |
+| [Cyclomatic complexity](https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_design.html#cyclomaticcomplexity) | 10 per method or 80 per class |
+| [Cognitive complexity](https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_design.html#cognitivecomplexity) | 15 per method |
+
+Run the complexity check without running tests:
+
+```bash
+mvn test-compile pmd:check
+```
+
+Violations fail the check and are printed in the Maven output. PMD also writes `target/pmd.xml`
+and an HTML report at `target/reports/pmd.html`. The initial setup adds the checks without
+refactoring existing code to satisfy them.
+
 ## Locale-sensitive tests
 
 Use `@LocaleSensitiveTest` from `dev.bounded.compiler.locale` instead of `@Test`
