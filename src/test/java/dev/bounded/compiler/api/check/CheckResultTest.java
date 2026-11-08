@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class CheckResultTest {
     private final AnalyzedProgram program = new AnalyzedProgram(new BoundedProgram(
-            new ArcheClassDeclaration(ArcheClassKind.VALUE, "Money", List.of(), new SourceSpan(1, 1))));
+            new ArcheClassDeclaration(ArcheClassKind.VALUE, "Money", List.of(), new SourceSpan("money.bounded", 1, 1))));
 
     @Test
     @DisplayName("Invalid result rejects a null diagnostics list")
@@ -98,7 +98,7 @@ class CheckResultTest {
     private Diagnostic givenDiagnostic() {
         return new Diagnostic(
             DiagnosticCode.EFFECT_NOT_ALLOWED,
-            new SourceSpan(3, 7),
+            new SourceSpan("money.bounded", 3, 7),
             "Not allowed"
         );
     }

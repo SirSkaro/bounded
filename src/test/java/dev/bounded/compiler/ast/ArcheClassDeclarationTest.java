@@ -20,15 +20,15 @@ import static org.hamcrest.Matchers.contains;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ArcheClassDeclarationTest {
-    private final SourceSpan span = new SourceSpan(1, 1);
+    private final SourceSpan span = new SourceSpan("example.bounded", 1, 1);
     private final ArcheOperationDeclaration firstOperation =
-            new ArcheOperationDeclaration(FUNCTION, "first", new SourceSpan(2, 1));
+            new ArcheOperationDeclaration(FUNCTION, "first", new SourceSpan("example.bounded", 2, 1));
     private final ArcheOperationDeclaration secondOperation =
-            new ArcheOperationDeclaration(FUNCTION, "second", new SourceSpan(3, 1));
+            new ArcheOperationDeclaration(FUNCTION, "second", new SourceSpan("example.bounded", 3, 1));
 
     private static Stream<Arguments> invalidConstructorArguments() {
-        var span = new SourceSpan(1, 1);
-        var operation = new ArcheOperationDeclaration(FUNCTION, "first", new SourceSpan(2, 1));
+        var span = new SourceSpan("example.bounded", 1, 1);
+        var operation = new ArcheOperationDeclaration(FUNCTION, "first", new SourceSpan("example.bounded", 2, 1));
 
         return Stream.of(
                 Arguments.of("null kind", null, "Amount", List.of(), span),

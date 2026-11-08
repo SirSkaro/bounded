@@ -27,8 +27,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @DisplayName("Generation result invariants")
 class GenerationResultTest {
     private final GeneratedProgram generatedProgram = new GeneratedProgram(
-            List.of(new GeneratedClass("example.Amount", new byte[]{1, 2, 3})));
-    private final Diagnostic diagnostic = new Diagnostic(JVM_BACKEND_FAILURE, new SourceSpan(2, 3), "Cannot generate class");
+            List.of(new GeneratedClass(new ClassName("example.Amount"), new byte[]{1, 2, 3})));
+    private final Diagnostic diagnostic = new Diagnostic(JVM_BACKEND_FAILURE, new SourceSpan("Amount.bounded", 2, 3), "Cannot generate class");
 
     @Test
     @DisplayName("A valid result retains the generated program")
@@ -84,7 +84,7 @@ class GenerationResultTest {
     @Test
     @DisplayName("Diagnostics retain their supplied order")
     void preservesDiagnosticOrder() {
-        var second = new Diagnostic(JVM_BACKEND_FAILURE, new SourceSpan(3, 1), "Another generation error");
+        var second = new Diagnostic(JVM_BACKEND_FAILURE, new SourceSpan("Amount.bounded", 3, 1), "Another generation error");
 
         assertThat(invalidResult(List.of(diagnostic, second)).diagnostics(), contains(diagnostic, second));
     }

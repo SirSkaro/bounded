@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ArcheOperationDeclarationTest {
     private static Stream<Arguments> invalidConstructorArguments() {
-        var span = new SourceSpan(1, 1);
+        var span = new SourceSpan("example.bounded", 1, 1);
 
         return Stream.of(
                 Arguments.of("null kind", null, "calculate", span),
@@ -38,13 +38,13 @@ class ArcheOperationDeclarationTest {
     @ValueSource(strings = {" ", "   ", "\t", "\n", " \t\r\n", "\u2003"})
     void rejectsBlankNames(String name) {
         assertThrows(IllegalArgumentException.class,
-                () -> new ArcheOperationDeclaration(FUNCTION, name, new SourceSpan(1, 1)));
+                () -> new ArcheOperationDeclaration(FUNCTION, name, new SourceSpan("example.bounded", 1, 1)));
     }
 
     @Test
     @DisplayName("Has valid representation")
     void valid() {
-        var declaration = new ArcheOperationDeclaration(FUNCTION, "foo", new SourceSpan(1, 1));
+        var declaration = new ArcheOperationDeclaration(FUNCTION, "foo", new SourceSpan("example.bounded", 1, 1));
 
         assertThat(declaration.name(), is("foo"));
     }

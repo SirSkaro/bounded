@@ -60,7 +60,7 @@ class ParseResultTest {
     @DisplayName("An invalid result preserves diagnostics in their supplied order")
     void preservesDiagnosticOrder() {
         var first = givenDiagnostic();
-        var second = new Diagnostic(SYNTAX_ERROR, new SourceSpan(4, 1), "Missing closing brace.");
+        var second = new Diagnostic(SYNTAX_ERROR, new SourceSpan("money.bounded", 4, 1), "Missing closing brace.");
 
         var result = invalidResult(List.of(first, second));
 
@@ -127,11 +127,11 @@ class ParseResultTest {
 
     private BoundedProgram givenProgram() {
         return new BoundedProgram(new ArcheClassDeclaration(
-            VALUE, "Money", List.of(), new SourceSpan(1, 1)
+            VALUE, "Money", List.of(), new SourceSpan("money.bounded", 1, 1)
         ));
     }
 
     private Diagnostic givenDiagnostic() {
-        return new Diagnostic(SYNTAX_ERROR, new SourceSpan(2, 3), "Missing semicolon.");
+        return new Diagnostic(SYNTAX_ERROR, new SourceSpan("money.bounded", 2, 3), "Missing semicolon.");
     }
 }

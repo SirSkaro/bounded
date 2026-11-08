@@ -18,12 +18,6 @@ class SourceSpanTest {
     }
 
     @Test
-    @DisplayName("Positions without a known source use an explicit unknown marker")
-    void identifiesUnknownSource() {
-        assertThat(new SourceSpan(3, 7).sourceName(), is("<unknown>"));
-    }
-
-    @Test
     @DisplayName("Requires a non-null source identity")
     void rejectsNullSourceName() {
         assertThrows(NullPointerException.class, () -> new SourceSpan(null, 3, 7));
@@ -39,7 +33,7 @@ class SourceSpanTest {
             "2147483647, 2147483647"
     })
     void preservesValidPositions(int line, int column) {
-        var span = new SourceSpan(line, column);
+        var span = new SourceSpan("money.bounded", line, column);
 
         assertThat(span.line(), is(line));
         assertThat(span.column(), is(column));
@@ -49,13 +43,13 @@ class SourceSpanTest {
     @ParameterizedTest(name = "Rejects line {0} with a valid column")
     @ValueSource(ints = {0, -1, Integer.MIN_VALUE})
     void rejectsInvalidLines(int line) {
-        assertThrows(IllegalArgumentException.class, () -> new SourceSpan(line, 1));
+        assertThrows(IllegalArgumentException.class, () -> new SourceSpan("money.bounded", line, 1));
     }
 
     @DisplayName("Rejects columns below one")
     @ParameterizedTest(name = "Rejects column {0} with a valid line")
     @ValueSource(ints = {0, -1, Integer.MIN_VALUE})
     void rejectsInvalidColumns(int column) {
-        assertThrows(IllegalArgumentException.class, () -> new SourceSpan(1, column));
+        assertThrows(IllegalArgumentException.class, () -> new SourceSpan("money.bounded", 1, column));
     }
 }

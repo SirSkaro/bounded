@@ -43,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class JvmBackendTest {
     private final JvmBackend backend = new JvmBackend();
-    private final SourceSpan span = new SourceSpan(1, 1);
+    private final SourceSpan span = new SourceSpan("Amount.bounded", 1, 1);
 
     @Test
     @DisplayName("Names the generated class in the Bounded package")
@@ -101,7 +101,7 @@ class JvmBackendTest {
     }
 
     private static Stream<Arguments> operationDeclarations() {
-        var span = new SourceSpan(2, 1);
+        var span = new SourceSpan("Amount.bounded", 2, 1);
         var function = new ArcheOperationDeclaration(FUNCTION, "calculate", span);
         var query = new ArcheOperationDeclaration(QUERY, "total", span);
         return Stream.of(
@@ -185,7 +185,7 @@ class JvmBackendTest {
     @Test
     @DisplayName("Reports a Class-File API failure at the original archeclass span")
     void reportsBytecodeGenerationFailure() {
-        var sourceSpan = new SourceSpan(2, 3);
+        var sourceSpan = new SourceSpan("Amount.bounded", 2, 3);
         var program = new BoundedProgram(new ArcheClassDeclaration(
                 VALUE, "A".repeat(65_536), List.of(), sourceSpan));
 

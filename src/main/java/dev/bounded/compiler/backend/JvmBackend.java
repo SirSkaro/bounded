@@ -1,6 +1,7 @@
 package dev.bounded.compiler.backend;
 
 import dev.bounded.compiler.api.generate.CodeGenerator;
+import dev.bounded.compiler.api.generate.ClassName;
 import dev.bounded.compiler.api.generate.GeneratedClass;
 import dev.bounded.compiler.api.generate.GenerationResult;
 import dev.bounded.compiler.api.generate.GeneratedProgram;
@@ -59,7 +60,7 @@ public final class JvmBackend implements CodeGenerator {
             declareArcheClassKind(builder, archeClass);
             declareOperations(builder, List.copyOf(program.operations().values()));
         });
-        return new GeneratedClass(className, bytecode);
+        return new GeneratedClass(new ClassName(className), bytecode);
     }
 
     private void declarePrivateConstructor(ClassBuilder builder) {

@@ -9,8 +9,4 @@ public record SourceSpan(String sourceName, int line, int column) {
             throw new IllegalArgumentException("Source positions are one-based");
         }
     }
-
-    public SourceSpan(int line, int column) {
-        this("<unknown>", line, column);
-    }
 }

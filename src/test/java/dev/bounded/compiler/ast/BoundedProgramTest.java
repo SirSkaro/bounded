@@ -20,7 +20,7 @@ class BoundedProgramTest {
     @Test
     @DisplayName("Has valid representation")
     void retainsArcheClass() {
-        var archeClass = new ArcheClassDeclaration(VALUE, "Amount", List.of(), new SourceSpan(1, 1));
+        var archeClass = new ArcheClassDeclaration(VALUE, "Amount", List.of(), new SourceSpan("Amount.bounded", 1, 1));
 
         var program = new BoundedProgram(archeClass);
 

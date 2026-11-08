@@ -26,7 +26,7 @@ class DiagnosticTest {
 
     private static Stream<Arguments> nullConstructorArguments() {
         var code = DiagnosticCode.SYNTAX_ERROR;
-        var span = new SourceSpan(1, 2);
+        var span = new SourceSpan("example.bounded", 1, 2);
         var message = "Unexpected token.";
 
         return Stream.of(

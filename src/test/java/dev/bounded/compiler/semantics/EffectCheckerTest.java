@@ -70,7 +70,7 @@ class EffectCheckerTest {
         var archeop = new ArcheOperationDeclaration(
             QUERY,
             "exchangeRate",
-            new SourceSpan(3, 7)
+            new SourceSpan("money.bounded", 3, 7)
         );
         var program = givenProgram(VALUE, archeop);
 
@@ -92,12 +92,12 @@ class EffectCheckerTest {
         var firstQuery = new ArcheOperationDeclaration(
             QUERY,
             "exchangeRate",
-            new SourceSpan(2, 3)
+            new SourceSpan("money.bounded", 2, 3)
         );
         var secondQuery = new ArcheOperationDeclaration(
             QUERY,
             "balance",
-            new SourceSpan(3, 3)
+            new SourceSpan("money.bounded", 3, 3)
         );
         var program = givenProgram(VALUE, firstQuery, secondQuery);
 
@@ -114,7 +114,7 @@ class EffectCheckerTest {
             kind,
             "Money",
             Arrays.asList(operations),
-            new SourceSpan(1, 1)
+            new SourceSpan("money.bounded", 1, 1)
         );
         return new BoundedProgram(declaration);
     }
@@ -123,7 +123,7 @@ class EffectCheckerTest {
         return new ArcheOperationDeclaration(
             kind,
             "someOp",
-            new SourceSpan(2, 3)
+            new SourceSpan("money.bounded", 2, 3)
         );
     }
 

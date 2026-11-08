@@ -1,5 +1,6 @@
 package dev.bounded.compiler.backend;
 
+import dev.bounded.compiler.api.generate.ClassName;
 import dev.bounded.compiler.api.generate.GeneratedClass;
 import dev.bounded.compiler.api.generate.GeneratedProgram;
 import dev.bounded.compiler.api.write.OutputTarget;
@@ -24,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @DisplayName("Class artifact writing")
 class ClassFileWriterTest {
     private final ClassFileWriter writer = new ClassFileWriter();
-    private final GeneratedClass generatedClass = new GeneratedClass("bounded.generated.Bounded_Amount", new byte[]{1, 2, 3});
+    private final GeneratedClass generatedClass = new GeneratedClass(new ClassName("bounded.generated.Bounded_Amount"), new byte[]{1, 2, 3});
 
     @TempDir
     Path temporaryDirectory;
@@ -50,7 +51,7 @@ class ClassFileWriterTest {
     @DisplayName("Replaces an existing class file with the new bytecode")
     void replacesExistingClassFile() throws IOException {
         var classPath = write(generatedClass).artifacts().getFirst().classFile();
-        var replacement = new GeneratedClass(generatedClass.qualifiedClassName(), new byte[]{4});
+        var replacement = new GeneratedClass(generatedClass.className(), new byte[]{4});
         write(replacement);
         assertThat(Files.readAllBytes(classPath), is(new byte[]{4}));
     }
@@ -58,7 +59,7 @@ class ClassFileWriterTest {
     @Test
     @DisplayName("Writes every generated class, including a class in the default package")
     void writesMultipleClasses() throws IOException {
-        var helper = new GeneratedClass("Helper", new byte[]{4, 5});
+        var helper = new GeneratedClass(new ClassName("Helper"), new byte[]{4, 5});
         var artifacts = write(generatedClass, helper).artifacts();
         assertThat(artifacts.stream().map(artifact -> artifact.className().binaryName()).toList(),
                 contains(generatedClass.qualifiedClassName(), "Helper"));
@@ -105,7 +106,7 @@ class ClassFileWriterTest {
     @DisplayName("A failed write leaves earlier artifacts in place and does not return success")
     void preservesCompletedWritesOnFailure() throws IOException {
         Files.createDirectories(temporaryDirectory.resolve("classes/Occupied.class"));
-        var second = new GeneratedClass("Occupied", new byte[]{4});
+        var second = new GeneratedClass(new ClassName("Occupied"), new byte[]{4});
         assertThrows(IOException.class, () -> write(generatedClass, second));
         var firstFile = temporaryDirectory.resolve("classes/bounded/generated/Bounded_Amount.class");
         assertThat(Files.readAllBytes(firstFile), is(generatedClass.bytecode()));

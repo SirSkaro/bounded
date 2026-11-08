@@ -8,10 +8,6 @@ public record GeneratedClass(ClassName className, byte[] bytecode) {
         bytecode = bytecode.clone();
     }
 
-    public GeneratedClass(String qualifiedClassName, byte[] bytecode) {
-        this(new ClassName(qualifiedClassName), bytecode);
-    }
-
     public String qualifiedClassName() {
         return className.binaryName();
     }

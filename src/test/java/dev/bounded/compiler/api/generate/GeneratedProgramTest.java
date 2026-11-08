@@ -17,12 +17,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("Generated program invariants")
 class GeneratedProgramTest {
-    private final GeneratedClass primary = new GeneratedClass("example.Amount", new byte[]{1});
-    private final GeneratedClass helper = new GeneratedClass("example.Helper", new byte[]{2});
+    private final GeneratedClass primary = new GeneratedClass(new ClassName("example.Amount"), new byte[]{1});
+    private final GeneratedClass helper = new GeneratedClass(new ClassName("example.Helper"), new byte[]{2});
 
     private static Stream<Arguments> invalidClasses() {
-        var first = new GeneratedClass("Amount", new byte[]{1});
-        var duplicate = new GeneratedClass("Amount", new byte[]{2});
+        var first = new GeneratedClass(new ClassName("Amount"), new byte[]{1});
+        var duplicate = new GeneratedClass(new ClassName("Amount"), new byte[]{2});
         return Stream.of(
                 Arguments.of("a null list", null, NullPointerException.class),
                 Arguments.of("a null class", singletonList(null), NullPointerException.class),

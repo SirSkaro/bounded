@@ -13,23 +13,16 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class GeneratedClassTest {
-    @Test
-    @DisplayName("The canonical constructor requires a validated class name")
-    void rejectsNullValidatedName() {
-        assertThrows(NullPointerException.class, () -> new GeneratedClass((ClassName) null, new byte[]{1}));
-    }
-
-
     private static Stream<Arguments> invalidConstructorArguments() {
         return Stream.of(
                 Arguments.of("null class name", null, new byte[]{1, 2, 3}),
-                Arguments.of("null bytecode", "bounded.generated.Bounded_Amount", null)
+                Arguments.of("null bytecode", new ClassName("bounded.generated.Bounded_Amount"), null)
         );
     }
     @DisplayName("Rejects null constructor inputs")
     @ParameterizedTest(name = "Rejects {0}")
     @MethodSource("invalidConstructorArguments")
-    void rejectsNullInputs(String description, String className, byte[] bytecode) {
+    void rejectsNullInputs(String description, ClassName className, byte[] bytecode) {
         assertThrows(NullPointerException.class, () -> new GeneratedClass(className, bytecode));
     }
 
@@ -37,7 +30,7 @@ class GeneratedClassTest {
     @DisplayName("Changes to the original bytecode cannot change the generated class")
     void copiesBytecode() {
         var bytecode = new byte[]{1, 2, 3};
-        var generatedClass = new GeneratedClass("bounded.generated.Bounded_Amount", bytecode);
+        var generatedClass = new GeneratedClass(new ClassName("bounded.generated.Bounded_Amount"), bytecode);
 
         bytecode[0] = 4;
 
@@ -47,7 +40,7 @@ class GeneratedClassTest {
     @Test
     @DisplayName("Changes to returned bytecode cannot change the generated class")
     void protectsReturnedBytecode() {
-        var generatedClass = new GeneratedClass("bounded.generated.Bounded_Amount", new byte[]{1, 2, 3});
+        var generatedClass = new GeneratedClass(new ClassName("bounded.generated.Bounded_Amount"), new byte[]{1, 2, 3});
 
         generatedClass.bytecode()[0] = 4;
 

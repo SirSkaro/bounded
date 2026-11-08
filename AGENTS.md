@@ -50,6 +50,7 @@ features from behavior implemented in the grammar and tests.
 | [README.md](README.md) and [docs/WALKTHROUGH.md](docs/WALKTHROUGH.md) | Build instructions, implemented scope, and a compiler walkthrough. |
 | [docs/Language-Spec-v0.0.1.md](docs/Language-Spec-v0.0.1.md) | Language design and intended semantics. |
 | [docs/architecture.drawio](docs/architecture.drawio) | Current production architecture in the `Ports and adapters` tab. |
+| [ADR 0001: Explicit construction of value objects](docs/adr/0001-explicit-value-object-construction.md) | Constructor policy, named factories, and test fixture defaults. Read when considering constructors. |
 | [docs/Acceptance-Testing-Roadmap.md](docs/Acceptance-Testing-Roadmap.md) | Acceptance DSL stages, test boundaries, examples, and completion criteria; Stage 1 is implemented. Read before acceptance-testing work. |
 | [pom.xml](pom.xml) | Java release, dependency versions, ANTLR generation, tests, PMD, PIT, and packaging. |
 | [Bounded.g4](src/main/antlr4/dev/bounded/compiler/grammar/Bounded.g4) | Source of truth for the implemented lexer and grammar. |
@@ -137,6 +138,10 @@ the failure or describe partial verification as a successful build.
   mapper unit tests use constructed contexts; semantic and backend unit tests use
   hand-built ASTs; orchestration tests supply ports; functional fixtures run the real
   compiler assembled by `Main`.
+- When considering adding or changing constructors, read
+  [ADR 0001: Explicit construction of value objects](docs/adr/0001-explicit-value-object-construction.md).
+  Value objects use one constructor with complete required state; meaningful named factories
+  may delegate to a private constructor. Keep test convenience defaults in test fixtures.
 - Preserve construction invariants and defensive copies of collections and arrays.
   Add meaningful regression coverage when changing those contracts.
 - Prefer locale-independent operations and explicit character sets. Keep the compiler

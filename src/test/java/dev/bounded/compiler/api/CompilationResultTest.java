@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("Compilation result invariants")
 class CompilationResultTest {
-    private final Diagnostic diagnostic = new Diagnostic(SYNTAX_ERROR, new SourceSpan(1, 1), "Invalid syntax");
+    private final Diagnostic diagnostic = new Diagnostic(SYNTAX_ERROR, new SourceSpan("Amount.bounded", 1, 1), "Invalid syntax");
     private final CompiledClass artifact = new CompiledClass(new ClassName("Amount"), Path.of("classes"));
 
     private static Stream<Arguments> invalidLists() {

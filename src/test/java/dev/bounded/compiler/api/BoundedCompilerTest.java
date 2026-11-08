@@ -46,8 +46,8 @@ import static org.junit.jupiter.api.Assertions.fail;
 @DisplayName("Compiler application policy")
 class BoundedCompilerTest {
     private final BoundedProgram program = new BoundedProgram(
-            new ArcheClassDeclaration(VALUE, "Amount", List.of(), new SourceSpan(1, 1)));
-    private final GeneratedClass generatedClass = new GeneratedClass("example.Amount", new byte[]{1, 2, 3});
+            new ArcheClassDeclaration(VALUE, "Amount", List.of(), new SourceSpan("Amount.bounded", 1, 1)));
+    private final GeneratedClass generatedClass = new GeneratedClass(new ClassName("example.Amount"), new byte[]{1, 2, 3});
     private final AnalyzedProgram analyzed = new AnalyzedProgram(program);
     private final GeneratedProgram generatedProgram = new GeneratedProgram(List.of(generatedClass));
     private final List<CompiledClass> artifacts = List.of(
@@ -176,8 +176,8 @@ class BoundedCompilerTest {
         @DisplayName("Syntax diagnostics stop compilation before checking")
         void stopsAfterSyntaxErrors() throws IOException {
             var diagnostics = List.of(
-                    new Diagnostic(SYNTAX_ERROR, new SourceSpan(1, 1), "First syntax error"),
-                    new Diagnostic(SYNTAX_ERROR, new SourceSpan(2, 3), "Second syntax error"));
+                    new Diagnostic(SYNTAX_ERROR, new SourceSpan("Amount.bounded", 1, 1), "First syntax error"),
+                    new Diagnostic(SYNTAX_ERROR, new SourceSpan("Amount.bounded", 2, 3), "Second syntax error"));
             parser = source -> ParseResult.invalidResult(diagnostics);
             checker = parsed -> fail("Checking must not run after a parse failure");
             generator = checked -> fail("Generation must not run after a parse failure");
@@ -192,8 +192,8 @@ class BoundedCompilerTest {
         @DisplayName("Semantic diagnostics stop compilation before generation")
         void stopsAfterSemanticErrors() throws IOException {
             var diagnostics = List.of(
-                    new Diagnostic(EFFECT_NOT_ALLOWED, new SourceSpan(2, 3), "First effect error"),
-                    new Diagnostic(EFFECT_NOT_ALLOWED, new SourceSpan(3, 3), "Second effect error"));
+                    new Diagnostic(EFFECT_NOT_ALLOWED, new SourceSpan("Amount.bounded", 2, 3), "First effect error"),
+                    new Diagnostic(EFFECT_NOT_ALLOWED, new SourceSpan("Amount.bounded", 3, 3), "Second effect error"));
             checker = parsed -> CheckResult.invalidResult(diagnostics);
             generator = checked -> fail("Generation must not run after a semantic failure");
             writer = (generated, target) -> fail("Writing must not run after a semantic failure");
@@ -207,8 +207,8 @@ class BoundedCompilerTest {
         @DisplayName("Generation diagnostics stop compilation before writing")
         void stopsAfterGenerationErrors() throws IOException {
             var diagnostics = List.of(
-                    new Diagnostic(JVM_BACKEND_FAILURE, new SourceSpan(1, 1), "First generation error"),
-                    new Diagnostic(JVM_BACKEND_FAILURE, new SourceSpan(1, 1), "Second generation error"));
+                    new Diagnostic(JVM_BACKEND_FAILURE, new SourceSpan("Amount.bounded", 1, 1), "First generation error"),
+                    new Diagnostic(JVM_BACKEND_FAILURE, new SourceSpan("Amount.bounded", 1, 1), "Second generation error"));
             generator = checked -> GenerationResult.invalidResult(diagnostics);
             writer = (generated, target) -> fail("Writing must not run after a generation failure");
 
