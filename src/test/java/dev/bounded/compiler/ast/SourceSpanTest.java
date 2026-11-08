@@ -1,6 +1,7 @@
 package dev.bounded.compiler.ast;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -10,6 +11,24 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class SourceSpanTest {
+    @Test
+    @DisplayName("Preserves the source identity independently of position")
+    void preservesSourceName() {
+        assertThat(new SourceSpan("lib/money.bounded", 3, 7).sourceName(), is("lib/money.bounded"));
+    }
+
+    @Test
+    @DisplayName("Positions without a known source use an explicit unknown marker")
+    void identifiesUnknownSource() {
+        assertThat(new SourceSpan(3, 7).sourceName(), is("<unknown>"));
+    }
+
+    @Test
+    @DisplayName("Requires a non-null source identity")
+    void rejectsNullSourceName() {
+        assertThrows(NullPointerException.class, () -> new SourceSpan(null, 3, 7));
+    }
+
     @DisplayName("Preserves valid one-based source positions")
     @ParameterizedTest(name = "Preserves line {0}, column {1}")
     @CsvSource({

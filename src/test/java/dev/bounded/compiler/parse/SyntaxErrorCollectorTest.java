@@ -18,7 +18,7 @@ class SyntaxErrorCollectorTest {
 
     @BeforeEach
     void setUp() {
-        collector = new SyntaxErrorCollector();
+        collector = new SyntaxErrorCollector("broken.bounded");
     }
 
     @Test
@@ -73,8 +73,8 @@ class SyntaxErrorCollectorTest {
         givenSyntaxError(4, 0, "Second error.");
 
         assertThat(collector.diagnostics(), contains(
-            new Diagnostic(SYNTAX_ERROR, new SourceSpan(2, 4), "First error."),
-            new Diagnostic(SYNTAX_ERROR, new SourceSpan(4, 1), "Second error.")
+            new Diagnostic(SYNTAX_ERROR, new SourceSpan("broken.bounded", 2, 4), "First error."),
+            new Diagnostic(SYNTAX_ERROR, new SourceSpan("broken.bounded", 4, 1), "Second error.")
         ));
     }
 
@@ -87,7 +87,7 @@ class SyntaxErrorCollectorTest {
         givenSyntaxError(4, 0, "Second error.");
 
         assertThat(snapshot, contains(
-            new Diagnostic(SYNTAX_ERROR, new SourceSpan(2, 4), "First error.")
+            new Diagnostic(SYNTAX_ERROR, new SourceSpan("broken.bounded", 2, 4), "First error.")
         ));
         assertThat(collector.diagnostics(), hasSize(2));
     }

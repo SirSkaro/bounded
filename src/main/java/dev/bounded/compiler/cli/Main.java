@@ -5,7 +5,7 @@ import dev.bounded.compiler.api.CompileProgram;
 import dev.bounded.compiler.backend.ClassFileWriter;
 import dev.bounded.compiler.backend.JvmBackend;
 import dev.bounded.compiler.parse.BoundedParserFacade;
-import dev.bounded.compiler.semantics.EffectChecker;
+import dev.bounded.compiler.semantics.ProgramChecker;
 
 import java.io.IOException;
 
@@ -20,7 +20,7 @@ public final class Main {
     static CompileProgram compiler() {
         return new BoundedCompiler(
                 new BoundedParserFacade(),
-                new EffectChecker(),
+                new ProgramChecker(),
                 new JvmBackend(),
                 new ClassFileWriter());
     }

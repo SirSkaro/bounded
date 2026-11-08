@@ -1,7 +1,7 @@
 # Acceptance testing roadmap
 
-Status: planned. The existing compiler fixtures provide the starting point; the acceptance
-DSL described here has not been implemented. Stage 1 is the next implementation step.
+Status: Stage 1 implemented. The compiler fixtures use the test DSL in
+[`acceptance`](../src/test/java/dev/bounded/compiler/acceptance/). Stages 2–5 remain planned.
 
 ## Purpose
 
@@ -74,25 +74,25 @@ diagnostics, artifacts, or execution. Retain CLI contract tests alongside these 
 
 Stages describe capability growth, not a requirement to implement every language feature
 before adding another example. Add a driver or result abstraction when a concrete test
-needs it. All DSL names below are illustrative proposals.
+needs it. Stage 1 names below are implemented; names in later stages are illustrative proposals.
 
 ### Stage 1: compilation, diagnostics, and loading
 
-Extract reusable support from the existing fixture tests and introduce a few readable
-acceptance examples:
+The existing fixture tests now use reusable support and cover:
 
 1. A value containing a function compiles.
 2. A value containing a query is rejected with the current `BND1001` diagnostic.
 3. Invalid syntax produces `BND0001` and no artifacts.
 4. An emitted class can be loaded and its declaration metadata observed.
+5. Duplicate operation names are rejected with `BND1002` before generation.
 
 For example, using today's Bounded syntax:
 
 ```java
 @Test
 @DisplayName("A value cannot declare a query")
-void rejectsQueriesInValues() {
-    var compilation = compile("""
+void rejectsQueriesInValues() throws IOException {
+    var compilation = compiler.compile("""
             value Money {
                 query balance;
             }
@@ -101,6 +101,20 @@ void rejectsQueriesInValues() {
     assertThat(compilation, rejectedWithCode("BND1001"));
 }
 ```
+
+Here `compiler` is a `CompilerDriver` created with a JUnit `@TempDir` workspace.
+`compiler.compile(String)` accepts inline source; `compiler.compile(fixture(resource))`
+accepts a resource-backed `SourceFile`. Each call gets a fresh output location.
+`accepted()`, `rejected()`, and `rejectedWithCode(...)` are pure Hamcrest matchers; mismatch
+messages include the source, diagnostics, and output state. The accepted matcher checks
+artifact existence and absence of intermediate Java source; rejected matchers check that
+no artifacts or output directory were produced.
+
+`CompilationOutcome.load()` returns an `AutoCloseable` `CompiledProgram`; `archeClass()`
+provides immutable declaration metadata. The loader uses the API's `CompiledClass` names
+and class path roots. Reflection and metadata method names are confined to that facade.
+`ProductionCompiler` is a test-side bridge to `Main.compiler()`; production assembly is
+shared with the CLI. Metadata loading is the only runtime observation currently supported.
 
 Support inline text blocks for small examples and `.bounded` resources for larger programs
 and regression fixtures. Keep the existing `cases/valid` and `cases/invalid` conventions.

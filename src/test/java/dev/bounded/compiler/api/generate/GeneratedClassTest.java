@@ -13,6 +13,12 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class GeneratedClassTest {
+    @Test
+    @DisplayName("The canonical constructor requires a validated class name")
+    void rejectsNullValidatedName() {
+        assertThrows(NullPointerException.class, () -> new GeneratedClass((ClassName) null, new byte[]{1}));
+    }
+
 
     private static Stream<Arguments> invalidConstructorArguments() {
         return Stream.of(

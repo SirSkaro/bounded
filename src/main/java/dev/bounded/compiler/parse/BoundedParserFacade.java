@@ -15,10 +15,10 @@ public final class BoundedParserFacade implements Parser {
     @Override
     public ParseResult parse(SourceFile sourceFile) {
         var input = CharStreams.fromString(sourceFile.content(), sourceFile.name());
-        var errors = new SyntaxErrorCollector();
+        var errors = new SyntaxErrorCollector(sourceFile.name());
         var parsedInput = parseWithListeners(input, errors);
 
-        return resultOf(parsedInput, errors);
+        return resultOf(parsedInput, errors, sourceFile.name());
     }
 
     private BoundedParser parseWithListeners(CodePointCharStream input, ANTLRErrorListener... listeners) {
@@ -31,7 +31,7 @@ public final class BoundedParserFacade implements Parser {
         return parser;
     }
 
-    private ParseResult resultOf(BoundedParser parsedInput, SyntaxErrorCollector errors) {
+    private ParseResult resultOf(BoundedParser parsedInput, SyntaxErrorCollector errors, String sourceName) {
         var parseTree = parsedInput.program();
         var diagnostics = errors.diagnostics();
 
@@ -39,7 +39,7 @@ public final class BoundedParserFacade implements Parser {
             return invalidResult(diagnostics);
         }
 
-        var ast = mapper.map(parseTree);
+        var ast = mapper.map(parseTree, sourceName);
         return ParseResult.validResult(ast);
     }
 

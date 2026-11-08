@@ -8,17 +8,17 @@ import static java.util.List.copyOf;
 import static java.util.Objects.requireNonNull;
 
 public final class GenerationResult {
-    private final GeneratedClass generatedClass;
+    private final GeneratedProgram generatedProgram;
     private final List<Diagnostic> diagnostics;
 
-    private GenerationResult(GeneratedClass generatedClass, List<Diagnostic> diagnostics) {
-        this.generatedClass = generatedClass;
+    private GenerationResult(GeneratedProgram generatedProgram, List<Diagnostic> diagnostics) {
+        this.generatedProgram = generatedProgram;
         this.diagnostics = copyOf(diagnostics);
     }
 
-    public static GenerationResult validResult(GeneratedClass generatedClass) {
-        requireNonNull(generatedClass, "A valid generation result requires the generated class.");
-        return new GenerationResult(generatedClass, List.of());
+    public static GenerationResult validResult(GeneratedProgram generatedProgram) {
+        requireNonNull(generatedProgram, "A valid generation result requires the generated program.");
+        return new GenerationResult(generatedProgram, List.of());
     }
 
     public static GenerationResult invalidResult(List<Diagnostic> diagnostics) {
@@ -30,11 +30,11 @@ public final class GenerationResult {
     }
 
     public boolean isValid() {
-        return generatedClass != null;
+        return generatedProgram != null;
     }
 
-    public GeneratedClass generatedClass() {
-        return generatedClass;
+    public GeneratedProgram generatedProgram() {
+        return generatedProgram;
     }
 
     public List<Diagnostic> diagnostics() {

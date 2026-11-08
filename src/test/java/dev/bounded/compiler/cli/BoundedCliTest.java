@@ -5,6 +5,8 @@ import dev.bounded.compiler.api.CompilationResult;
 import dev.bounded.compiler.api.CompileProgram;
 import dev.bounded.compiler.api.SourceFile;
 import dev.bounded.compiler.api.write.OutputTarget;
+import dev.bounded.compiler.api.write.CompiledClass;
+import dev.bounded.compiler.api.generate.ClassName;
 import dev.bounded.compiler.ast.SourceSpan;
 import dev.bounded.compiler.diagnostics.Diagnostic;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 class BoundedCliTest {
     private final ByteArrayOutputStream output = new ByteArrayOutputStream();
     private final ByteArrayOutputStream errors = new ByteArrayOutputStream();
-    private CompileProgram compiler = request -> new CompilationResult(List.of(), List.of());
+    private CompileProgram compiler = request -> CompilationResult.success(List.of(new CompiledClass(new ClassName("Amount"), Path.of("classes"))));
 
     @TempDir
     Path temporaryDirectory;
@@ -78,7 +80,7 @@ class BoundedCliTest {
         var received = new AtomicReference<CompilationRequest>();
         compiler = request -> {
             received.set(request);
-            return new CompilationResult(List.of(), List.of());
+            return CompilationResult.success(List.of(new CompiledClass(new ClassName("Amount"), Path.of("classes"))));
         };
 
         run();
@@ -92,7 +94,7 @@ class BoundedCliTest {
         var received = new AtomicReference<CompilationRequest>();
         compiler = request -> {
             received.set(request);
-            return new CompilationResult(List.of(), List.of());
+            return CompilationResult.success(List.of(new CompiledClass(new ClassName("Amount"), Path.of("classes"))));
         };
 
         run();
@@ -111,7 +113,9 @@ class BoundedCliTest {
     void printsGeneratedFiles() throws IOException {
         var first = outputRoot.resolve("Amount.class");
         var second = outputRoot.resolve("AmountHelper.class");
-        compiler = request -> new CompilationResult(List.of(), List.of(first, second));
+        compiler = request -> CompilationResult.success(List.of(
+                new CompiledClass(new ClassName("Amount"), outputRoot),
+                new CompiledClass(new ClassName("AmountHelper"), outputRoot)));
 
         run();
 
@@ -124,22 +128,22 @@ class BoundedCliTest {
     @Test
     @DisplayName("Compilation diagnostics return exit status one")
     void reportsCompilationFailure() throws IOException {
-        compiler = request -> new CompilationResult(List.of(diagnostic()), List.of());
+        compiler = request -> CompilationResult.failure(List.of(diagnostic()));
 
         assertThat(run(), is(1));
     }
 
     @Test
-    @DisplayName("Prints diagnostics with source paths to standard error in result order")
+    @DisplayName("Prints each diagnostic using its own source path in result order")
     void printsDiagnostics() throws IOException {
-        var second = new Diagnostic(SYNTAX_ERROR, new SourceSpan(4, 1), "Missing closing brace");
-        compiler = request -> new CompilationResult(List.of(diagnostic(), second), List.of());
+        var second = new Diagnostic(SYNTAX_ERROR, new SourceSpan("dependency.bounded", 4, 1), "Missing closing brace");
+        compiler = request -> CompilationResult.failure(List.of(diagnostic(), second));
 
         run();
 
         assertThat(errors.toString(UTF_8), is(
                 sourcePath + ":BND0001:2:3 Missing semicolon" + System.lineSeparator()
-                        + sourcePath + ":BND0001:4:1 Missing closing brace" + System.lineSeparator()));
+                        + "dependency.bounded:BND0001:4:1 Missing closing brace" + System.lineSeparator()));
         assertThat(output.toString(UTF_8), is(emptyString()));
     }
 
@@ -188,6 +192,6 @@ class BoundedCliTest {
     }
 
     private Diagnostic diagnostic() {
-        return new Diagnostic(SYNTAX_ERROR, new SourceSpan(2, 3), "Missing semicolon");
+        return new Diagnostic(SYNTAX_ERROR, new SourceSpan(sourcePath.toString(), 2, 3), "Missing semicolon");
     }
 }

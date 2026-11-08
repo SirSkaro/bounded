@@ -4,6 +4,7 @@ import dev.bounded.compiler.api.CompilationRequest;
 import dev.bounded.compiler.api.CompileProgram;
 import dev.bounded.compiler.api.SourceFile;
 import dev.bounded.compiler.api.write.OutputTarget;
+import dev.bounded.compiler.diagnostics.TextDiagnosticFormatter;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -38,11 +39,11 @@ public final class BoundedCli {
         var result = compiler.compile(new CompilationRequest(sourceFile, new OutputTarget(outputRoot)));
 
         for (var diagnostic : result.diagnostics()) {
-            errors.println(sourcePath + ":" + diagnostic.format());
+            errors.println(TextDiagnosticFormatter.format(diagnostic));
         }
 
-        for (var classFile : result.generatedClassFiles()) {
-            output.println("Generated " + classFile.toAbsolutePath());
+        for (var artifact : result.artifacts()) {
+            output.println("Generated " + artifact.classFile().toAbsolutePath());
         }
 
         return result.succeeded() ? 0 : 1;

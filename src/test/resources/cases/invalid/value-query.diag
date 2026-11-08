@@ -1,1 +1,1 @@
-BND1001:3:3 Value 'Money' permits operations through FUNCTION; 'exchangeRate' is QUERY.
+value-query.bounded:BND1001:3:3 Value 'Money' permits operations through FUNCTION; 'exchangeRate' is QUERY.

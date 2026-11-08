@@ -1,6 +1,7 @@
 package dev.bounded.compiler.backend;
 
 import dev.bounded.compiler.api.generate.GeneratedClass;
+import dev.bounded.compiler.ast.AnalyzedProgram;
 import dev.bounded.compiler.ast.ArcheClassDeclaration;
 import dev.bounded.compiler.ast.ArcheClassKind;
 import dev.bounded.compiler.ast.ArcheOperationDeclaration;
@@ -175,9 +176,10 @@ class JvmBackendTest {
     }
 
     private GeneratedClass generate(BoundedProgram program) {
-        var result = backend.generate(program);
+        var result = backend.generate(new AnalyzedProgram(program));
         assertThat(result.diagnostics(), is(empty()));
-        return result.generatedClass();
+        assertThat(result.generatedProgram().classes(), hasSize(1));
+        return result.generatedProgram().classes().getFirst();
     }
 
     @Test
@@ -187,7 +189,7 @@ class JvmBackendTest {
         var program = new BoundedProgram(new ArcheClassDeclaration(
                 VALUE, "A".repeat(65_536), List.of(), sourceSpan));
 
-        var result = backend.generate(program);
+        var result = backend.generate(new AnalyzedProgram(program));
 
         assertThat(result.isValid(), is(false));
         assertThat(result.diagnostics(), hasSize(1));

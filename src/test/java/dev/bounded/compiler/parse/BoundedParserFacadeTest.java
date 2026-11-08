@@ -30,10 +30,10 @@ class BoundedParserFacadeTest {
         var archeClass = result.program().archeClass();
         assertThat(archeClass.kind(), is(ArcheClassKind.VALUE));
         assertThat(archeClass.name(), is("Money"));
-        assertThat(archeClass.span(), is(new SourceSpan(1, 1)));
+        assertThat(archeClass.span(), is(new SourceSpan("money.bounded", 1, 1)));
         assertThat(archeClass.operations(), hasSize(1));
         assertThat(archeClass.operations().getFirst().kind(), is(ArcheOperationKind.FUNCTION));
         assertThat(archeClass.operations().getFirst().name(), is("format"));
-        assertThat(archeClass.operations().getFirst().span(), is(new SourceSpan(2, 3)));
+        assertThat(archeClass.operations().getFirst().span(), is(new SourceSpan("money.bounded", 2, 3)));
     }
 }

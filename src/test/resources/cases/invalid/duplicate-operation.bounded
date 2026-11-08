@@ -1,0 +1,4 @@
+entity Account {
+  function balance;
+  query balance;
+}

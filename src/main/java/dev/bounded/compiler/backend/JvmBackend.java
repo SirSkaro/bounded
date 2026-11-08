@@ -3,9 +3,10 @@ package dev.bounded.compiler.backend;
 import dev.bounded.compiler.api.generate.CodeGenerator;
 import dev.bounded.compiler.api.generate.GeneratedClass;
 import dev.bounded.compiler.api.generate.GenerationResult;
+import dev.bounded.compiler.api.generate.GeneratedProgram;
+import dev.bounded.compiler.ast.AnalyzedProgram;
 import dev.bounded.compiler.ast.ArcheClassDeclaration;
 import dev.bounded.compiler.ast.ArcheOperationDeclaration;
-import dev.bounded.compiler.ast.BoundedProgram;
 import dev.bounded.compiler.diagnostics.Diagnostic;
 
 import java.lang.classfile.ClassBuilder;
@@ -35,20 +36,20 @@ public final class JvmBackend implements CodeGenerator {
     private static final ClassDesc MAP_ENTRY = ClassDesc.of("java.util.Map$Entry");
 
     @Override
-    public GenerationResult generate(BoundedProgram program) {
+    public GenerationResult generate(AnalyzedProgram program) {
         try {
-            return GenerationResult.validResult(generateClass(program));
+            return GenerationResult.validResult(new GeneratedProgram(List.of(generateClass(program))));
         } catch (IllegalArgumentException exception) {
             var diagnostic = new Diagnostic(
                     JVM_BACKEND_FAILURE,
-                    program.archeClass().span(),
+                    program.program().archeClass().span(),
                     "Could not generate JVM bytecode: " + exception.getMessage());
             return GenerationResult.invalidResult(List.of(diagnostic));
         }
     }
 
-    private GeneratedClass generateClass(BoundedProgram program) {
-        var archeClass = program.archeClass();
+    private GeneratedClass generateClass(AnalyzedProgram program) {
+        var archeClass = program.program().archeClass();
         var className = GENERATED_PACKAGE + ".Bounded_" + archeClass.name();
         var bytecode = ClassFile.of().build(ClassDesc.of(className), builder -> {
             builder.withVersion(JAVA_25_VERSION, 0)
@@ -56,7 +57,7 @@ public final class JvmBackend implements CodeGenerator {
                     .withSuperclass(CD_Object);
             declarePrivateConstructor(builder);
             declareArcheClassKind(builder, archeClass);
-            declareOperations(builder, archeClass.operations());
+            declareOperations(builder, List.copyOf(program.operations().values()));
         });
         return new GeneratedClass(className, bytecode);
     }
@@ -70,7 +71,7 @@ public final class JvmBackend implements CodeGenerator {
 
     private void declareArcheClassKind(ClassBuilder builder, ArcheClassDeclaration archeClass) {
         builder.withMethodBody("boundedArcheClassKind", MethodTypeDesc.of(CD_String), ACC_PUBLIC | ACC_STATIC,
-                code -> code.loadConstant(archeClass.kind().name()).areturn());
+                code -> code.loadConstant(archeClass.kind().metadataName()).areturn());
     }
 
     private void declareOperations(ClassBuilder builder, List<ArcheOperationDeclaration> operations) {
@@ -97,7 +98,7 @@ public final class JvmBackend implements CodeGenerator {
             code.dup()
                     .loadConstant(index)
                     .loadConstant(operation.name())
-                    .loadConstant(operation.kind().name())
+                    .loadConstant(operation.kind().metadataName())
                     .invokestatic(MAP, "entry", MethodTypeDesc.of(MAP_ENTRY, CD_Object, CD_Object), true)
                     .aastore();
         }

@@ -55,7 +55,7 @@ Examples include `value`, `entity`, `message`, `mapper`, `usecase`, and `adapter
 
 ### 3.2 ArcheOperation (ArcheOp)
 
-An **ArcheOperation**, abbreviated **ArcheOp**, is an operation with a declared effect grade. The initial grades are `fn`, `query`, `command`, and `action`.
+An **ArcheOperation**, abbreviated **ArcheOp**, is an operation with a declared effect grade. The initial grades are `function`, `query`, `command`, and `action`.
 
 The phonetic resemblance between ArcheOps and the Pokemon Archeops is acknowledged but non-normative. Defeatist is not a supported compiler mode.
 
@@ -80,32 +80,32 @@ The **architecture** is a top-level declaration of modules, ports, permitted dep
 The initial effect grades form the following order:
 
 ```text
-fn < query < command < action
+function < query < command < action
 ```
 
 An ArcheOp MAY invoke another ArcheOp at its own grade or a lower grade. It MUST NOT invoke an ArcheOp at a higher grade.
 
 | Caller | Permitted callee grades |
 | --- | --- |
-| `fn` | `fn` |
-| `query` | `fn`, `query` |
-| `command` | `fn`, `query`, `command` |
-| `action` | `fn`, `query`, `command`, `action` |
+| `function` | `function` |
+| `query` | `function`, `query` |
+| `command` | `function`, `query`, `command` |
+| `action` | `function`, `query`, `command`, `action` |
 
 This ordering establishes an effect ceiling, not an obligation. An `action` MAY happen to perform a pure calculation, but callers must treat it as action-grade behavior because its contract permits action-grade effects.
 
-### 4.1 `fn`
+### 4.1 `function`
 
-A `fn` is a composable calculation.
+A `function` is a composable calculation.
 
-A `fn`:
+A `function`:
 
 - MUST NOT create an observable side effect;
 - MUST NOT mutate existing state;
 - MUST NOT read mutable or external state;
 - MUST NOT invoke a port or arbitrary foreign JVM operation;
 - MAY allocate and return immutable values;
-- MAY call only other `fn` ArcheOps.
+- MAY call only other `function` ArcheOps.
 
 The intended model is referential transparency. Typed failure values MAY be returned. Exception and termination semantics remain deferred.
 
@@ -118,7 +118,7 @@ A `query`:
 - MAY read owned mutable state;
 - MAY invoke architecturally authorized read capabilities;
 - MUST NOT modify logical state;
-- MAY call `fn` and `query` ArcheOps.
+- MAY call `function` and `query` ArcheOps.
 
 A query is not necessarily referentially transparent. Its result may change when the state it observes changes.
 
@@ -130,7 +130,7 @@ A `command`:
 
 - MAY observe state;
 - MAY mutate state that its ArcheClass is authorized to own or control;
-- MAY call `fn`, `query`, and `command` ArcheOps;
+- MAY call `function`, `query`, and `command` ArcheOps;
 - MUST NOT invoke an `action`;
 - MUST NOT acquire undeclared architectural authority merely because its effect grade is sufficient.
 
@@ -167,8 +167,8 @@ The initial proposed built-in ArcheClasses are:
 | ArcheClass | Maximum grade | Initial intent |
 | --- | --- | --- |
 | `message` | none | Immutable boundary data with no behavior |
-| `value` | `fn` | Immutable domain concept with invariants and structural equality |
-| `mapper` | `fn` | Pure boundary transformation; intended to become total by default |
+| `value` | `function` | Immutable domain concept with invariants and structural equality |
+| `mapper` | `function` | Pure boundary transformation; intended to become total by default |
 | `entity` | `command` | Identity-bearing domain concept with queries and controlled transitions |
 | `usecase` | `action` | Stateless orchestration of domain behavior and declared ports |
 | `adapter` | `action` | Technical detail that implements or consumes declared ports |
@@ -180,7 +180,7 @@ Examples:
 
 ```bounded
 value Money {
-    fn plus(other: Money) -> Money
+    function plus(other: Money) -> Money
 }
 
 entity Order {
@@ -189,11 +189,11 @@ entity Order {
 }
 
 mapper OrderMapper {
-    fn toStored(order: Order) -> StoredOrder
+    function toStored(order: Order) -> StoredOrder
 }
 
 usecase PlaceOrder {
-    fn validate(input: PlaceOrderInput) -> Validation
+    function validate(input: PlaceOrderInput) -> Validation
     action execute(input: PlaceOrderInput) -> PlaceOrderOutput
 }
 ```
@@ -206,7 +206,7 @@ value Money {
 }
 ```
 
-The compiler MUST report that `command` exceeds `value`'s maximum grade of `fn`.
+The compiler MUST report that `command` exceeds `value`'s maximum grade of `function`.
 
 The `service` ArcheClass is intentionally deferred because statelessness does not determine effect grade. A later design may distinguish pure domain policies from effectful application orchestration rather than introduce one ambiguous service category.
 
@@ -289,7 +289,7 @@ Mapping is a first-class boundary operation rather than reflection-based convent
 
 A mapper:
 
-- MUST be `fn` grade;
+- MUST be `function` grade;
 - MUST NOT retain a reference to an internal source object in boundary data;
 - MUST assign every required target field;
 - MUST fail compilation when a required target field is added without a mapping;
@@ -299,7 +299,7 @@ Provisional syntax:
 
 ```bounded
 mapper OrderMapper {
-    fn toStored(source: Order) -> StoredOrder {
+    function toStored(source: Order) -> StoredOrder {
         id     <- source.id
         status <- source.status
     }
@@ -314,9 +314,9 @@ Foreign JVM interoperability is a core long-term requirement but is outside the 
 
 Initial policy:
 
-- arbitrary foreign calls are considered effectful and unsafe for `fn` ArcheOps;
+- arbitrary foreign calls are considered effectful and unsafe for `function` ArcheOps;
 - foreign adapters are the intended location for Java, Kotlin, Scala, framework, database, network, and reflection details;
-- a future trusted-pure foreign declaration may permit selected JVM operations inside `fn` ArcheOps;
+- a future trusted-pure foreign declaration may permit selected JVM operations inside `function` ArcheOps;
 - the compiler and linker must not claim guarantees they cannot enforce against foreign bytecode.
 
 The first implementation SHOULD avoid solving foreign purity, Spring compatibility, proxying, reflection, JPMS emission, or implementing a custom JVM bytecode verifier.
@@ -325,7 +325,9 @@ The first implementation SHOULD avoid solving foreign purity, Spring compatibili
 
 Compiler diagnostics are part of Bounded's user-facing architecture model. They SHOULD name the violated concept and the legal alternatives.
 
-Initial stable diagnostic categories:
+Proposed diagnostic categories for the broader semantic milestone are listed below.
+The current vertical slice uses the implemented codes documented in Section 13; these
+proposals do not rename those existing codes.
 
 | Code | Meaning |
 | --- | --- |
@@ -342,7 +344,7 @@ Example:
 ```text
 BND110: query `Order.total` cannot invoke command `Order.applyDiscount`
   at order.bounded:14:16
-  permitted callees: fn, query
+  permitted callees: function, query
 ```
 
 The compiler SHOULD eventually support:
@@ -372,7 +374,7 @@ The milestone supports only enough syntax to declare:
 
 It MUST demonstrate these cases:
 
-1. A valid `value` containing only `fn` ArcheOps compiles.
+1. A valid `value` containing only `function` ArcheOps compiles.
 2. A `value` containing a `command` fails with `BND100`.
 3. A `query` calling a `command` fails with `BND110`.
 4. A `command` calling a `query` compiles.
@@ -393,7 +395,27 @@ Use a deliberately familiar bootstrap stack:
 - JUnit and Hamcrest for automated tests;
 - direct JVM bytecode emission using the standard JDK Class-File API.
 
-The backend consumes the validated AST and produces class bytes in memory; a separate writer persists the class files. Generated classes explicitly target Java 25. This replaces the initial generated-Java experiment and requires no external bytecode library or preview flags. Emitted classes can be inspected with the Class-File API or `javap`.
+The backend consumes the analyzed program and produces class bytes in memory; a separate writer persists the class files. Generated classes explicitly target Java 25. This replaces the initial generated-Java experiment and requires no external bytecode library or preview flags. Emitted classes can be inspected with the Class-File API or `javap`.
+
+The current vertical slice supports one `value` or `entity` with bodyless `function` and
+`query` declarations. `function` is the keyword for a pure operation. Operation names are
+case-sensitive and MUST be unique within their archeclass, regardless of operation kind;
+overloading is not supported in this slice. Each redeclaration produces `BND1002` at the
+later declaration. Syntax errors use `BND0001`, forbidden effects use `BND1001`, and backend
+failures use `BND9001`. These implemented codes are distinct from the proposed diagnostic
+categories in Section 11.
+
+Semantic analysis retains the parsed program and a declaration index. The backend consumes
+that analysis and returns a nonempty collection of uniquely named generated classes. The
+writer returns descriptors containing each binary class name and class path root, so callers
+can locate and load output without inferring the backend's naming convention.
+
+Successful compilation contains artifacts and no diagnostics; rejected compilation contains
+diagnostics and no artifacts. A source span carries its source name as well as a one-based
+line and column. Text formatting is separate from diagnostic data and uses
+`source:code:line:column message`. Filesystem failures propagate as I/O exceptions; completed
+writes are retained if a later write fails. Output below the requested root must not traverse
+symbolic links.
 
 The current vertical slice emits metadata for archeclass and operation declarations. Runtime lowering for operation bodies remains deferred until their semantics are defined. The semantic milestone in Section 12 remains the language's central objective.
 
@@ -435,8 +457,9 @@ Compilers are unusually well suited to automated testing because source text is 
 
 The [acceptance testing roadmap](Acceptance-Testing-Roadmap.md) describes how the existing
 source fixtures can grow into a DSL for compilation, diagnostics, and execution of emitted
-code. Its stages are planned test capabilities; executable operation bodies and Java
-interoperability remain subject to the language semantics defined here.
+code. Stage 1 supports compilation, rejection, and metadata loading. Later stages, including
+executable operation bodies and Java interoperability, remain subject to the language
+semantics defined here.
 
 ### 14.1 Unit tests
 
@@ -539,7 +562,7 @@ These are deferred so the first implementation can test the language's architect
 2. Should entity `query` operations and externally backed port queries share one grade despite observing different scopes of state?
 3. What may a `command` return without collapsing command-query separation?
 4. Should a mapper be required to be total in the first language release?
-5. May messages contain derived `fn` ArcheOps, or must boundary data remain behavior-free?
+5. May messages contain derived `function` ArcheOps, or must boundary data remain behavior-free?
 6. Which ArcheClass owns pure domain behavior that fits neither an entity nor a value?
 7. Are ArcheClass ceilings fixed language rules or eventually user-definable under compiler-verified constraints?
 8. Which portions of an operation's capability set must appear explicitly in source, and which may be inferred?

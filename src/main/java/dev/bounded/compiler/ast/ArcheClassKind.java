@@ -6,21 +6,25 @@ import static java.util.Arrays.stream;
 import static java.util.Objects.requireNonNull;
 
 public enum ArcheClassKind {
-    VALUE(FUNCTION, "Value"),
-    ENTITY(QUERY, "Entity");
+    VALUE(FUNCTION, "value", "VALUE", "Value"),
+    ENTITY(QUERY, "entity", "ENTITY", "Entity");
 
     private final ArcheOperationKind maximumOperationKind;
     private final String label;
+    private final String keyword;
+    private final String metadataName;
 
-    ArcheClassKind(ArcheOperationKind maximumOperationKind, String label) {
+    ArcheClassKind(ArcheOperationKind maximumOperationKind, String keyword, String metadataName, String label) {
         this.maximumOperationKind = maximumOperationKind;
         this.label = label;
+        this.keyword = keyword;
+        this.metadataName = metadataName;
     }
 
     public static ArcheClassKind fromKeyword(String keyword) {
         requireNonNull(keyword, "keyword");
         return stream(values())
-                .filter(kind -> kind.name().equalsIgnoreCase(keyword))
+                .filter(kind -> kind.keyword.equalsIgnoreCase(keyword))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Unknown archeclass keyword: " + keyword));
     }
@@ -35,5 +39,9 @@ public enum ArcheClassKind {
 
     public String label() {
         return label;
+    }
+
+    public String metadataName() {
+        return metadataName;
     }
 }

@@ -11,6 +11,13 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ArcheClassKindTest {
+    @DisplayName("Provides stable metadata independent of the Java enum name")
+    @ParameterizedTest(name = "{0} exposes metadata {1}")
+    @CsvSource({"VALUE, VALUE", "ENTITY, ENTITY"})
+    void providesMetadataName(ArcheClassKind kind, String expected) {
+        assertThat(kind.metadataName(), is(expected));
+    }
+
     @DisplayName("Determines which operation kinds an archeclass may declare")
     @ParameterizedTest(name = "{0} allows {1}: {2}")
     @CsvSource({

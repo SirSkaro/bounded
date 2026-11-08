@@ -4,6 +4,10 @@ import dev.bounded.compiler.api.check.CheckResult;
 import dev.bounded.compiler.api.check.SemanticChecker;
 import dev.bounded.compiler.api.generate.CodeGenerator;
 import dev.bounded.compiler.api.generate.GeneratedClass;
+import dev.bounded.compiler.api.generate.GeneratedProgram;
+import dev.bounded.compiler.api.generate.ClassName;
+import dev.bounded.compiler.api.write.CompiledClass;
+import dev.bounded.compiler.ast.AnalyzedProgram;
 import dev.bounded.compiler.api.generate.GenerationResult;
 import dev.bounded.compiler.api.parse.ParseResult;
 import dev.bounded.compiler.api.parse.Parser;
@@ -44,14 +48,18 @@ class BoundedCompilerTest {
     private final BoundedProgram program = new BoundedProgram(
             new ArcheClassDeclaration(VALUE, "Amount", List.of(), new SourceSpan(1, 1)));
     private final GeneratedClass generatedClass = new GeneratedClass("example.Amount", new byte[]{1, 2, 3});
-    private final List<Path> classFiles = List.of(Path.of("Amount.class"), Path.of("AmountHelper.class"));
+    private final AnalyzedProgram analyzed = new AnalyzedProgram(program);
+    private final GeneratedProgram generatedProgram = new GeneratedProgram(List.of(generatedClass));
+    private final List<CompiledClass> artifacts = List.of(
+            new CompiledClass(new ClassName("example.Amount"), Path.of("classes")),
+            new CompiledClass(new ClassName("example.AmountHelper"), Path.of("classes")));
     private final CompilationRequest request = new CompilationRequest(
             new SourceFile("Amount.bounded", "value Amount {}"), new OutputTarget(Path.of("output")));
 
     private Parser parser = source -> ParseResult.validResult(program);
-    private SemanticChecker checker = parsed -> CheckResult.validResult();
-    private CodeGenerator generator = checked -> GenerationResult.validResult(generatedClass);
-    private ArtifactWriter writer = (generated, target) -> new WriteResult(classFiles);
+    private SemanticChecker checker = parsed -> CheckResult.validResult(analyzed);
+    private CodeGenerator generator = checked -> GenerationResult.validResult(generatedProgram);
+    private ArtifactWriter writer = (generated, target) -> new WriteResult(artifacts);
 
     @Nested
     @DisplayName("Successful compilation")
@@ -66,15 +74,15 @@ class BoundedCompilerTest {
             };
             checker = parsed -> {
                 stages.add("check");
-                return CheckResult.validResult();
+                return CheckResult.validResult(analyzed);
             };
             generator = checked -> {
                 stages.add("generate");
-                return GenerationResult.validResult(generatedClass);
+                return GenerationResult.validResult(generatedProgram);
             };
             writer = (generated, target) -> {
                 stages.add("write");
-                return new WriteResult(classFiles);
+                return new WriteResult(artifacts);
             };
 
             compile();
@@ -102,7 +110,7 @@ class BoundedCompilerTest {
             var received = new AtomicReference<BoundedProgram>();
             checker = parsed -> {
                 received.set(parsed);
-                return CheckResult.validResult();
+                return CheckResult.validResult(analyzed);
             };
 
             compile();
@@ -113,29 +121,29 @@ class BoundedCompilerTest {
         @Test
         @DisplayName("Generates code from the checked program")
         void passesProgramToGenerator() throws IOException {
-            var received = new AtomicReference<BoundedProgram>();
+            var received = new AtomicReference<AnalyzedProgram>();
             generator = checked -> {
                 received.set(checked);
-                return GenerationResult.validResult(generatedClass);
+                return GenerationResult.validResult(generatedProgram);
             };
 
             compile();
 
-            assertThat(received.get(), sameInstance(program));
+            assertThat(received.get(), sameInstance(analyzed));
         }
 
         @Test
-        @DisplayName("Writes the class returned by the generator")
+        @DisplayName("Writes every class returned by the generator")
         void passesClassToWriter() throws IOException {
-            var received = new AtomicReference<GeneratedClass>();
+            var received = new AtomicReference<GeneratedProgram>();
             writer = (generated, target) -> {
                 received.set(generated);
-                return new WriteResult(classFiles);
+                return new WriteResult(artifacts);
             };
 
             compile();
 
-            assertThat(received.get(), sameInstance(generatedClass));
+            assertThat(received.get(), sameInstance(generatedProgram));
         }
 
         @Test
@@ -144,7 +152,7 @@ class BoundedCompilerTest {
             var received = new AtomicReference<OutputTarget>();
             writer = (generated, target) -> {
                 received.set(target);
-                return new WriteResult(classFiles);
+                return new WriteResult(artifacts);
             };
 
             compile();
@@ -153,9 +161,11 @@ class BoundedCompilerTest {
         }
 
         @Test
-        @DisplayName("Returns all paths reported by the writer without diagnostics")
+        @DisplayName("Returns all artifacts reported by the writer without diagnostics")
         void returnsWrittenClassFiles() throws IOException {
-            assertThat(compile(), is(new CompilationResult(List.of(), classFiles)));
+            var result = compile();
+            assertThat(result.artifacts(), is(artifacts));
+            assertThat(result.diagnostics(), is(List.of()));
         }
     }
 
@@ -173,7 +183,9 @@ class BoundedCompilerTest {
             generator = checked -> fail("Generation must not run after a parse failure");
             writer = (generated, target) -> fail("Writing must not run after a parse failure");
 
-            assertThat(compile(), is(new CompilationResult(diagnostics, List.of())));
+            var result = compile();
+            assertThat(result.diagnostics(), is(diagnostics));
+            assertThat(result.artifacts(), is(List.of()));
         }
 
         @Test
@@ -182,11 +194,13 @@ class BoundedCompilerTest {
             var diagnostics = List.of(
                     new Diagnostic(EFFECT_NOT_ALLOWED, new SourceSpan(2, 3), "First effect error"),
                     new Diagnostic(EFFECT_NOT_ALLOWED, new SourceSpan(3, 3), "Second effect error"));
-            checker = parsed -> new CheckResult(diagnostics);
+            checker = parsed -> CheckResult.invalidResult(diagnostics);
             generator = checked -> fail("Generation must not run after a semantic failure");
             writer = (generated, target) -> fail("Writing must not run after a semantic failure");
 
-            assertThat(compile(), is(new CompilationResult(diagnostics, List.of())));
+            var result = compile();
+            assertThat(result.diagnostics(), is(diagnostics));
+            assertThat(result.artifacts(), is(List.of()));
         }
 
         @Test
@@ -198,7 +212,9 @@ class BoundedCompilerTest {
             generator = checked -> GenerationResult.invalidResult(diagnostics);
             writer = (generated, target) -> fail("Writing must not run after a generation failure");
 
-            assertThat(compile(), is(new CompilationResult(diagnostics, List.of())));
+            var result = compile();
+            assertThat(result.diagnostics(), is(diagnostics));
+            assertThat(result.artifacts(), is(List.of()));
         }
 
         @Test

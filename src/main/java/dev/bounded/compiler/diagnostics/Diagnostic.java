@@ -15,7 +15,4 @@ public record Diagnostic(
         requireNonNull(message, "message");
     }
 
-    public String format() {
-        return code.externalCode() + ":" + span.line() + ":" + span.column() + " " + message;
-    }
 }

@@ -26,37 +26,38 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("Generation result invariants")
 class GenerationResultTest {
-    private final GeneratedClass generatedClass = new GeneratedClass("example.Amount", new byte[]{1, 2, 3});
+    private final GeneratedProgram generatedProgram = new GeneratedProgram(
+            List.of(new GeneratedClass("example.Amount", new byte[]{1, 2, 3})));
     private final Diagnostic diagnostic = new Diagnostic(JVM_BACKEND_FAILURE, new SourceSpan(2, 3), "Cannot generate class");
 
     @Test
-    @DisplayName("A valid result retains the generated class")
+    @DisplayName("A valid result retains the generated program")
     void retainsGeneratedClass() {
-        assertThat(validResult(generatedClass).generatedClass(), sameInstance(generatedClass));
+        assertThat(validResult(generatedProgram).generatedProgram(), sameInstance(generatedProgram));
     }
 
     @Test
     @DisplayName("A valid result has no diagnostics")
     void hasNoDiagnosticsForAValidResult() {
-        assertThat(validResult(generatedClass).diagnostics(), is(empty()));
+        assertThat(validResult(generatedProgram).diagnostics(), is(empty()));
     }
 
     @Test
-    @DisplayName("A generated class makes the result valid")
+    @DisplayName("A generated program makes the result valid")
     void reportsAValidResult() {
-        assertThat(validResult(generatedClass).isValid(), is(true));
+        assertThat(validResult(generatedProgram).isValid(), is(true));
     }
 
     @Test
-    @DisplayName("A valid result requires a generated class")
+    @DisplayName("A valid result requires a generated program")
     void rejectsNullGeneratedClass() {
         assertThrows(NullPointerException.class, () -> validResult(null));
     }
 
     @Test
-    @DisplayName("An invalid result contains no generated class")
+    @DisplayName("An invalid result contains no generated program")
     void hasNoGeneratedClassForAnInvalidResult() {
-        assertThat(invalidResult(List.of(diagnostic)).generatedClass(), is(nullValue()));
+        assertThat(invalidResult(List.of(diagnostic)).generatedProgram(), is(nullValue()));
     }
 
     @Test

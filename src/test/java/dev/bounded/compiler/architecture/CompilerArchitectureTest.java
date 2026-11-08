@@ -4,6 +4,7 @@ import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import dev.bounded.compiler.api.BoundedCompiler;
 import dev.bounded.compiler.cli.Main;
+import dev.bounded.compiler.diagnostics.TextDiagnosticFormatter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -125,6 +126,15 @@ class CompilerArchitectureTest {
     void confinesFilesystemAccessToAdapters() {
         noClasses().that().resideOutsideOfPackages(CLI, BACKEND)
                 .should().dependOnClassesThat().haveFullyQualifiedName(Files.class.getName())
+                .check(PRODUCTION);
+    }
+
+    @Test
+    @DisplayName("Diagnostic text presentation stays outside compiler policy and model")
+    void confinesDiagnosticFormattingToPresentation() {
+        noClasses().that().resideOutsideOfPackages(CLI)
+                .and().doNotHaveFullyQualifiedName(TextDiagnosticFormatter.class.getName())
+                .should().dependOnClassesThat().haveFullyQualifiedName(TextDiagnosticFormatter.class.getName())
                 .check(PRODUCTION);
     }
 }

@@ -1,119 +1,90 @@
 package dev.bounded.compiler.cli;
 
-import dev.bounded.compiler.api.CompilationRequest;
-import dev.bounded.compiler.api.CompilationResult;
-import dev.bounded.compiler.api.CompileProgram;
+import dev.bounded.compiler.acceptance.CompilerDriver;
 import dev.bounded.compiler.api.SourceFile;
-import dev.bounded.compiler.api.write.OutputTarget;
 import dev.bounded.compiler.ast.SourceSpan;
-import dev.bounded.compiler.diagnostics.Diagnostic;
 import dev.bounded.compiler.locale.LocaleSensitiveTest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.api.parallel.Isolated;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
-import java.net.URLClassLoader;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 
-import static dev.bounded.compiler.diagnostics.DiagnosticCode.JVM_BACKEND_FAILURE;
-import static dev.bounded.compiler.diagnostics.DiagnosticCode.SYNTAX_ERROR;
+import static dev.bounded.compiler.acceptance.AcceptanceSources.expectedDiagnostics;
+import static dev.bounded.compiler.acceptance.AcceptanceSources.fixture;
+import static dev.bounded.compiler.acceptance.CompilationMatchers.accepted;
+import static dev.bounded.compiler.acceptance.CompilationMatchers.rejectedWithCode;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Isolated
-@DisplayName("Compiler fixtures through the production composition root")
+@DisplayName("Compiler acceptance through the production composition root")
 class FixtureCompilationTest {
-    private final CompileProgram compiler = Main.compiler();
-
     @TempDir
     Path temporaryDirectory;
+    private CompilerDriver compiler;
+
+    @BeforeEach
+    void createCompilerDriver() {
+        compiler = new CompilerDriver(temporaryDirectory);
+    }
 
     @LocaleSensitiveTest
-    @DisplayName("Compiles a valid fixture independently of the default locale")
+    @DisplayName("Compiles and loads declaration metadata independently of the default locale")
     void compilesAValidBoundedFixtureIntoALoadableClass() throws Exception {
-        var result = compile(
-                fixtureSource("cases/valid/money.bounded"),
-                temporaryDirectory.resolve("valid"));
+        var compilation = compiler.compile(fixture("cases/valid/money.bounded"));
+        assertThat(compilation, accepted());
+        assertThat(compilation.result().artifacts(), hasSize(1));
 
-        assertThat(result.succeeded(), is(true));
-        assertThat(result.generatedClassFiles(), hasSize(1));
-        assertThat(Files.exists(temporaryDirectory.resolve("valid/generated-sources")), is(false));
-        assertThat(Files.exists(result.generatedClassFiles().getFirst()), is(true));
-
-        var classesRoot = temporaryDirectory.resolve("valid/classes");
-        try (var classLoader = new URLClassLoader(
-                new java.net.URL[]{classesRoot.toUri().toURL()}, ClassLoader.getPlatformClassLoader())) {
-            var generatedClass = classLoader.loadClass("bounded.generated.Bounded_Money");
-            assertThat(generatedClass.getMethod("boundedArcheClassKind").invoke(null), is("VALUE"));
-
-            @SuppressWarnings("unchecked")
-            var operations = (Map<String, String>) generatedClass
-                    .getMethod("boundedOperations")
-                    .invoke(null);
-            assertThat(operations, is(Map.of("format", "FUNCTION")));
+        try (var program = compilation.load()) {
+            var archeClass = program.archeClass();
+            assertThat(archeClass.kind(), is("VALUE"));
+            assertThat(archeClass.operations(), is(Map.of("format", "FUNCTION")));
         }
     }
 
     @Test
-    @DisplayName("Produces stable diagnostics and no artifacts for an invalid fixture")
-    void matchesTheExpectedDiagnosticAndEmitsNoArtifactsForAnInvalidFixture()
-            throws Exception {
-        var outputRoot = temporaryDirectory.resolve("invalid");
-        var result = compile(
-                fixtureSource("cases/invalid/value-query.bounded"),
-                outputRoot);
+    @DisplayName("A value containing a query produces the specified diagnostic without artifacts")
+    void matchesTheExpectedDiagnosticAndEmitsNoArtifactsForAnInvalidFixture() throws IOException {
+        var compilation = compiler.compile(fixture("cases/invalid/value-query.bounded"));
+        assertThat(compilation, rejectedWithCode("BND1001"));
+        assertThat(compilation.formattedDiagnostics(), is(expectedDiagnostics("cases/invalid/value-query.diag")));
+    }
 
-        assertThat(result.succeeded(), is(false));
-        var actualDiagnostics = result.diagnostics().stream()
-                .map(Diagnostic::format)
-                .toList();
-        var expectedDiagnostics = Files.readAllLines(
-                fixturePath("cases/invalid/value-query.diag"),
-                StandardCharsets.UTF_8);
-
-        assertThat(actualDiagnostics, is(expectedDiagnostics));
-        assertThat(result.generatedClassFiles(), is(empty()));
-        assertThat(Files.exists(outputRoot), is(false));
+    @DisplayName("Syntax errors produce diagnostics without creating output")
+    @ParameterizedTest(name = "Rejects invalid source [{0}]")
+    @ValueSource(strings = {"value Amount {", "value Amount { fn format; }"})
+    void stopsAfterSyntaxErrors(String source) throws IOException {
+        assertThat(compiler.compile(source), rejectedWithCode("BND0001"));
     }
 
     @Test
-    @DisplayName("Syntax errors produce diagnostics and no output directory")
-    void stopsAfterSyntaxErrors() throws IOException {
-        var outputRoot = temporaryDirectory.resolve("syntax-error");
-
-        var result = compile(new SourceFile("Amount.bounded", "value Amount {"), outputRoot);
-
-        assertThat(result.succeeded(), is(false));
-        assertThat(result.diagnostics().getFirst().code(), is(SYNTAX_ERROR));
-        assertThat(result.generatedClassFiles(), is(empty()));
-        assertThat(Files.exists(outputRoot), is(false));
+    @DisplayName("A duplicate operation is rejected before generation")
+    void rejectsDuplicateOperations() throws IOException {
+        var compilation = compiler.compile(fixture("cases/invalid/duplicate-operation.bounded"));
+        assertThat(compilation, rejectedWithCode("BND1002"));
+        assertThat(compilation.formattedDiagnostics(), is(expectedDiagnostics("cases/invalid/duplicate-operation.diag")));
     }
 
     @Test
-    @DisplayName("Bytecode generation failures cross the ports as BND9001 without artifacts")
+    @DisplayName("Bytecode generation failures retain their source location without artifacts")
     void reportsBytecodeGenerationFailure() throws IOException {
-        var outputRoot = temporaryDirectory.resolve("oversized");
         var source = new SourceFile("oversized.bounded", "\n  value " + "A".repeat(65_536) + " {}");
-
-        var result = compile(source, outputRoot);
-
-        assertThat(result.succeeded(), is(false));
-        var diagnostic = result.diagnostics().getFirst();
-        assertThat(diagnostic.code(), is(JVM_BACKEND_FAILURE));
-        assertThat(diagnostic.code().externalCode(), is("BND9001"));
-        assertThat(diagnostic.span(), is(new SourceSpan(2, 3)));
+        var compilation = compiler.compile(source);
+        assertThat(compilation, rejectedWithCode("BND9001"));
+        var diagnostic = compilation.result().diagnostics().getFirst();
+        assertThat(diagnostic.span(), is(new SourceSpan("oversized.bounded", 2, 3)));
         assertThat(diagnostic.message(), startsWith("Could not generate JVM bytecode: "));
-        assertThat(result.generatedClassFiles(), is(empty()));
-        assertThat(Files.exists(outputRoot), is(false));
     }
 
     @Test
@@ -121,26 +92,6 @@ class FixtureCompilationTest {
     void propagatesFilesystemFailures() throws IOException {
         var outputRoot = Files.writeString(temporaryDirectory.resolve("occupied"), "occupied");
         var source = new SourceFile("Amount.bounded", "value Amount {}");
-
-        assertThrows(IOException.class, () -> compile(source, outputRoot));
-    }
-
-    private SourceFile fixtureSource(String resourceName) throws Exception {
-        var path = fixturePath(resourceName);
-        return new SourceFile(
-                path.getFileName().toString(),
-                Files.readString(path, StandardCharsets.UTF_8));
-    }
-
-    private CompilationResult compile(SourceFile sourceFile, Path outputRoot) throws IOException {
-        return compiler.compile(new CompilationRequest(sourceFile, new OutputTarget(outputRoot)));
-    }
-
-    private Path fixturePath(String resourceName) throws Exception {
-        var resource = getClass().getClassLoader().getResource(resourceName);
-        if (resource == null) {
-            throw new IllegalArgumentException("Missing test resource: " + resourceName);
-        }
-        return Path.of(resource.toURI());
+        assertThrows(IOException.class, () -> compiler.compileTo(source, outputRoot));
     }
 }

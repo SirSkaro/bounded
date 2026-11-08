@@ -1,0 +1,1 @@
+duplicate-operation.bounded:BND1002:3:3 Operation 'balance' is already declared in 'Account'.

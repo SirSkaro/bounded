@@ -1,8 +1,8 @@
 package dev.bounded.compiler.api.generate;
 
-import dev.bounded.compiler.ast.BoundedProgram;
+import dev.bounded.compiler.ast.AnalyzedProgram;
 
 @FunctionalInterface
 public interface CodeGenerator {
-    GenerationResult generate(BoundedProgram program);
+    GenerationResult generate(AnalyzedProgram program);
 }

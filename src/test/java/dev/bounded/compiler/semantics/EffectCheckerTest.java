@@ -16,7 +16,6 @@ import static dev.bounded.compiler.ast.ArcheClassKind.VALUE;
 import static dev.bounded.compiler.ast.ArcheOperationKind.FUNCTION;
 import static dev.bounded.compiler.ast.ArcheOperationKind.QUERY;
 import static dev.bounded.compiler.diagnostics.DiagnosticCode.EFFECT_NOT_ALLOWED;
-import static dev.bounded.compiler.api.check.ValidCheckMatcher.valid;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -40,7 +39,7 @@ class EffectCheckerTest {
             var program = givenProgram(archeClassKind, archeop);
 
             var result = checker.check(program);
-            assertThat(result, is(valid()));
+            assertThat(result, is(empty()));
         }
     }
 
@@ -60,8 +59,8 @@ class EffectCheckerTest {
 
             var result = checker.check(program);
 
-            assertThat(result, is(not(valid())));
-            assertThat(result.diagnostics(), hasSize(1));
+            assertThat(result, is(not(empty())));
+            assertThat(result, hasSize(1));
         }
     }
 
@@ -76,9 +75,9 @@ class EffectCheckerTest {
         var program = givenProgram(VALUE, archeop);
 
         var result = checker.check(program);
-        assertThat(result.diagnostics(), hasSize(1));
+        assertThat(result, hasSize(1));
 
-        var diagnostic = result.diagnostics().getFirst();
+        var diagnostic = result.getFirst();
         assertThat(diagnostic.code(), is(EFFECT_NOT_ALLOWED));
         assertThat(diagnostic.span().line(), is(3));
         assertThat(diagnostic.span().column(), is(7));
@@ -104,10 +103,10 @@ class EffectCheckerTest {
 
         var result = checker.check(program);
 
-        assertThat(result, is(not(valid())));
-        assertThat(result.diagnostics(), hasSize(2));
-        assertThat(result.diagnostics().get(0).span(), is(firstQuery.span()));
-        assertThat(result.diagnostics().get(1).span(), is(secondQuery.span()));
+        assertThat(result, is(not(empty())));
+        assertThat(result, hasSize(2));
+        assertThat(result.get(0).span(), is(firstQuery.span()));
+        assertThat(result.get(1).span(), is(secondQuery.span()));
     }
 
     private BoundedProgram givenProgram(ArcheClassKind kind, ArcheOperationDeclaration ...operations) {

@@ -14,7 +14,7 @@ Preserve the ports and adapters architecture and inward dependency direction:
 | `diagnostics` | Diagnostic codes, messages, and source spans; may depend on `ast`. |
 | `api` | Application policy in `BoundedCompiler`, inbound `CompileProgram`, outbound ports, and their boundary types. Depends on the inner model and JDK. |
 | `parse` | Implements `api.parse.Parser` using generated ANTLR classes and AST mapping. |
-| `semantics` | Implements `api.check.SemanticChecker` through `EffectChecker`. |
+| `semantics` | Implements `api.check.SemanticChecker` through `ProgramChecker`, composing declaration and effect rules. |
 | `backend` | Implements `api.generate.CodeGenerator` through `JvmBackend` and `api.write.ArtifactWriter` through `ClassFileWriter`. |
 | `cli` | Driving adapter and composition root. `Main` selects implementations and wires the compiler; `BoundedCli` uses `CompileProgram`. |
 | `grammar` | Generated ANTLR lexer and parser in production; handwritten grammar testing DSL in test sources. |
@@ -26,12 +26,21 @@ Preserve the ports and adapters architecture and inward dependency direction:
 - Confine ANTLR dependencies to parsing and generated grammar, the Class-File API to
   `backend`, and filesystem access to `cli` and `backend`.
 - Preserve constructor injection and the pipeline's early exits on invalid results.
+- Pass `AnalyzedProgram` from successful semantic analysis into generation. Keep declaration
+  checks separate from effect checks; neither rule knows about bytecode or output.
+- Generation returns a nonempty `GeneratedProgram`; writing and successful compilation return
+  nonempty `CompiledClass` descriptors. Use their binary names and class path roots to load
+  artifacts. Failed compilation has diagnostics and no artifacts.
+- Preserve source identity in spans and keep text formatting in `TextDiagnosticFormatter`.
+  Never derive public keywords or metadata from Java enum constant names.
+- Keep generated paths inside the output's `classes` tree; reject symbolic links below the
+  requested root. I/O failures propagate, and completed writes may remain after a later failure.
 - Treat `CompilerArchitectureTest` as executable architecture policy. New production
   packages must be explicitly incorporated into its rules while preserving these boundaries.
 
 The implemented language currently supports one `value` or `entity` with bodyless
-`function` and `query` declarations. The language specification is a discussion draft
-covering a broader design. Read it before language changes, and distinguish proposed
+`function` and `query` declarations with unique, case-sensitive operation names. The language
+specification is a discussion draft covering a broader design. Read it before language changes, and distinguish proposed
 features from behavior implemented in the grammar and tests.
 
 ## Important files
@@ -41,13 +50,14 @@ features from behavior implemented in the grammar and tests.
 | [README.md](README.md) and [docs/WALKTHROUGH.md](docs/WALKTHROUGH.md) | Build instructions, implemented scope, and a compiler walkthrough. |
 | [docs/Language-Spec-v0.0.1.md](docs/Language-Spec-v0.0.1.md) | Language design and intended semantics. |
 | [docs/architecture.drawio](docs/architecture.drawio) | Current production architecture in the `Ports and adapters` tab. |
-| [docs/Acceptance-Testing-Roadmap.md](docs/Acceptance-Testing-Roadmap.md) | Planned acceptance DSL stages, test boundaries, examples, and completion criteria. Read before acceptance-testing work. |
+| [docs/Acceptance-Testing-Roadmap.md](docs/Acceptance-Testing-Roadmap.md) | Acceptance DSL stages, test boundaries, examples, and completion criteria; Stage 1 is implemented. Read before acceptance-testing work. |
 | [pom.xml](pom.xml) | Java release, dependency versions, ANTLR generation, tests, PMD, PIT, and packaging. |
 | [Bounded.g4](src/main/antlr4/dev/bounded/compiler/grammar/Bounded.g4) | Source of truth for the implemented lexer and grammar. |
 | [BoundedCompiler.java](src/main/java/dev/bounded/compiler/api/BoundedCompiler.java) | Application orchestration through ports. |
 | [Main.java](src/main/java/dev/bounded/compiler/cli/Main.java) | Production composition root and executable entry point. |
 | [CompilerArchitectureTest.java](src/test/java/dev/bounded/compiler/architecture/CompilerArchitectureTest.java) | ArchUnit dependency and implementation-boundary checks. |
 | [FixtureCompilationTest.java](src/test/java/dev/bounded/compiler/cli/FixtureCompilationTest.java) and [cases/](src/test/resources/cases/) | Functional compiler tests, source examples, and expected diagnostics. |
+| [acceptance test package](src/test/java/dev/bounded/compiler/acceptance/) | Source fixtures, compiler driver, outcomes, matchers, and artifact loading for Stage 1 of the DSL. |
 | [grammar test package](src/test/java/dev/bounded/compiler/grammar/) | Lexer, complete-program, and grammar-rule tests with facades, result records, and Hamcrest matchers. |
 | [pmd/pmd-ruleset.xml](pmd/pmd-ruleset.xml) | Maintainability rules for handwritten production and test sources. |
 | [pmd/pmd-production-ruleset.xml](pmd/pmd-production-ruleset.xml) | Additional coupling check for production sources. |

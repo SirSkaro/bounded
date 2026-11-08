@@ -33,7 +33,7 @@ class BoundedAstMapperTest {
         void mapsValueClassKind() {
             var context = program(archeClass(VALUE, "Account"));
 
-            var kind = mapper.map(context).archeClass().kind();
+            var kind = mapper.map(context, "account.bounded").archeClass().kind();
 
             assertThat(kind, is(ArcheClassKind.VALUE));
         }
@@ -43,7 +43,7 @@ class BoundedAstMapperTest {
         void mapsEntityClassKind() {
             var context = program(archeClass(ENTITY, "Account"));
 
-            var kind = mapper.map(context).archeClass().kind();
+            var kind = mapper.map(context, "account.bounded").archeClass().kind();
 
             assertThat(kind, is(ArcheClassKind.ENTITY));
         }
@@ -54,7 +54,7 @@ class BoundedAstMapperTest {
             var expectedName = "MyName";
             var context = program(archeClass(ENTITY, expectedName));
 
-            var name = mapper.map(context).archeClass().name();
+            var name = mapper.map(context, "account.bounded").archeClass().name();
 
             assertThat(name, is(expectedName));
         }
@@ -64,7 +64,7 @@ class BoundedAstMapperTest {
         void mapsAnEmptyClass() {
             var context = program(archeClass(VALUE, "Money"));
 
-            var operations = mapper.map(context)
+            var operations = mapper.map(context, "account.bounded")
                     .archeClass()
                     .operations();
 
@@ -80,7 +80,7 @@ class BoundedAstMapperTest {
         void mapsFunctionOperationKind() {
             var context = program(archeClass(ENTITY, "Account", operation(FUNCTION, "balance")));
 
-            var operation = mapper.map(context)
+            var operation = mapper.map(context, "account.bounded")
                     .archeClass()
                     .operations()
                     .getFirst();
@@ -93,7 +93,7 @@ class BoundedAstMapperTest {
         void mapsQueryOperationKind() {
             var context = program(archeClass(ENTITY, "Account", operation(QUERY, "balance")));
 
-            var operation = mapper.map(context)
+            var operation = mapper.map(context, "account.bounded")
                     .archeClass()
                     .operations()
                     .getFirst();
@@ -107,7 +107,7 @@ class BoundedAstMapperTest {
             var expectedName = "opName";
             var context = program(archeClass(ENTITY, "Account", operation(QUERY, expectedName)));
 
-            var operation = mapper.map(context)
+            var operation = mapper.map(context, "account.bounded")
                     .archeClass()
                     .operations()
                     .getFirst();
@@ -125,7 +125,7 @@ class BoundedAstMapperTest {
                 operation(FUNCTION, "withdraw")
             ));
 
-            var names = mapper.map(context)
+            var names = mapper.map(context, "account.bounded")
                     .archeClass()
                     .operations()
                     .stream()
@@ -148,11 +148,11 @@ class BoundedAstMapperTest {
         void mapsTheClassSourceSpan(int line, int characterPosition, int expectedColumn) {
             var context = program(at(archeClass(ENTITY, "Account"), line, characterPosition));
 
-            var span = mapper.map(context)
+            var span = mapper.map(context, "account.bounded")
                     .archeClass()
                     .span();
 
-            assertThat(span, is(new SourceSpan(line, expectedColumn)));
+            assertThat(span, is(new SourceSpan("account.bounded", line, expectedColumn)));
         }
 
         @Test
@@ -163,7 +163,7 @@ class BoundedAstMapperTest {
                     at(operation(QUERY, "balance"), 8, 4)
             ));
 
-            var spans = mapper.map(context)
+            var spans = mapper.map(context, "account.bounded")
                     .archeClass()
                     .operations()
                     .stream()
@@ -171,8 +171,8 @@ class BoundedAstMapperTest {
                     .toList();
 
             assertThat(spans, contains(
-                new SourceSpan(3, 1),
-                new SourceSpan(8, 5))
+                new SourceSpan("account.bounded", 3, 1),
+                new SourceSpan("account.bounded", 8, 5))
             );
         }
     }

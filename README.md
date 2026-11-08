@@ -7,7 +7,8 @@ This is a deliberately tiny but end-to-end compiler for the first Bounded slice:
 - `value` and `entity` ArcheClasses;
 - `function` and `query` ArcheOperations without bodies;
 - values may declare functions but not queries;
-- stable syntax (`BND0001`), effect (`BND1001`), and backend (`BND9001`) diagnostics;
+- unique, case-sensitive operation names within each archeclass;
+- stable syntax (`BND0001`), effect (`BND1001`), duplicate-name (`BND1002`), and backend (`BND9001`) diagnostics;
 - valid input is lowered directly to a JVM `.class` file using the JDK Class-File API.
 
 The generated class is only an **interoperable metadata shell**. Because this slice has no
@@ -43,7 +44,8 @@ The tests exercise several boundaries:
 
 1. `BoundedGrammarTest` tests the language defined by `Bounded.g4` using source examples.
 2. `BoundedParserFacadeTest` proves that ANTLR source becomes the intended AST with source spans.
-3. `EffectCheckerTest` constructs the AST by hand and tests semantic rules directly.
+3. `DeclarationCheckerTest`, `EffectCheckerTest`, and `ProgramCheckerTest` use hand-built ASTs
+   to test individual semantic rules and their composition.
 4. `JvmBackendTest` constructs ASTs directly, verifies emitted bytecode with the Class-File API,
    and checks class structure and behavior through an isolated class loader.
 5. `BoundedCompilerTest` supplies port implementations to test ordering, data flow, and early exits
@@ -55,8 +57,9 @@ The tests exercise several boundaries:
 `CompilerArchitectureTest` uses ArchUnit to enforce the production dependency boundaries.
 
 The [acceptance testing roadmap](docs/Acceptance-Testing-Roadmap.md) describes the planned
-DSL for compilation, diagnostics, and execution of Bounded programs. Its first stage builds
-on the existing compiler fixtures; the DSL is not yet implemented.
+DSL for compilation, diagnostics, and execution of Bounded programs. Stage 1 is implemented
+in the test `acceptance` package; fixture tests use facades, result records, and Hamcrest
+matchers to compile, reject, and load declaration metadata. Operation execution is deferred.
 
 ## Maintainability checks
 
@@ -201,18 +204,22 @@ implements the inbound `CompileProgram` port and receives four outbound ports in
 | --- | --- | --- |
 | `api.CompileProgram` | `api.CompilationResult` | `api.BoundedCompiler` |
 | `api.parse.Parser` | `api.parse.ParseResult` | `parse.BoundedParserFacade` |
-| `api.check.SemanticChecker` | `api.check.CheckResult` | `semantics.EffectChecker` |
+| `api.check.SemanticChecker` | `api.check.CheckResult` | `semantics.ProgramChecker` |
 | `api.generate.CodeGenerator` | `api.generate.GenerationResult` | `backend.JvmBackend` |
 | `api.write.ArtifactWriter` | `api.write.WriteResult` | `backend.ClassFileWriter` |
 
 `CompilationRequest` holds the `SourceFile` and an `api.write.OutputTarget`. Generated class names
-and bytes belong to `api.generate.GeneratedClass`. These contracts expose no ANTLR or Class-File
+and bytes belong to `api.generate.GeneratedClass`, with a validated `ClassName` and immutable
+`GeneratedProgram` collection. Successful checking retains an `ast.AnalyzedProgram` with the
+original AST and declaration index. Writing returns `api.write.CompiledClass` descriptors with
+binary names and class path roots. These contracts expose no ANTLR or Class-File
 API types. `ast` and `diagnostics` form the inner model and depend on neither the API nor adapters.
 Implementations use that model where needed; the writer only consumes API artifact contracts.
 
 `cli.Main` is the executable entry point and composition root. It constructs the implementations
 and injects them into `BoundedCompiler`. `BoundedCli` receives only the inbound port and output
-streams. The fixture tests live in the `cli` test package so they can use the same assembly as `Main`.
+streams. The fixture tests live in the `cli` test package and use a test-side bridge so the
+DSL shares the same assembly as `Main`.
 
 With implementations of the four ports, a caller can assemble a compiler explicitly:
 
@@ -247,28 +254,35 @@ ANTLR lexer/parser -> parse tree
 BoundedAstMapper -> syntax AST
         |
         v
-EffectChecker -> diagnostics or valid AST
+ProgramChecker -> diagnostics or AnalyzedProgram
         |
         v
-JvmBackend -> GenerationResult containing GeneratedClass
+JvmBackend -> GenerationResult containing GeneratedProgram
         |
         v
-ClassFileWriter -> generated .class and WriteResult
+ClassFileWriter -> .class files and loadable descriptors
 ```
 
-`JvmBackend` translates the validated Bounded AST into class bytes in memory. `GeneratedClass`
+`JvmBackend` translates the analyzed Bounded program into class bytes in memory. `GeneratedClass`
 defensively copies those bytes, and `ClassFileWriter` writes them under the output directory's
 `classes` tree. Compilation produces no intermediate Java source and does not invoke `javac`.
 
-`CompilationResult` contains diagnostics and generated class paths, both as unmodifiable lists.
+`CompilationResult.success` requires nonempty artifact descriptors and carries no diagnostics;
+`CompilationResult.failure` requires diagnostics and carries no artifacts. Both expose immutable
+lists. Callers load output using each descriptor's class name and class path root.
+`SourceSpan` carries the source identity, line, and column; `TextDiagnosticFormatter` renders
+`source:code:line:column message` independently of diagnostic data.
 The backend translates bytecode generation failures into `BND9001` diagnostics at the original
 archeclass's source span. `BoundedCompiler` stops on any stage's diagnostics without knowing the
-implementation that produced them. Filesystem failures propagate as `IOException`.
+implementation that produced them. Generated names cannot contain path traversal, and the writer
+rejects symbolic links beneath the requested output root. Filesystem failures propagate as
+`IOException`; files written before a later failure remain in place. An unsuccessful source
+compilation does not invoke the writer.
 
 ## Deliberate simplifications
 
 - No operation parameters, return types, bodies, calls, imports, ports, or architecture declarations.
-- No name/type resolution is needed because the slice contains no references.
+- Operation declarations are indexed and duplicate names rejected; reference and type resolution await language support.
 - The backend emits metadata methods rather than pretending bodyless ArcheOperations have runtime behavior.
 - The CLI lives in this module. It can be split out after the compiler API earns a stable shape.
 - The backend consumes the validated model independently of parsing and effect checking.

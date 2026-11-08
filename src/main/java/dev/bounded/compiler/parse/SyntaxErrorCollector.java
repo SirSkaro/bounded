@@ -12,6 +12,11 @@ import java.util.List;
 
 final class SyntaxErrorCollector extends BaseErrorListener {
     private final List<Diagnostic> diagnostics = new ArrayList<>();
+    private final String sourceName;
+
+    SyntaxErrorCollector(String sourceName) {
+        this.sourceName = sourceName;
+    }
 
     @Override
     @SuppressWarnings("PMD.ExcessiveParameterList")
@@ -25,7 +30,7 @@ final class SyntaxErrorCollector extends BaseErrorListener {
     ) {
         diagnostics.add(new Diagnostic(
                 DiagnosticCode.SYNTAX_ERROR,
-                new SourceSpan(line, charPositionInLine + 1),
+                new SourceSpan(sourceName, line, charPositionInLine + 1),
                 message));
     }
 

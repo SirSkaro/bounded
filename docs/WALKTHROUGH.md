@@ -39,8 +39,8 @@ var program = new BoundedProgram(new ArcheClassDeclaration(
         List.of(new ArcheOperationDeclaration(
                 ArcheOperationKind.QUERY,
                 "exchangeRate",
-                new SourceSpan(3, 3))),
-        new SourceSpan(1, 1)));
+                new SourceSpan("money.bounded", 3, 3))),
+        new SourceSpan("money.bounded", 1, 1)));
 ```
 
 At this point, no parser is involved. The Java expression says exactly what the compiler
@@ -49,19 +49,20 @@ should eventually learn from the source text.
 `ArcheClassKind` owns the maximum operation kind it permits:
 
 ```java
-VALUE(ArcheOperationKind.FUNCTION, "Value"),
-ENTITY(ArcheOperationKind.QUERY, "Entity");
+VALUE(ArcheOperationKind.FUNCTION, "value", "VALUE", "Value"),
+ENTITY(ArcheOperationKind.QUERY, "entity", "ENTITY", "Entity");
 ```
 
 `ArcheOperationKind` exposes its numeric effect grade through `effectGrade()`:
 
 ```java
-FUNCTION(0, "Function"),
-QUERY(1, "Query");
+FUNCTION(0, "function", "FUNCTION", "Function"),
+QUERY(1, "query", "QUERY", "Query");
 ```
 
 `ArcheClassKind.allows(operationKind)` compares the requested operation's grade with
-its ceiling. The checker asks that domain question without comparing grades itself.
+its ceiling. The checker asks that domain question without comparing grades itself. Explicit
+keywords, metadata names, and human-readable labels do not depend on Java enum constant names.
 
 ## 3. Test the semantic checker before parsing
 
@@ -79,11 +80,14 @@ if (!archeClass.kind().allows(operation.kind())) {
 - a value may not declare a query;
 - an entity may declare a query.
 
-The checker implements `api.check.SemanticChecker` and returns the API-owned `CheckResult`.
+`ProgramChecker` implements `api.check.SemanticChecker` and composes `DeclarationChecker`
+and `EffectChecker`, each returning diagnostics for its own rule. Duplicate names are rejected
+with `BND1002`, regardless of operation kind. When all rules pass, the API-owned `CheckResult`
+retains an `AnalyzedProgram` containing the original program and an immutable declaration index.
 The failure is data rather than an exception:
 
 ```text
-BND1001:3:3 Value 'Money' permits operations through FUNCTION; 'exchangeRate' is QUERY.
+money.bounded:BND1001:3:3 Value 'Money' permits operations through FUNCTION; 'exchangeRate' is QUERY.
 ```
 
 `BND1001` is part of the compiler's user-facing contract. The test deliberately checks the
@@ -131,7 +135,7 @@ the semantic checker. If the grammar changes, the mapper absorbs much of the dis
 The mapper also converts ANTLR's zero-based character position to a one-based `SourceSpan`:
 
 ```java
-new SourceSpan(token.getLine(), token.getCharPositionInLine() + 1)
+new SourceSpan(sourceName, token.getLine(), token.getCharPositionInLine() + 1)
 ```
 
 That source span is why the semantic checker can report `3:3` for the invalid query even though
@@ -145,7 +149,7 @@ The fixtures under `src/test/resources/cases` exercise more plumbing than the ha
 value-query.bounded
         |
         v
-lexer -> parser -> mapper -> EffectChecker
+lexer -> parser -> mapper -> ProgramChecker
         |
         v
 actual formatted diagnostics
@@ -159,7 +163,7 @@ exists. A semantically invalid Bounded program must stop before bytecode generat
 
 ## 7. Cross the backend boundary into JVM bytecode
 
-`JvmBackend` translates the validated AST into class bytes using the JDK 25 Class-File API.
+`JvmBackend` translates the analyzed program into class bytes using the JDK 25 Class-File API.
 For this slice, the emitted `bounded.generated.Bounded_Money` class has behavior equivalent to
 the following Java. This is an illustration; the compiler does not generate this source text.
 
@@ -186,7 +190,7 @@ runtime behavior here would silently make language decisions that the specificat
 
 The class builder fixes the version at Java 25 and declares a public final class extending
 `Object`. The constructor invokes `Object`'s constructor. The class-kind method loads the
-enum name as a string constant and returns it.
+explicit metadata name as a string constant and returns it.
 
 The operations method creates an array of `Map.Entry` objects, fills it with operation names
 and kinds, and invokes `Map.ofEntries`. An empty archeclass uses `Map.of`. The backend also
@@ -195,14 +199,15 @@ emits the generic signature so reflection sees `Map<String, String>` rather than
 `GeneratedClass` pairs the qualified class name with the resulting byte array. Both its
 constructor and bytecode accessor copy the array so callers cannot change the stored result.
 It lives in `api.generate`, alongside the `CodeGenerator` port and `GenerationResult`.
-`JvmBackend` returns a valid generation result containing those bytes, or an invalid result with
+`GeneratedProgram` groups one or more uniquely named classes.
+`JvmBackend` returns a valid generation result containing that collection, or an invalid result with
 `BND9001` diagnostics when the Class-File API rejects the generated class.
 
 ## 8. Write and verify the class file
 
 `ClassFileWriter` implements `api.write.ArtifactWriter`. It uses the requested `OutputTarget`
 to create package directories under `classes` and write the bytecode. The returned `WriteResult`
-contains the path of the generated artifact:
+contains each artifact's validated binary name and class path root, from which its file path is derived:
 
 ```text
 classes/bounded/generated/Bounded_Money.class
@@ -219,8 +224,8 @@ They inspect the class version and load the class to test its modifiers, constru
 generic signature, and metadata methods. Writer tests separately check paths, exact bytes,
 replacement of existing files, and filesystem failures.
 
-The end-to-end test creates an isolated `URLClassLoader`, loads
-`bounded.generated.Bounded_Money`, and invokes its metadata methods with reflection. That proves
+The acceptance DSL owns an isolated `URLClassLoader`, loads artifacts using the API
+descriptors, and invokes metadata methods behind a `CompiledProgram` facade. That proves
 the result is not merely a file bearing a `.class` extension; it is a JVM-loadable class.
 
 ## 9. `CompilationResult` reports both meanings and artifacts
@@ -231,21 +236,20 @@ the result is not merely a file bearing a `.class` extension; it is a JVM-loadab
 syntax diagnostics?   -> stop; no artifacts
 semantic diagnostics? -> stop; no artifacts
 backend diagnostics?  -> report BND9001; no artifacts
-otherwise              -> write and return generated .class paths
+otherwise              -> write and return loadable artifact descriptors
 ```
 
-The public result is deliberately modest:
+The result's private constructor prevents contradictory outcomes. `CompilationResult.success`
+requires a nonempty list of `CompiledClass` artifacts and has no diagnostics;
+`CompilationResult.failure` requires nonempty diagnostics and has no artifacts. Both lists
+are immutable. Generation and writing also require at least one artifact on success.
 
-```java
-public record CompilationResult(
-        List<Diagnostic> diagnostics,
-        List<Path> generatedClassFiles
-) {}
-```
-
-The result defensively copies both lists. A Class-File API generation failure is reported at
-the original archeclass's span; it has no generated-Java location. Filesystem failures propagate
-as `IOException`. The CLI prints diagnostics or the paths of generated classes.
+A Class-File API generation failure is reported at the original archeclass's span, including
+its source identity. Diagnostic data has no text-formatting responsibility;
+`TextDiagnosticFormatter` renders it for the CLI and golden fixtures. Filesystem failures
+propagate as `IOException`, retaining files completed before the failure. Validated binary
+names and rejection of symbolic links beneath the output root keep generated paths within
+the `classes` tree.
 
 `BoundedCompiler` implements the inbound `CompileProgram` port and accepts a `CompilationRequest`.
 Its constructor receives `Parser`, `SemanticChecker`, `CodeGenerator`, and `ArtifactWriter`, all

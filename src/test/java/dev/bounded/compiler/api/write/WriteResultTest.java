@@ -1,5 +1,6 @@
 package dev.bounded.compiler.api.write;
 
+import dev.bounded.compiler.api.generate.ClassName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -14,13 +15,11 @@ import java.util.stream.Stream;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.empty;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("Write result invariants")
 class WriteResultTest {
-    private final Path classFile = Path.of("Amount.class");
+    private final CompiledClass classFile = new CompiledClass(new ClassName("Amount"), Path.of("classes"));
 
     private static Stream<Arguments> invalidClassFiles() {
         return Stream.of(
@@ -31,16 +30,16 @@ class WriteResultTest {
     @DisplayName("Class file paths must be non-null")
     @ParameterizedTest(name = "Rejects {0}")
     @MethodSource("invalidClassFiles")
-    void rejectsNullClassFiles(String description, List<Path> classFiles) {
+    void rejectsNullClassFiles(String description, List<CompiledClass> classFiles) {
         assertThrows(NullPointerException.class, () -> new WriteResult(classFiles));
     }
 
     @Test
     @DisplayName("Class file paths retain their supplied order")
     void preservesClassFileOrder() {
-        var second = Path.of("AmountHelper.class");
+        var second = new CompiledClass(new ClassName("AmountHelper"), Path.of("classes"));
 
-        assertThat(new WriteResult(List.of(classFile, second)).generatedClassFiles(), contains(classFile, second));
+        assertThat(new WriteResult(List.of(classFile, second)).artifacts(), contains(classFile, second));
     }
 
     @Test
@@ -51,7 +50,7 @@ class WriteResultTest {
 
         files.clear();
 
-        assertThat(result.generatedClassFiles(), contains(classFile));
+        assertThat(result.artifacts(), contains(classFile));
     }
 
     @Test
@@ -59,12 +58,12 @@ class WriteResultTest {
     void exposesImmutableClassFiles() {
         var result = new WriteResult(List.of(classFile));
 
-        assertThrows(UnsupportedOperationException.class, () -> result.generatedClassFiles().removeFirst());
+        assertThrows(UnsupportedOperationException.class, () -> result.artifacts().removeFirst());
     }
 
     @Test
-    @DisplayName("A writer may report no generated class files")
-    void acceptsAnEmptyResult() {
-        assertThat(new WriteResult(List.of()).generatedClassFiles(), is(empty()));
+    @DisplayName("A successful write must report at least one artifact")
+    void rejectsAnEmptyResult() {
+        assertThrows(IllegalArgumentException.class, () -> new WriteResult(List.of()));
     }
 }

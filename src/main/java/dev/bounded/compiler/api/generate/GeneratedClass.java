@@ -2,10 +2,18 @@ package dev.bounded.compiler.api.generate;
 
 import static java.util.Objects.requireNonNull;
 
-public record GeneratedClass(String qualifiedClassName, byte[] bytecode) {
+public record GeneratedClass(ClassName className, byte[] bytecode) {
     public GeneratedClass {
-        requireNonNull(qualifiedClassName, "qualifiedClassName");
+        requireNonNull(className, "className");
         bytecode = bytecode.clone();
+    }
+
+    public GeneratedClass(String qualifiedClassName, byte[] bytecode) {
+        this(new ClassName(qualifiedClassName), bytecode);
+    }
+
+    public String qualifiedClassName() {
+        return className.binaryName();
     }
 
     @Override

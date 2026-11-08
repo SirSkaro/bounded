@@ -6,7 +6,6 @@ import dev.bounded.compiler.api.parse.Parser;
 import dev.bounded.compiler.api.write.ArtifactWriter;
 
 import java.io.IOException;
-import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
@@ -27,21 +26,21 @@ public final class BoundedCompiler implements CompileProgram {
     public CompilationResult compile(CompilationRequest request) throws IOException {
         var parseResult = parser.parse(request.sourceFile());
         if (!parseResult.isValid()) {
-            return new CompilationResult(parseResult.diagnostics(), List.of());
+            return CompilationResult.failure(parseResult.diagnostics());
         }
 
         var program = parseResult.program();
         var checkResult = checker.check(program);
         if (!checkResult.isValid()) {
-            return new CompilationResult(checkResult.diagnostics(), List.of());
+            return CompilationResult.failure(checkResult.diagnostics());
         }
 
-        var generationResult = generator.generate(program);
+        var generationResult = generator.generate(checkResult.program());
         if (!generationResult.isValid()) {
-            return new CompilationResult(generationResult.diagnostics(), List.of());
+            return CompilationResult.failure(generationResult.diagnostics());
         }
 
-        var writeResult = writer.write(generationResult.generatedClass(), request.outputTarget());
-        return new CompilationResult(List.of(), writeResult.generatedClassFiles());
+        var writeResult = writer.write(generationResult.generatedProgram(), request.outputTarget());
+        return CompilationResult.success(writeResult.artifacts());
     }
 }

@@ -1,12 +1,14 @@
 package dev.bounded.compiler.api.write;
 
-import java.nio.file.Path;
 import java.util.List;
 
 import static java.util.List.copyOf;
 
-public record WriteResult(List<Path> generatedClassFiles) {
+public record WriteResult(List<CompiledClass> artifacts) {
     public WriteResult {
-        generatedClassFiles = copyOf(generatedClassFiles);
+        artifacts = copyOf(artifacts);
+        if (artifacts.isEmpty()) {
+            throw new IllegalArgumentException("A write result requires at least one artifact");
+        }
     }
 }

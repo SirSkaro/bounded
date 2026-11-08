@@ -1,27 +1,26 @@
 package dev.bounded.compiler.semantics;
 
-import dev.bounded.compiler.api.check.CheckResult;
-import dev.bounded.compiler.api.check.SemanticChecker;
 import dev.bounded.compiler.ast.ArcheClassDeclaration;
 import dev.bounded.compiler.ast.ArcheOperationDeclaration;
 import dev.bounded.compiler.ast.BoundedProgram;
 import dev.bounded.compiler.diagnostics.Diagnostic;
 import dev.bounded.compiler.diagnostics.DiagnosticCode;
 
+import java.util.List;
+
 import static java.lang.String.format;
 import static java.util.function.Predicate.not;
 
-public final class EffectChecker implements SemanticChecker {
+public final class EffectChecker implements SemanticRule {
 
     @Override
-    public CheckResult check(BoundedProgram program) {
+    public List<Diagnostic> check(BoundedProgram program) {
         var archeClass = program.archeClass();
-        var diagnostics = archeClass.operations().stream()
+        return archeClass.operations().stream()
                 .filter(not(archeOp -> effectAllowed(archeClass, archeOp)))
                 .map(archeOp -> constructDiagnostic(archeClass, archeOp))
                 .toList();
 
-        return new CheckResult(diagnostics);
     }
 
     private boolean effectAllowed(ArcheClassDeclaration archeClass, ArcheOperationDeclaration operation) {
@@ -32,9 +31,9 @@ public final class EffectChecker implements SemanticChecker {
         var message = format("%s '%s' permits operations through %s; '%s' is %s.",
             archeClass.kind().label(),
             archeClass.name(),
-            archeClass.kind().maximumOperationKind(),
+            archeClass.kind().maximumOperationKind().metadataName(),
             operation.name(),
-            operation.kind()
+            operation.kind().metadataName()
         );
 
         return new Diagnostic(

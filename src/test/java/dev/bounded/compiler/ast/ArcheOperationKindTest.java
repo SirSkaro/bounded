@@ -15,6 +15,13 @@ import static org.hamcrest.Matchers.lessThan;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ArcheOperationKindTest {
+    @DisplayName("Provides stable metadata independent of the Java enum name")
+    @ParameterizedTest(name = "{0} exposes metadata {1}")
+    @CsvSource({"FUNCTION, FUNCTION", "QUERY, QUERY"})
+    void providesMetadataName(ArcheOperationKind kind, String expected) {
+        assertThat(kind.metadataName(), is(expected));
+    }
+
     @Test
     @DisplayName("Functions have a lower effect grade than queries")
     void ordersEffectGrades() {
