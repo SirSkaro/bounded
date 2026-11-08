@@ -54,6 +54,10 @@ The tests exercise several boundaries:
 `BoundedCliTest` checks source loading, output, and exit statuses through a supplied `CompileProgram`.
 `CompilerArchitectureTest` uses ArchUnit to enforce the production dependency boundaries.
 
+The [acceptance testing roadmap](docs/Acceptance-Testing-Roadmap.md) describes the planned
+DSL for compilation, diagnostics, and execution of Bounded programs. Its first stage builds
+on the existing compiler fixtures; the DSL is not yet implemented.
+
 ## Maintainability checks
 
 PMD runs during `mvn verify` using two rulesets in `pmd/`:
@@ -187,8 +191,8 @@ It reports `BND1001` and produces no output artifacts.
 
 ## Architecture
 
-The fourth tab of [`docs/architecture.drawio`](docs/architecture.drawio) shows the implemented
-ports and adapters architecture. The first three tabs preserve the structure before this refactor.
+The `Ports and adapters` tab of [`docs/architecture.drawio`](docs/architecture.drawio) shows
+the current production architecture, including port ownership and dependency direction.
 
 `api` owns the application policy, port interfaces, and boundary data. `BoundedCompiler`
 implements the inbound `CompileProgram` port and receives four outbound ports in its constructor:

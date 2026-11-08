@@ -433,6 +433,11 @@ The command-line interface should be a thin adapter over that API. Tests should 
 
 Compilers are unusually well suited to automated testing because source text is an input and diagnostics or generated output are deterministic results.
 
+The [acceptance testing roadmap](Acceptance-Testing-Roadmap.md) describes how the existing
+source fixtures can grow into a DSL for compilation, diagnostics, and execution of emitted
+code. Its stages are planned test capabilities; executable operation bodies and Java
+interoperability remain subject to the language semantics defined here.
+
 ### 14.1 Unit tests
 
 Test semantic rules without parsing whenever possible.

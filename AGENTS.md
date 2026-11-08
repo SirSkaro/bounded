@@ -40,7 +40,8 @@ features from behavior implemented in the grammar and tests.
 | --- | --- |
 | [README.md](README.md) and [docs/WALKTHROUGH.md](docs/WALKTHROUGH.md) | Build instructions, implemented scope, and a compiler walkthrough. |
 | [docs/Language-Spec-v0.0.1.md](docs/Language-Spec-v0.0.1.md) | Language design and intended semantics. |
-| [docs/architecture.drawio](docs/architecture.drawio) | Current architecture is tab `4. Ports and adapters`; earlier tabs are historical. |
+| [docs/architecture.drawio](docs/architecture.drawio) | Current production architecture in the `Ports and adapters` tab. |
+| [docs/Acceptance-Testing-Roadmap.md](docs/Acceptance-Testing-Roadmap.md) | Planned acceptance DSL stages, test boundaries, examples, and completion criteria. Read before acceptance-testing work. |
 | [pom.xml](pom.xml) | Java release, dependency versions, ANTLR generation, tests, PMD, PIT, and packaging. |
 | [Bounded.g4](src/main/antlr4/dev/bounded/compiler/grammar/Bounded.g4) | Source of truth for the implemented lexer and grammar. |
 | [BoundedCompiler.java](src/main/java/dev/bounded/compiler/api/BoundedCompiler.java) | Application orchestration through ports. |
