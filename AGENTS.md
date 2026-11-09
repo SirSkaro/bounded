@@ -39,7 +39,8 @@ Preserve the ports and adapters architecture and inward dependency direction:
   packages must be explicitly incorporated into its rules while preserving these boundaries.
 
 The implemented language currently supports one `value` or `entity` with bodyless
-`function` and `query` declarations with unique, case-sensitive operation names. The language
+`function`, `query`, and `command` declarations with unique, case-sensitive operation names.
+Values permit only functions; entities permit all three operation kinds. The language
 specification is a discussion draft covering a broader design. Read it before language changes, and distinguish proposed
 features from behavior implemented in the grammar and tests.
 

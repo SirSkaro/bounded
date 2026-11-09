@@ -1,13 +1,13 @@
 package dev.bounded.compiler.ast;
 
+import static dev.bounded.compiler.ast.ArcheOperationKind.COMMAND;
 import static dev.bounded.compiler.ast.ArcheOperationKind.FUNCTION;
-import static dev.bounded.compiler.ast.ArcheOperationKind.QUERY;
 import static java.util.Arrays.stream;
 import static java.util.Objects.requireNonNull;
 
 public enum ArcheClassKind {
     VALUE(FUNCTION, "value", "VALUE", "Value"),
-    ENTITY(QUERY, "entity", "ENTITY", "Entity");
+    ENTITY(COMMAND, "entity", "ENTITY", "Entity");
 
     private final ArcheOperationKind maximumOperationKind;
     private final String label;

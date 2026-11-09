@@ -23,8 +23,10 @@ class ArcheClassKindTest {
     @CsvSource({
         "VALUE, FUNCTION, true",
         "VALUE, QUERY, false",
+        "VALUE, COMMAND, false",
         "ENTITY, FUNCTION, true",
-        "ENTITY, QUERY, true"
+        "ENTITY, QUERY, true",
+        "ENTITY, COMMAND, true"
     })
     void allowsOperationKinds(ArcheClassKind classKind, ArcheOperationKind operationKind, boolean expected) {
         assertThat(classKind.allows(operationKind), is(expected));

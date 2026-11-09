@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.Arrays;
@@ -13,6 +14,7 @@ import java.util.stream.Stream;
 
 import static dev.bounded.compiler.ast.ArcheClassKind.ENTITY;
 import static dev.bounded.compiler.ast.ArcheClassKind.VALUE;
+import static dev.bounded.compiler.ast.ArcheOperationKind.COMMAND;
 import static dev.bounded.compiler.ast.ArcheOperationKind.FUNCTION;
 import static dev.bounded.compiler.ast.ArcheOperationKind.QUERY;
 import static dev.bounded.compiler.diagnostics.DiagnosticCode.EFFECT_NOT_ALLOWED;
@@ -29,7 +31,8 @@ class EffectCheckerTest {
             return Stream.of(
                 Arguments.of(VALUE, FUNCTION),
                 Arguments.of(ENTITY, FUNCTION),
-                Arguments.of(ENTITY, QUERY)
+                Arguments.of(ENTITY, QUERY),
+                Arguments.of(ENTITY, COMMAND)
             );
         }
         @ParameterizedTest(name = "{0} archeclass can have a {1} archeop")
@@ -48,7 +51,8 @@ class EffectCheckerTest {
     class DisallowedOperations {
         static Stream<Arguments> disallowedCombinations() {
             return Stream.of(
-                Arguments.of(VALUE, QUERY)
+                Arguments.of(VALUE, QUERY),
+                Arguments.of(VALUE, COMMAND)
             );
         }
         @ParameterizedTest(name = "{0} archeclass cannot have a {1} archeop")
@@ -64,12 +68,16 @@ class EffectCheckerTest {
         }
     }
 
-    @Test
     @DisplayName("An illegal effect produces a diagnostic with the correct code, span, and message")
-    void constructsDiagnosticForIllegalEffect() {
+    @ParameterizedTest(name = "Diagnoses forbidden {0} operation {1}")
+    @CsvSource({
+        "QUERY, exchangeRate, Value 'Money' permits operations through FUNCTION; 'exchangeRate' is QUERY.",
+        "COMMAND, changeCurrency, Value 'Money' permits operations through FUNCTION; 'changeCurrency' is COMMAND."
+    })
+    void constructsDiagnosticForIllegalEffect(ArcheOperationKind kind, String name, String expectedMessage) {
         var archeop = new ArcheOperationDeclaration(
-            QUERY,
-            "exchangeRate",
+            kind,
+            name,
             new SourceSpan("money.bounded", 3, 7)
         );
         var program = givenProgram(VALUE, archeop);
@@ -79,11 +87,8 @@ class EffectCheckerTest {
 
         var diagnostic = result.getFirst();
         assertThat(diagnostic.code(), is(EFFECT_NOT_ALLOWED));
-        assertThat(diagnostic.span().line(), is(3));
-        assertThat(diagnostic.span().column(), is(7));
-        assertThat(diagnostic.message(), is(equalTo(
-    "Value 'Money' permits operations through FUNCTION; 'exchangeRate' is QUERY."
-        )));
+        assertThat(diagnostic.span(), is(new SourceSpan("money.bounded", 3, 7)));
+        assertThat(diagnostic.message(), is(expectedMessage));
     }
 
     @Test

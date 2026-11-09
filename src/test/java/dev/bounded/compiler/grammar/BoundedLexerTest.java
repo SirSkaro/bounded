@@ -9,6 +9,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
+import static dev.bounded.compiler.grammar.BoundedLexer.COMMAND;
 import static dev.bounded.compiler.grammar.BoundedLexer.VALUE;
 import static dev.bounded.compiler.grammar.BoundedLexer.ENTITY;
 import static dev.bounded.compiler.grammar.BoundedLexer.FUNCTION;
@@ -40,6 +41,16 @@ class BoundedLexerTest {
         assertThat(lex("query balance"), hasTokens(
                 token(QUERY, "query"),
                 token(IDENTIFIER, "balance")
+        ));
+    }
+
+    @Test
+    @DisplayName("Tokenizes the 'command' archeop without reserving identifiers with its prefix")
+    void tokenizesCommandFragment() {
+        assertThat(lex("command commander;"), hasTokens(
+                token(COMMAND, "command"),
+                token(IDENTIFIER, "commander"),
+                token(SEMICOLON, ";")
         ));
     }
 

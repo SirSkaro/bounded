@@ -24,6 +24,7 @@ import java.util.stream.Stream;
 
 import static dev.bounded.compiler.ast.ArcheClassKind.ENTITY;
 import static dev.bounded.compiler.ast.ArcheClassKind.VALUE;
+import static dev.bounded.compiler.ast.ArcheOperationKind.COMMAND;
 import static dev.bounded.compiler.ast.ArcheOperationKind.FUNCTION;
 import static dev.bounded.compiler.ast.ArcheOperationKind.QUERY;
 import static dev.bounded.compiler.diagnostics.DiagnosticCode.JVM_BACKEND_FAILURE;
@@ -104,12 +105,14 @@ class JvmBackendTest {
         var span = new SourceSpan("Amount.bounded", 2, 1);
         var function = new ArcheOperationDeclaration(FUNCTION, "calculate", span);
         var query = new ArcheOperationDeclaration(QUERY, "total", span);
+        var command = new ArcheOperationDeclaration(COMMAND, "deposit", span);
         return Stream.of(
                 Arguments.of("no operations", List.of(), Map.of()),
                 Arguments.of("a function", List.of(function), Map.of("calculate", "FUNCTION")),
                 Arguments.of("a query", List.of(query), Map.of("total", "QUERY")),
-                Arguments.of("multiple operations", List.of(function, query),
-                        Map.of("calculate", "FUNCTION", "total", "QUERY"))
+                Arguments.of("a command", List.of(command), Map.of("deposit", "COMMAND")),
+                Arguments.of("multiple operations", List.of(function, query, command),
+                        Map.of("calculate", "FUNCTION", "total", "QUERY", "deposit", "COMMAND"))
         );
     }
 

@@ -22,8 +22,8 @@ value Money {
 }
 ```
 
-For this slice, a value may declare functions but not queries. An entity may declare
-either a function or a query.
+For this slice, a value may declare functions but not queries or commands. An entity may
+declare functions, queries, and commands.
 
 Nothing else is being decided yet: no parameters, return types, bodies, calls, or runtime
 meaning for an ArcheOperation.
@@ -50,14 +50,15 @@ should eventually learn from the source text.
 
 ```java
 VALUE(ArcheOperationKind.FUNCTION, "value", "VALUE", "Value"),
-ENTITY(ArcheOperationKind.QUERY, "entity", "ENTITY", "Entity");
+ENTITY(ArcheOperationKind.COMMAND, "entity", "ENTITY", "Entity");
 ```
 
 `ArcheOperationKind` exposes its numeric effect grade through `effectGrade()`:
 
 ```java
 FUNCTION(0, "function", "FUNCTION", "Function"),
-QUERY(1, "query", "QUERY", "Query");
+QUERY(1, "query", "QUERY", "Query"),
+COMMAND(2, "command", "COMMAND", "Command");
 ```
 
 `ArcheClassKind.allows(operationKind)` compares the requested operation's grade with
@@ -74,11 +75,11 @@ if (!archeClass.kind().allows(operation.kind())) {
 }
 ```
 
-`EffectCheckerTest` constructs the AST by hand and proves three facts:
+`EffectCheckerTest` constructs the AST by hand and proves these permissions:
 
 - a value may declare a function;
-- a value may not declare a query;
-- an entity may declare a query.
+- a value may not declare a query or command;
+- an entity may declare a function, query, or command.
 
 `ProgramChecker` implements `api.check.SemanticChecker` and composes `DeclarationChecker`
 and `EffectChecker`, each returning diagnostics for its own rule. Duplicate names are rejected
@@ -158,8 +159,9 @@ actual formatted diagnostics
 compare with value-query.diag
 ```
 
-The valid fixture continues into the backend. The invalid fixture asserts that no output
-exists. A semantically invalid Bounded program must stop before bytecode generation.
+Valid inline acceptance examples continue into the backend, including an entity command
+whose emitted operation kind is `COMMAND`. Invalid examples assert that no output exists.
+A semantically invalid Bounded program must stop before bytecode generation.
 
 ## 7. Cross the backend boundary into JVM bytecode
 

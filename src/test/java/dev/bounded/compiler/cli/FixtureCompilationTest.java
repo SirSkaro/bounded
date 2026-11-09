@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class FixtureCompilationTest {
     @TempDir
     Path temporaryDirectory;
-    private CompilerDriver compiler;
+    CompilerDriver compiler;
 
     @BeforeEach
     void createCompilerDriver() {
@@ -42,11 +42,15 @@ class FixtureCompilationTest {
     @LocaleSensitiveTest
     @DisplayName("Compiles and loads declaration metadata independently of the default locale")
     void compilesAValidBoundedFixtureIntoALoadableClass() throws Exception {
-        var compilation = compiler.compile(fixture("cases/valid/money.bounded"));
+        var compilation = compiler.compile("""
+            value Money {
+              function format;
+            }
+        """);
         assertThat(compilation, accepted());
         assertThat(compilation.result().artifacts(), hasSize(1));
 
-        try (var program = compilation.load()) {
+        try(var program = compilation.load()) {
             var archeClass = program.archeClass();
             assertThat(archeClass.kind(), is("VALUE"));
             assertThat(archeClass.operations(), is(Map.of("format", "FUNCTION")));
@@ -59,6 +63,36 @@ class FixtureCompilationTest {
         var compilation = compiler.compile(fixture("cases/invalid/value-query.bounded"));
         assertThat(compilation, rejectedWithCode("BND1001"));
         assertThat(compilation.formattedDiagnostics(), is(expectedDiagnostics("cases/invalid/value-query.diag")));
+    }
+
+    @LocaleSensitiveTest
+    @DisplayName("An entity command compiles and appears in declaration metadata")
+    void compilesAnEntityCommand() throws Exception {
+        var compilation = compiler.compile("""
+            entity Account {
+                command deposit;
+            }
+            """);
+
+        assertThat(compilation, accepted());
+
+        try (var program = compilation.load()) {
+            var archeClass = program.archeClass();
+            assertThat(archeClass.kind(), is("ENTITY"));
+            assertThat(archeClass.operations(), is(Map.of("deposit", "COMMAND")));
+        }
+    }
+
+    @Test
+    @DisplayName("A value cannot declare a command")
+    void rejectsACommandInAValue() throws IOException {
+        var compilation = compiler.compile("""
+            value Money {
+                command changeCurrency;
+            }
+            """);
+
+        assertThat(compilation, rejectedWithCode("BND1001"));
     }
 
     @DisplayName("Syntax errors produce diagnostics without creating output")

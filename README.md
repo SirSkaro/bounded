@@ -5,8 +5,8 @@ This is a deliberately tiny but end-to-end compiler for the first Bounded slice:
 - one source file;
 - one ArcheClass declaration;
 - `value` and `entity` ArcheClasses;
-- `function` and `query` ArcheOperations without bodies;
-- values may declare functions but not queries;
+- `function`, `query`, and `command` ArcheOperations without bodies;
+- values may declare functions; entities may declare functions, queries, and commands;
 - unique, case-sensitive operation names within each archeclass;
 - stable syntax (`BND0001`), effect (`BND1001`), duplicate-name (`BND1002`), and backend (`BND9001`) diagnostics;
 - valid input is lowered directly to a JVM `.class` file using the JDK Class-File API.

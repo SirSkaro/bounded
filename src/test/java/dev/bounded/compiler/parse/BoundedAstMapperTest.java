@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import static dev.bounded.compiler.grammar.BoundedParser.COMMAND;
 import static dev.bounded.compiler.grammar.BoundedParser.ENTITY;
 import static dev.bounded.compiler.grammar.BoundedParser.FUNCTION;
 import static dev.bounded.compiler.grammar.BoundedParser.QUERY;
@@ -99,6 +100,18 @@ class BoundedAstMapperTest {
                     .getFirst();
 
             assertThat(operation.kind(), is(ArcheOperationKind.QUERY));
+        }
+
+        @Test
+        @DisplayName("Maps a command context with its name and source span")
+        void mapsCommandOperation() {
+            var context = program(archeClass(ENTITY, "Account",
+                    at(operation(COMMAND, "deposit"), 4, 6)));
+
+            var operation = mapper.map(context, "account.bounded").archeClass().operations().getFirst();
+
+            assertThat(operation, is(new ArcheOperationDeclaration(
+                    ArcheOperationKind.COMMAND, "deposit", new SourceSpan("account.bounded", 4, 7))));
         }
 
         @Test

@@ -21,12 +21,14 @@ archeOperation
 archeOperationKind
     : FUNCTION
     | QUERY
+    | COMMAND
     ;
 
 VALUE      : 'value';
 ENTITY     : 'entity';
 FUNCTION   : 'function';
 QUERY      : 'query';
+COMMAND    : 'command';
 LBRACE     : '{';
 RBRACE     : '}';
 SEMICOLON  : ';';

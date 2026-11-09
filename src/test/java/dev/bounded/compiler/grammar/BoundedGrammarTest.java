@@ -30,6 +30,10 @@ class BoundedGrammarTest {
                 named("an empty entity class", "entity Account {}"),
                 named("a value with a function", "value Money { function format; }"),
                 named("an entity with a query", "entity Account { query balance; }"),
+                named("an entity with a command", "entity Account { command deposit; }"),
+                named("a value with a syntactically valid command", "value Money { command changeCurrency; }"),
+                named("an entity with all supported operation kinds",
+                        "entity Account { function calculate; query balance; command deposit; }"),
                 named("identifiers containing underscores and digits", "entity _Account2 { function deposit; query balance; }"),
                 named("tabs and line breaks between tokens", "\tentity Account\n{\r\n function deposit;\tquery balance;\n}\n")
             );
@@ -56,6 +60,10 @@ class BoundedGrammarTest {
                 named("trailing input after a class", "value Money {} trailing"),
                 named("an identifier starting with a digit", "value 2Money {}"),
                 named("a keyword used as a class name", "value query {}"),
+                named("command used as a class name", "entity command {}"),
+                named("command used as an operation name", "entity Account { function command; }"),
+                named("a capitalized command keyword", "entity Account { Command deposit; }"),
+                named("an unsupported action", "entity Account { action deposit; }"),
                 named("an unrecognized character", "value Money { @ }")
             );
         }
@@ -94,7 +102,7 @@ class BoundedGrammarTest {
     class GrammarRules {
         @DisplayName("Accepts a complete operation kind")
         @ParameterizedTest(name = "Accepts {0} as an operation kind")
-        @ValueSource(strings = {"function", "query"})
+        @ValueSource(strings = {"function", "query", "command"})
         void acceptsOperationKinds(String source) {
             assertThat(parse(source, BoundedParser::archeOperationKind), is(accepted()));
         }
@@ -103,7 +111,8 @@ class BoundedGrammarTest {
         @ParameterizedTest(name = "Accepts {0} as an operation")
         @ValueSource(strings = {
                 "function deposit;",
-                "query balance;"
+                "query balance;",
+                "command deposit;"
         })
         void acceptsOperations(String source) {
             assertThat(parse(source, BoundedParser::archeOperation), is(accepted()));
