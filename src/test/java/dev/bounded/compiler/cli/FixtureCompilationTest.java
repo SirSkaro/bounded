@@ -45,12 +45,11 @@ class FixtureCompilationTest {
     class ValidOperationDeclarations {
 
         @LocaleSensitiveTest
-        @DisplayName("An entity with ArcheOperations up to its ceiling effect grade compiles and appears in declaration metadata")
-        void compilesAnEntityQuery() throws Exception {
+        @DisplayName("A value with ArcheOperations up to its ceiling effect grade compiles and appears in declaration metadata")
+        void compilesAValueAtItsEffectCeiling() throws Exception {
             var compilation = compiler.compile("""
-                entity Money {
+                value Money {
                   function format;
-                  query exchangeRate;
                 }
             """);
             assertThat(compilation, accepted());
@@ -58,17 +57,16 @@ class FixtureCompilationTest {
 
             try(var program = compilation.load()) {
                 var archeClass = program.archeClass();
-                assertThat(archeClass.kind(), is("ENTITY"));
+                assertThat(archeClass.kind(), is("VALUE"));
                 assertThat(archeClass.operations(), is(Map.of(
-                    "format", "FUNCTION",
-                    "exchangeRate", "QUERY"
+                    "format", "FUNCTION"
                 )));
             }
         }
 
         @LocaleSensitiveTest
         @DisplayName("An entity with ArcheOperations up to its ceiling effect grade compiles and appears in declaration metadata")
-        void compilesAnEntityCommand() throws Exception {
+        void compilesAnEntityThroughItsEffectCeiling() throws Exception {
             var compilation = compiler.compile("""
             entity Account {
                 function format;
@@ -95,23 +93,11 @@ class FixtureCompilationTest {
     @DisplayName("Invalid semantics")
     class SemanticRejections {
         @Test
-        @DisplayName("A value containing a query produces the specified diagnostic")
-        void matchesTheExpectedDiagnosticForAnInvalidFixture() throws IOException {
+        @DisplayName("A value with an ArcheOperation exceeding its ceiling effect grade produces the specified diagnostic")
+        void rejectsAnOperationAboveTheValueCeiling() throws IOException {
             var compilation = compiler.compile(fixture("cases/invalid/value-query.bounded"));
             assertThat(compilation, rejectedWithCode("BND1001"));
             assertThat(compilation.formattedDiagnostics(), is(expectedDiagnostics("cases/invalid/value-query.diag")));
-        }
-
-        @Test
-        @DisplayName("A value cannot declare a command")
-        void rejectsACommandInAValue() throws IOException {
-            var compilation = compiler.compile("""
-            value Money {
-                command changeCurrency;
-            }
-            """);
-
-            assertThat(compilation, rejectedWithCode("BND1001"));
         }
 
         @Test
