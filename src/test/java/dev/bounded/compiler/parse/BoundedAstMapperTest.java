@@ -10,11 +10,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import static dev.bounded.compiler.grammar.BoundedParser.ACTION;
 import static dev.bounded.compiler.grammar.BoundedParser.COMMAND;
 import static dev.bounded.compiler.grammar.BoundedParser.ENTITY;
 import static dev.bounded.compiler.grammar.BoundedParser.FUNCTION;
 import static dev.bounded.compiler.grammar.BoundedParser.QUERY;
 import static dev.bounded.compiler.grammar.BoundedParser.VALUE;
+import static dev.bounded.compiler.grammar.BoundedParser.USECASE;
 import static dev.bounded.compiler.parse.MapperContextFixtures.archeClass;
 import static dev.bounded.compiler.parse.MapperContextFixtures.at;
 import static dev.bounded.compiler.parse.MapperContextFixtures.operation;
@@ -47,6 +49,18 @@ class BoundedAstMapperTest {
             var kind = mapper.map(context, "account.bounded").archeClass().kind();
 
             assertThat(kind, is(ArcheClassKind.ENTITY));
+        }
+
+        @Test
+        @DisplayName("Maps a usecase context with its name and source span")
+        void mapsUseCaseClass() {
+            var context = program(at(archeClass(USECASE, "AccountTransfer"), 2, 4));
+
+            var declaration = mapper.map(context, "transfer.bounded").archeClass();
+
+            assertThat(declaration.kind(), is(ArcheClassKind.USECASE));
+            assertThat(declaration.name(), is("AccountTransfer"));
+            assertThat(declaration.span(), is(new SourceSpan("transfer.bounded", 2, 5)));
         }
 
         @Test
@@ -112,6 +126,18 @@ class BoundedAstMapperTest {
 
             assertThat(operation, is(new ArcheOperationDeclaration(
                     ArcheOperationKind.COMMAND, "deposit", new SourceSpan("account.bounded", 4, 7))));
+        }
+
+        @Test
+        @DisplayName("Maps an action context with its name and source span")
+        void mapsActionOperation() {
+            var context = program(archeClass(USECASE, "AccountTransfer",
+                    at(operation(ACTION, "commit"), 4, 6)));
+
+            var operation = mapper.map(context, "transfer.bounded").archeClass().operations().getFirst();
+
+            assertThat(operation, is(new ArcheOperationDeclaration(
+                    ArcheOperationKind.ACTION, "commit", new SourceSpan("transfer.bounded", 4, 7))));
         }
 
         @Test

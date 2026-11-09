@@ -6,7 +6,8 @@ import static java.util.Objects.requireNonNull;
 public enum ArcheOperationKind {
     FUNCTION(0, "function", "FUNCTION", "Function"),
     QUERY(1, "query", "QUERY", "Query"),
-    COMMAND(2, "command", "COMMAND", "Command");
+    COMMAND(2, "command", "COMMAND", "Command"),
+    ACTION(3, "action", "ACTION", "Action");
 
     private final int effectGrade;
     private final String label;

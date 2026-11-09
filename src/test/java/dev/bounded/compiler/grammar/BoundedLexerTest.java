@@ -9,7 +9,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
+import static dev.bounded.compiler.grammar.BoundedLexer.ACTION;
 import static dev.bounded.compiler.grammar.BoundedLexer.COMMAND;
+import static dev.bounded.compiler.grammar.BoundedLexer.USECASE;
 import static dev.bounded.compiler.grammar.BoundedLexer.VALUE;
 import static dev.bounded.compiler.grammar.BoundedLexer.ENTITY;
 import static dev.bounded.compiler.grammar.BoundedLexer.FUNCTION;
@@ -55,6 +57,16 @@ class BoundedLexerTest {
     }
 
     @Test
+    @DisplayName("Tokenizes the 'action' archeop without reserving identifiers with its prefix")
+    void tokenizesActionFragment() {
+        assertThat(lex("action actionPlan;"), hasTokens(
+                token(ACTION, "action"),
+                token(IDENTIFIER, "actionPlan"),
+                token(SEMICOLON, ";")
+        ));
+    }
+
+    @Test
     @DisplayName("Tokenizes the 'value' archeclass")
     void tokenizesValueFragment() {
         assertThat(lex("value Money"), hasTokens(
@@ -69,6 +81,15 @@ class BoundedLexerTest {
         assertThat(lex("entity Account"), hasTokens(
                 token(ENTITY, "entity"),
                 token(IDENTIFIER, "Account")
+        ));
+    }
+
+    @Test
+    @DisplayName("Tokenizes the 'usecase' archeclass without reserving identifiers with its prefix")
+    void tokenizesUseCaseFragment() {
+        assertThat(lex("usecase usecaseRunner"), hasTokens(
+                token(USECASE, "usecase"),
+                token(IDENTIFIER, "usecaseRunner")
         ));
     }
 

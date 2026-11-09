@@ -87,6 +87,32 @@ class FixtureCompilationTest {
                 )));
             }
         }
+
+        @LocaleSensitiveTest
+        @DisplayName("A use case with ArcheOperations up to its ceiling effect grade compiles and appears in declaration metadata")
+        void compilesUseCaseThroughItsEffectCeiling() throws Exception {
+            var compilation = compiler.compile("""
+            usecase AccountTransfer {
+                function format;
+                query hasFunds;
+                command transfer;
+                action commit;
+            }
+            """);
+
+            assertThat(compilation, accepted());
+
+            try (var program = compilation.load()) {
+                var archeClass = program.archeClass();
+                assertThat(archeClass.kind(), is("USECASE"));
+                assertThat(archeClass.operations(), is(Map.of(
+                    "format", "FUNCTION",
+                    "hasFunds", "QUERY",
+                    "transfer", "COMMAND",
+                    "commit", "ACTION"
+                )));
+            }
+        }
     }
 
     @Nested
@@ -98,6 +124,18 @@ class FixtureCompilationTest {
             var compilation = compiler.compile(fixture("cases/invalid/value-query.bounded"));
             assertThat(compilation, rejectedWithCode("BND1001"));
             assertThat(compilation.formattedDiagnostics(), is(expectedDiagnostics("cases/invalid/value-query.diag")));
+        }
+
+        @Test
+        @DisplayName("An entity cannot declare an action above its effect ceiling")
+        void rejectsAnOperationAboveTheEntityCeiling() throws IOException {
+            var compilation = compiler.compile("""
+            entity Account {
+                action commit;
+            }
+            """);
+
+            assertThat(compilation, rejectedWithCode("BND1001"));
         }
 
         @Test

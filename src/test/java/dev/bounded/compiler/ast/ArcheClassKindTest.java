@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class ArcheClassKindTest {
     @DisplayName("Provides stable metadata independent of the Java enum name")
     @ParameterizedTest(name = "{0} exposes metadata {1}")
-    @CsvSource({"VALUE, VALUE", "ENTITY, ENTITY"})
+    @CsvSource({"VALUE, VALUE", "ENTITY, ENTITY", "USECASE, USECASE"})
     void providesMetadataName(ArcheClassKind kind, String expected) {
         assertThat(kind.metadataName(), is(expected));
     }
@@ -24,9 +24,15 @@ class ArcheClassKindTest {
         "VALUE, FUNCTION, true",
         "VALUE, QUERY, false",
         "VALUE, COMMAND, false",
+        "VALUE, ACTION, false",
         "ENTITY, FUNCTION, true",
         "ENTITY, QUERY, true",
-        "ENTITY, COMMAND, true"
+        "ENTITY, COMMAND, true",
+        "ENTITY, ACTION, false",
+        "USECASE, FUNCTION, true",
+        "USECASE, QUERY, true",
+        "USECASE, COMMAND, true",
+        "USECASE, ACTION, true"
     })
     void allowsOperationKinds(ArcheClassKind classKind, ArcheOperationKind operationKind, boolean expected) {
         assertThat(classKind.allows(operationKind), is(expected));
@@ -34,7 +40,7 @@ class ArcheClassKindTest {
 
     @DisplayName("Provides a human-readable label for each archeclass kind")
     @ParameterizedTest(name = "Labels {0} as {1}")
-    @CsvSource({"VALUE, Value", "ENTITY, Entity"})
+    @CsvSource({"VALUE, Value", "ENTITY, Entity", "USECASE, Use case"})
     void providesLabel(ArcheClassKind kind, String expectedLabel) {
         assertThat(kind.label(), is(expectedLabel));
     }
@@ -53,6 +59,14 @@ class ArcheClassKindTest {
         assertThat(ArcheClassKind.fromKeyword("entity"), is(ArcheClassKind.ENTITY));
         assertThat(ArcheClassKind.fromKeyword("ENTITY"), is(ArcheClassKind.ENTITY));
         assertThat(ArcheClassKind.fromKeyword("Entity"), is(ArcheClassKind.ENTITY));
+    }
+
+    @Test
+    @DisplayName("Converts usecase regardless of letter case")
+    void convertsUseCase() {
+        assertThat(ArcheClassKind.fromKeyword("usecase"), is(ArcheClassKind.USECASE));
+        assertThat(ArcheClassKind.fromKeyword("USECASE"), is(ArcheClassKind.USECASE));
+        assertThat(ArcheClassKind.fromKeyword("UseCase"), is(ArcheClassKind.USECASE));
     }
 
     @DisplayName("Rejects text that is not a keyword")

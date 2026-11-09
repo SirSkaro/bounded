@@ -13,7 +13,9 @@ import java.util.Arrays;
 import java.util.stream.Stream;
 
 import static dev.bounded.compiler.ast.ArcheClassKind.ENTITY;
+import static dev.bounded.compiler.ast.ArcheClassKind.USECASE;
 import static dev.bounded.compiler.ast.ArcheClassKind.VALUE;
+import static dev.bounded.compiler.ast.ArcheOperationKind.ACTION;
 import static dev.bounded.compiler.ast.ArcheOperationKind.COMMAND;
 import static dev.bounded.compiler.ast.ArcheOperationKind.FUNCTION;
 import static dev.bounded.compiler.ast.ArcheOperationKind.QUERY;
@@ -32,7 +34,11 @@ class EffectCheckerTest {
                 Arguments.of(VALUE, FUNCTION),
                 Arguments.of(ENTITY, FUNCTION),
                 Arguments.of(ENTITY, QUERY),
-                Arguments.of(ENTITY, COMMAND)
+                Arguments.of(ENTITY, COMMAND),
+                Arguments.of(USECASE, FUNCTION),
+                Arguments.of(USECASE, QUERY),
+                Arguments.of(USECASE, COMMAND),
+                Arguments.of(USECASE, ACTION)
             );
         }
         @ParameterizedTest(name = "{0} archeclass can have a {1} archeop")
@@ -52,7 +58,9 @@ class EffectCheckerTest {
         static Stream<Arguments> disallowedCombinations() {
             return Stream.of(
                 Arguments.of(VALUE, QUERY),
-                Arguments.of(VALUE, COMMAND)
+                Arguments.of(VALUE, COMMAND),
+                Arguments.of(VALUE, ACTION),
+                Arguments.of(ENTITY, ACTION)
             );
         }
         @ParameterizedTest(name = "{0} archeclass cannot have a {1} archeop")
@@ -69,18 +77,21 @@ class EffectCheckerTest {
     }
 
     @DisplayName("An illegal effect produces a diagnostic with the correct code, span, and message")
-    @ParameterizedTest(name = "Diagnoses forbidden {0} operation {1}")
+    @ParameterizedTest(name = "Diagnoses forbidden {1} operation {2} in {0}")
     @CsvSource({
-        "QUERY, exchangeRate, Value 'Money' permits operations through FUNCTION; 'exchangeRate' is QUERY.",
-        "COMMAND, changeCurrency, Value 'Money' permits operations through FUNCTION; 'changeCurrency' is COMMAND."
+        "VALUE, QUERY, exchangeRate, Value 'Money' permits operations through FUNCTION; 'exchangeRate' is QUERY.",
+        "VALUE, COMMAND, changeCurrency, Value 'Money' permits operations through FUNCTION; 'changeCurrency' is COMMAND.",
+        "VALUE, ACTION, commit, Value 'Money' permits operations through FUNCTION; 'commit' is ACTION.",
+        "ENTITY, ACTION, commit, Entity 'Money' permits operations through COMMAND; 'commit' is ACTION."
     })
-    void constructsDiagnosticForIllegalEffect(ArcheOperationKind kind, String name, String expectedMessage) {
+    void constructsDiagnosticForIllegalEffect(ArcheClassKind classKind, ArcheOperationKind kind,
+                                             String name, String expectedMessage) {
         var archeop = new ArcheOperationDeclaration(
             kind,
             name,
             new SourceSpan("money.bounded", 3, 7)
         );
-        var program = givenProgram(VALUE, archeop);
+        var program = givenProgram(classKind, archeop);
 
         var result = checker.check(program);
         assertThat(result, hasSize(1));

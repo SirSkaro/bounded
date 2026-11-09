@@ -4,9 +4,9 @@ This is a deliberately tiny but end-to-end compiler for the first Bounded slice:
 
 - one source file;
 - one ArcheClass declaration;
-- `value` and `entity` ArcheClasses;
-- `function`, `query`, and `command` ArcheOperations without bodies;
-- values may declare functions; entities may declare functions, queries, and commands;
+- `value`, `entity`, and `usecase` ArcheClasses;
+- `function`, `query`, `command`, and `action` ArcheOperations without bodies;
+- effect ceilings of `function` for values, `command` for entities, and `action` for use cases;
 - unique, case-sensitive operation names within each archeclass;
 - stable syntax (`BND0001`), effect (`BND1001`), duplicate-name (`BND1002`), and backend (`BND9001`) diagnostics;
 - valid input is lowered directly to a JVM `.class` file using the JDK Class-File API.
@@ -50,8 +50,8 @@ The tests exercise several boundaries:
    and checks class structure and behavior through an isolated class loader.
 5. `BoundedCompilerTest` supplies port implementations to test ordering, data flow, and early exits
    without invoking the parser, backend, or filesystem.
-6. `FixtureCompilationTest` compiles real `.bounded` fixtures, compares a stable `.diag` file,
-   loads the resulting class, and calls it reflectively across the configured locales.
+6. `FixtureCompilationTest` compiles inline source and `.bounded` fixtures, compares golden diagnostics,
+   loads emitted classes, and observes declaration metadata across the configured locales.
 
 `BoundedCliTest` checks source loading, output, and exit statuses through a supplied `CompileProgram`.
 `CompilerArchitectureTest` uses ArchUnit to enforce the production dependency boundaries.

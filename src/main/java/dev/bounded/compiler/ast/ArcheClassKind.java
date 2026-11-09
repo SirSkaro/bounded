@@ -1,5 +1,6 @@
 package dev.bounded.compiler.ast;
 
+import static dev.bounded.compiler.ast.ArcheOperationKind.ACTION;
 import static dev.bounded.compiler.ast.ArcheOperationKind.COMMAND;
 import static dev.bounded.compiler.ast.ArcheOperationKind.FUNCTION;
 import static java.util.Arrays.stream;
@@ -7,7 +8,8 @@ import static java.util.Objects.requireNonNull;
 
 public enum ArcheClassKind {
     VALUE(FUNCTION, "value", "VALUE", "Value"),
-    ENTITY(COMMAND, "entity", "ENTITY", "Entity");
+    ENTITY(COMMAND, "entity", "ENTITY", "Entity"),
+    USECASE(ACTION, "usecase", "USECASE", "Use case");
 
     private final ArcheOperationKind maximumOperationKind;
     private final String label;

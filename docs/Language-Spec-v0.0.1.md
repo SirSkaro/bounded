@@ -397,10 +397,11 @@ Use a deliberately familiar bootstrap stack:
 
 The backend consumes the analyzed program and produces class bytes in memory; a separate writer persists the class files. Generated classes explicitly target Java 25. This replaces the initial generated-Java experiment and requires no external bytecode library or preview flags. Emitted classes can be inspected with the Class-File API or `javap`.
 
-The current vertical slice supports one `value` or `entity` with bodyless `function`,
-`query`, and `command` declarations. Values permit only functions; entities permit all three
-operation kinds. `function` is the keyword for a pure operation. Operation names are
-case-sensitive and MUST be unique within their archeclass, regardless of operation kind;
+The current vertical slice supports one `value`, `entity`, or `usecase` with bodyless `function`,
+`query`, `command`, and `action` declarations. Values permit only functions; entities permit operations
+through command grade; use cases permit all four operation kinds. `function` is the keyword for a
+pure operation. Operation names are case-sensitive and MUST be unique within their archeclass,
+regardless of operation kind;
 overloading is not supported in this slice. Each redeclaration produces `BND1002` at the
 later declaration. Syntax errors use `BND0001`, forbidden effects use `BND1001`, and backend
 failures use `BND9001`. These implemented codes are distinct from the proposed diagnostic

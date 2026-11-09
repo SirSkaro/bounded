@@ -24,7 +24,8 @@ cohesive helper into its own file. A separate test library can follow if reuse w
   already exercises the compiler assembled by `Main`, compares diagnostics, loads emitted
   classes, and invokes their metadata methods. It also covers failures and default locales.
 - [Bounded.g4](../src/main/antlr4/dev/bounded/compiler/grammar/Bounded.g4) currently accepts
-  one `value` or `entity` with bodyless `function`, `query`, and `command` declarations.
+  one `value`, `entity`, or `usecase` with bodyless `function`, `query`, `command`, and `action`
+  declarations.
 - The generated class exposes declaration metadata. There are no operation parameters,
   return types, executable bodies, or program entry point yet.
 - [The language specification](Language-Spec-v0.0.1.md) describes broader, partly provisional
@@ -85,8 +86,11 @@ The existing fixture tests now use reusable support and cover:
 3. Invalid syntax produces `BND0001` and no artifacts.
 4. An emitted class can be loaded and its declaration metadata observed.
 5. Duplicate operation names are rejected with `BND1002` before generation.
-6. An entity containing a command compiles and exposes `COMMAND` declaration metadata.
-7. A value containing a command is rejected with `BND1001` and no artifacts.
+6. An entity containing functions, queries, and commands compiles through its command ceiling
+   and exposes all three operation kinds in declaration metadata.
+7. A use case containing all four operation kinds compiles through its action ceiling and exposes
+   `USECASE` and `ACTION` declaration metadata.
+8. An entity containing an action is rejected with `BND1001` and no artifacts.
 
 For example, using today's Bounded syntax:
 

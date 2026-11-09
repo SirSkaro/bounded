@@ -38,11 +38,12 @@ Preserve the ports and adapters architecture and inward dependency direction:
 - Treat `CompilerArchitectureTest` as executable architecture policy. New production
   packages must be explicitly incorporated into its rules while preserving these boundaries.
 
-The implemented language currently supports one `value` or `entity` with bodyless
-`function`, `query`, and `command` declarations with unique, case-sensitive operation names.
-Values permit only functions; entities permit all three operation kinds. The language
-specification is a discussion draft covering a broader design. Read it before language changes, and distinguish proposed
-features from behavior implemented in the grammar and tests.
+The implemented language currently supports one `value`, `entity`, or `usecase` with bodyless
+`function`, `query`, `command`, and `action` declarations with unique, case-sensitive operation names.
+Values permit only functions; entities permit operations through command grade; use cases permit
+all four operation kinds. The language specification is a discussion draft covering a broader design.
+Read it before language changes, and distinguish proposed features from behavior implemented in
+the grammar and tests.
 
 ## Important files
 

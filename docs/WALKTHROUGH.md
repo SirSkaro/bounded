@@ -22,8 +22,8 @@ value Money {
 }
 ```
 
-For this slice, a value may declare functions but not queries or commands. An entity may
-declare functions, queries, and commands.
+For this slice, a value may declare only functions. An entity may declare functions, queries,
+and commands. A use case may also declare actions, the highest supported effect grade.
 
 Nothing else is being decided yet: no parameters, return types, bodies, calls, or runtime
 meaning for an ArcheOperation.
@@ -50,7 +50,8 @@ should eventually learn from the source text.
 
 ```java
 VALUE(ArcheOperationKind.FUNCTION, "value", "VALUE", "Value"),
-ENTITY(ArcheOperationKind.COMMAND, "entity", "ENTITY", "Entity");
+ENTITY(ArcheOperationKind.COMMAND, "entity", "ENTITY", "Entity"),
+USECASE(ArcheOperationKind.ACTION, "usecase", "USECASE", "Use case");
 ```
 
 `ArcheOperationKind` exposes its numeric effect grade through `effectGrade()`:
@@ -58,7 +59,8 @@ ENTITY(ArcheOperationKind.COMMAND, "entity", "ENTITY", "Entity");
 ```java
 FUNCTION(0, "function", "FUNCTION", "Function"),
 QUERY(1, "query", "QUERY", "Query"),
-COMMAND(2, "command", "COMMAND", "Command");
+COMMAND(2, "command", "COMMAND", "Command"),
+ACTION(3, "action", "ACTION", "Action");
 ```
 
 `ArcheClassKind.allows(operationKind)` compares the requested operation's grade with
@@ -78,8 +80,9 @@ if (!archeClass.kind().allows(operation.kind())) {
 `EffectCheckerTest` constructs the AST by hand and proves these permissions:
 
 - a value may declare a function;
-- a value may not declare a query or command;
-- an entity may declare a function, query, or command.
+- a value may not declare a query, command, or action;
+- an entity may declare a function, query, or command, but not an action;
+- a use case may declare any of the four operation kinds.
 
 `ProgramChecker` implements `api.check.SemanticChecker` and composes `DeclarationChecker`
 and `EffectChecker`, each returning diagnostics for its own rule. Duplicate names are rejected
@@ -159,9 +162,11 @@ actual formatted diagnostics
 compare with value-query.diag
 ```
 
-Valid inline acceptance examples continue into the backend, including an entity command
-whose emitted operation kind is `COMMAND`. Invalid examples assert that no output exists.
-A semantically invalid Bounded program must stop before bytecode generation.
+Valid inline acceptance examples continue into the backend, covering operations at and below
+each ArcheClass ceiling. The use case example exposes `USECASE` class metadata and all four
+operation kinds, including `ACTION`. An entity action is rejected with `BND1001` because it exceeds
+the entity's command ceiling. Invalid examples assert that no output exists. A semantically invalid
+Bounded program must stop before bytecode generation.
 
 ## 7. Cross the backend boundary into JVM bytecode
 

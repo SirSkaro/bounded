@@ -28,12 +28,16 @@ class BoundedGrammarTest {
             return Stream.of(
                 named("an empty value class", "value Money {}"),
                 named("an empty entity class", "entity Account {}"),
+                named("an empty usecase class", "usecase AccountTransfer {}"),
                 named("a value with a function", "value Money { function format; }"),
                 named("an entity with a query", "entity Account { query balance; }"),
                 named("an entity with a command", "entity Account { command deposit; }"),
                 named("a value with a syntactically valid command", "value Money { command changeCurrency; }"),
-                named("an entity with all supported operation kinds",
+                named("an entity with operation kinds through command grade",
                         "entity Account { function calculate; query balance; command deposit; }"),
+                named("an entity with a syntactically valid action", "entity Account { action commit; }"),
+                named("a usecase with all supported operation kinds",
+                        "usecase AccountTransfer { function format; query hasFunds; command transfer; action commit; }"),
                 named("identifiers containing underscores and digits", "entity _Account2 { function deposit; query balance; }"),
                 named("tabs and line breaks between tokens", "\tentity Account\n{\r\n function deposit;\tquery balance;\n}\n")
             );
@@ -63,7 +67,11 @@ class BoundedGrammarTest {
                 named("command used as a class name", "entity command {}"),
                 named("command used as an operation name", "entity Account { function command; }"),
                 named("a capitalized command keyword", "entity Account { Command deposit; }"),
-                named("an unsupported action", "entity Account { action deposit; }"),
+                named("usecase used as a class name", "entity usecase {}"),
+                named("action used as an operation name", "usecase AccountTransfer { function action; }"),
+                named("a capitalized usecase keyword", "Usecase AccountTransfer {}"),
+                named("a capitalized action keyword", "usecase AccountTransfer { Action commit; }"),
+                named("an unsupported operation kind", "entity Account { activity deposit; }"),
                 named("an unrecognized character", "value Money { @ }")
             );
         }
@@ -100,9 +108,16 @@ class BoundedGrammarTest {
     @Nested
     @DisplayName("Grammar rule fragments")
     class GrammarRules {
+        @DisplayName("Accepts a complete archeclass kind")
+        @ParameterizedTest(name = "Accepts {0} as an archeclass kind")
+        @ValueSource(strings = {"value", "entity", "usecase"})
+        void acceptsArcheClassKinds(String source) {
+            assertThat(parse(source, BoundedParser::archeClassKind), is(accepted()));
+        }
+
         @DisplayName("Accepts a complete operation kind")
         @ParameterizedTest(name = "Accepts {0} as an operation kind")
-        @ValueSource(strings = {"function", "query", "command"})
+        @ValueSource(strings = {"function", "query", "command", "action"})
         void acceptsOperationKinds(String source) {
             assertThat(parse(source, BoundedParser::archeOperationKind), is(accepted()));
         }
@@ -112,7 +127,8 @@ class BoundedGrammarTest {
         @ValueSource(strings = {
                 "function deposit;",
                 "query balance;",
-                "command deposit;"
+                "command deposit;",
+                "action commit;"
         })
         void acceptsOperations(String source) {
             assertThat(parse(source, BoundedParser::archeOperation), is(accepted()));

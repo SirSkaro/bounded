@@ -7,6 +7,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import static dev.bounded.compiler.ast.ArcheOperationKind.ACTION;
 import static dev.bounded.compiler.ast.ArcheOperationKind.COMMAND;
 import static dev.bounded.compiler.ast.ArcheOperationKind.FUNCTION;
 import static dev.bounded.compiler.ast.ArcheOperationKind.QUERY;
@@ -18,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class ArcheOperationKindTest {
     @DisplayName("Provides stable metadata independent of the Java enum name")
     @ParameterizedTest(name = "{0} exposes metadata {1}")
-    @CsvSource({"FUNCTION, FUNCTION", "QUERY, QUERY", "COMMAND, COMMAND"})
+    @CsvSource({"FUNCTION, FUNCTION", "QUERY, QUERY", "COMMAND, COMMAND", "ACTION, ACTION"})
     void providesMetadataName(ArcheOperationKind kind, String expected) {
         assertThat(kind.metadataName(), is(expected));
     }
@@ -35,9 +36,15 @@ class ArcheOperationKindTest {
         assertThat(QUERY.effectGrade(), is(lessThan(COMMAND.effectGrade())));
     }
 
+    @Test
+    @DisplayName("Commands have a lower effect grade than actions")
+    void ordersActionsAboveCommands() {
+        assertThat(COMMAND.effectGrade(), is(lessThan(ACTION.effectGrade())));
+    }
+
     @DisplayName("Provides a human-readable label for each archeoperation kind")
     @ParameterizedTest(name = "Labels {0} as {1}")
-    @CsvSource({"FUNCTION, Function", "QUERY, Query", "COMMAND, Command"})
+    @CsvSource({"FUNCTION, Function", "QUERY, Query", "COMMAND, Command", "ACTION, Action"})
     void providesLabel(ArcheOperationKind kind, String expectedLabel) {
         assertThat(kind.label(), is(expectedLabel));
     }
@@ -64,6 +71,14 @@ class ArcheOperationKindTest {
         assertThat(ArcheOperationKind.fromKeyword("command"), is(COMMAND));
         assertThat(ArcheOperationKind.fromKeyword("COMMAND"), is(COMMAND));
         assertThat(ArcheOperationKind.fromKeyword("Command"), is(COMMAND));
+    }
+
+    @Test
+    @DisplayName("Converts action regardless of letter case")
+    void convertsAction() {
+        assertThat(ArcheOperationKind.fromKeyword("action"), is(ACTION));
+        assertThat(ArcheOperationKind.fromKeyword("ACTION"), is(ACTION));
+        assertThat(ArcheOperationKind.fromKeyword("Action"), is(ACTION));
     }
 
     @DisplayName("Rejects text that is not a keyword")

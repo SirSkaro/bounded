@@ -12,6 +12,7 @@ archeClass
 archeClassKind
     : VALUE
     | ENTITY
+    | USECASE
     ;
 
 archeOperation
@@ -22,13 +23,16 @@ archeOperationKind
     : FUNCTION
     | QUERY
     | COMMAND
+    | ACTION
     ;
 
 VALUE      : 'value';
 ENTITY     : 'entity';
+USECASE    : 'usecase';
 FUNCTION   : 'function';
 QUERY      : 'query';
 COMMAND    : 'command';
+ACTION     : 'action';
 LBRACE     : '{';
 RBRACE     : '}';
 SEMICOLON  : ';';

@@ -23,7 +23,9 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static dev.bounded.compiler.ast.ArcheClassKind.ENTITY;
+import static dev.bounded.compiler.ast.ArcheClassKind.USECASE;
 import static dev.bounded.compiler.ast.ArcheClassKind.VALUE;
+import static dev.bounded.compiler.ast.ArcheOperationKind.ACTION;
 import static dev.bounded.compiler.ast.ArcheOperationKind.COMMAND;
 import static dev.bounded.compiler.ast.ArcheOperationKind.FUNCTION;
 import static dev.bounded.compiler.ast.ArcheOperationKind.QUERY;
@@ -94,7 +96,7 @@ class JvmBackendTest {
 
     @DisplayName("Reports the declared archeclass kind")
     @ParameterizedTest(name = "Reports {1} for an archeclass of kind {0}")
-    @CsvSource({"VALUE, VALUE", "ENTITY, ENTITY"})
+    @CsvSource({"VALUE, VALUE", "ENTITY, ENTITY", "USECASE, USECASE"})
     void reportsArcheClassKind(ArcheClassKind kind, String expectedKind) throws Exception {
         var generatedClass = load(program(kind, List.of()));
 
@@ -106,22 +108,26 @@ class JvmBackendTest {
         var function = new ArcheOperationDeclaration(FUNCTION, "calculate", span);
         var query = new ArcheOperationDeclaration(QUERY, "total", span);
         var command = new ArcheOperationDeclaration(COMMAND, "deposit", span);
+        var action = new ArcheOperationDeclaration(ACTION, "commit", span);
         return Stream.of(
-                Arguments.of("no operations", List.of(), Map.of()),
-                Arguments.of("a function", List.of(function), Map.of("calculate", "FUNCTION")),
-                Arguments.of("a query", List.of(query), Map.of("total", "QUERY")),
-                Arguments.of("a command", List.of(command), Map.of("deposit", "COMMAND")),
-                Arguments.of("multiple operations", List.of(function, query, command),
-                        Map.of("calculate", "FUNCTION", "total", "QUERY", "deposit", "COMMAND"))
+                Arguments.of("no operations", ENTITY, List.of(), Map.of()),
+                Arguments.of("a function", ENTITY, List.of(function), Map.of("calculate", "FUNCTION")),
+                Arguments.of("a query", ENTITY, List.of(query), Map.of("total", "QUERY")),
+                Arguments.of("a command", ENTITY, List.of(command), Map.of("deposit", "COMMAND")),
+                Arguments.of("multiple operations", ENTITY, List.of(function, query, command),
+                        Map.of("calculate", "FUNCTION", "total", "QUERY", "deposit", "COMMAND")),
+                Arguments.of("an action", USECASE, List.of(action), Map.of("commit", "ACTION")),
+                Arguments.of("all operation kinds", USECASE, List.of(function, query, command, action),
+                        Map.of("calculate", "FUNCTION", "total", "QUERY", "deposit", "COMMAND", "commit", "ACTION"))
         );
     }
 
     @DisplayName("Reports the names and kinds of declared operations")
     @ParameterizedTest(name = "Reports {0}")
     @MethodSource("operationDeclarations")
-    void reportsOperations(String description, List<ArcheOperationDeclaration> operations,
+    void reportsOperations(String description, ArcheClassKind kind, List<ArcheOperationDeclaration> operations,
                            Map<String, String> expectedOperations) throws Exception {
-        var generatedClass = load(program(ENTITY, operations));
+        var generatedClass = load(program(kind, operations));
 
         assertThat(generatedClass.getMethod("boundedOperations").invoke(null), is(expectedOperations));
     }
