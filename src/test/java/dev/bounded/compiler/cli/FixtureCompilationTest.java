@@ -45,11 +45,12 @@ class FixtureCompilationTest {
     class ValidOperationDeclarations {
 
         @LocaleSensitiveTest
-        @DisplayName("A value function compiles and appears in declaration metadata")
-        void compilesAValueFunction() throws Exception {
+        @DisplayName("An entity with ArcheOperations up to its ceiling effect grade compiles and appears in declaration metadata")
+        void compilesAnEntityQuery() throws Exception {
             var compilation = compiler.compile("""
-                value Money {
+                entity Money {
                   function format;
+                  query exchangeRate;
                 }
             """);
             assertThat(compilation, accepted());
@@ -57,16 +58,21 @@ class FixtureCompilationTest {
 
             try(var program = compilation.load()) {
                 var archeClass = program.archeClass();
-                assertThat(archeClass.kind(), is("VALUE"));
-                assertThat(archeClass.operations(), is(Map.of("format", "FUNCTION")));
+                assertThat(archeClass.kind(), is("ENTITY"));
+                assertThat(archeClass.operations(), is(Map.of(
+                    "format", "FUNCTION",
+                    "exchangeRate", "QUERY"
+                )));
             }
         }
 
         @LocaleSensitiveTest
-        @DisplayName("An entity command compiles and appears in declaration metadata")
+        @DisplayName("An entity with ArcheOperations up to its ceiling effect grade compiles and appears in declaration metadata")
         void compilesAnEntityCommand() throws Exception {
             var compilation = compiler.compile("""
             entity Account {
+                function format;
+                query amount;
                 command deposit;
             }
             """);
@@ -76,7 +82,11 @@ class FixtureCompilationTest {
             try (var program = compilation.load()) {
                 var archeClass = program.archeClass();
                 assertThat(archeClass.kind(), is("ENTITY"));
-                assertThat(archeClass.operations(), is(Map.of("deposit", "COMMAND")));
+                assertThat(archeClass.operations(), is(Map.of(
+                "format", "FUNCTION",
+                "amount", "QUERY",
+                "deposit", "COMMAND"
+                )));
             }
         }
     }
