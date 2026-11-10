@@ -10,6 +10,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.stream.Stream;
 
 import static dev.bounded.compiler.grammar.BoundedLexer.ACTION;
+import static dev.bounded.compiler.grammar.BoundedLexer.ADAPTER;
 import static dev.bounded.compiler.grammar.BoundedLexer.COMMAND;
 import static dev.bounded.compiler.grammar.BoundedLexer.MESSAGE;
 import static dev.bounded.compiler.grammar.BoundedLexer.USECASE;
@@ -100,6 +101,15 @@ class BoundedLexerTest {
         assertThat(lex("message messageEnvelope"), hasTokens(
                 token(MESSAGE, "message"),
                 token(IDENTIFIER, "messageEnvelope")
+        ));
+    }
+
+    @Test
+    @DisplayName("Tokenizes the 'adapter' archeclass without reserving identifiers with its prefix")
+    void tokenizesAdapterFragment() {
+        assertThat(lex("adapter adapterRegistry"), hasTokens(
+                token(ADAPTER, "adapter"),
+                token(IDENTIFIER, "adapterRegistry")
         ));
     }
 

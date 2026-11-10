@@ -399,10 +399,10 @@ Use a deliberately familiar bootstrap stack:
 
 The backend consumes the analyzed program and produces class bytes in memory; a separate writer persists the class files. Generated classes explicitly target Java 25. This replaces the initial generated-Java experiment and requires no external bytecode library or preview flags. Emitted classes can be inspected with the Class-File API or `javap`.
 
-The current vertical slice supports one `message`, `value`, `entity`, or `usecase` with bodyless
+The current vertical slice supports one `message`, `value`, `entity`, `usecase`, or `adapter` with bodyless
 `function`, `query`, `command`, and `action` declarations. Messages permit no operations, including
 derived functions; values permit only functions; entities permit operations through command grade;
-use cases permit all four operation kinds. `function` is the keyword for a pure operation.
+use cases and adapters permit all four operation kinds. `function` is the keyword for a pure operation.
 Operation names are case-sensitive and MUST be unique within their archeclass,
 regardless of operation kind;
 overloading is not supported in this slice. Each redeclaration produces `BND1002` at the
@@ -413,6 +413,10 @@ categories in Section 11.
 The implemented `message` is an empty declaration with `MESSAGE` metadata and an empty operation
 map. A message containing even a `function` is rejected with `BND1001`. Message fields, immutable
 data construction, and transitive boundary-safety checks remain unimplemented.
+
+The implemented `adapter` supports bodyless declarations and emits `ADAPTER` metadata with all
+four operation kinds permitted through its action ceiling. Foreign JVM calls, port implementation
+and binding, capabilities, and executable operation bodies remain unimplemented.
 
 Semantic analysis retains the parsed program and a declaration index. The backend consumes
 that analysis and returns a nonempty collection of uniquely named generated classes. The

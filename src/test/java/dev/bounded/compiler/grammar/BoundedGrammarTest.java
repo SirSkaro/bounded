@@ -30,6 +30,7 @@ class BoundedGrammarTest {
                 named("an empty entity class", "entity Account {}"),
                 named("an empty usecase class", "usecase AccountTransfer {}"),
                 named("an empty message class", "message TransferRequest {}"),
+                named("an empty adapter class", "adapter BankAdapter {}"),
                 named("a message with a syntactically valid function", "message TransferRequest { function format; }"),
                 named("a value with a function", "value Money { function format; }"),
                 named("an entity with a query", "entity Account { query balance; }"),
@@ -40,6 +41,8 @@ class BoundedGrammarTest {
                 named("an entity with a syntactically valid action", "entity Account { action commit; }"),
                 named("a usecase with all supported operation kinds",
                         "usecase AccountTransfer { function format; query hasFunds; command transfer; action commit; }"),
+                named("an adapter with all supported operation kinds",
+                        "adapter BankAdapter { function format; query balance; command transfer; action commit; }"),
                 named("identifiers containing underscores and digits", "entity _Account2 { function deposit; query balance; }"),
                 named("tabs and line breaks between tokens", "\tentity Account\n{\r\n function deposit;\tquery balance;\n}\n")
             );
@@ -76,6 +79,9 @@ class BoundedGrammarTest {
                 named("message used as a class name", "value message {}"),
                 named("message used as an operation name", "value Money { function message; }"),
                 named("a capitalized message keyword", "Message TransferRequest {}"),
+                named("adapter used as a class name", "value adapter {}"),
+                named("adapter used as an operation name", "adapter BankAdapter { function adapter; }"),
+                named("a capitalized adapter keyword", "Adapter BankAdapter {}"),
                 named("an unsupported operation kind", "entity Account { activity deposit; }"),
                 named("an unrecognized character", "value Money { @ }")
             );
@@ -115,7 +121,7 @@ class BoundedGrammarTest {
     class GrammarRules {
         @DisplayName("Accepts a complete archeclass kind")
         @ParameterizedTest(name = "Accepts {0} as an archeclass kind")
-        @ValueSource(strings = {"value", "entity", "usecase", "message"})
+        @ValueSource(strings = {"value", "entity", "usecase", "message", "adapter"})
         void acceptsArcheClassKinds(String source) {
             assertThat(parse(source, BoundedParser::archeClassKind), is(accepted()));
         }

@@ -23,7 +23,7 @@ value Money {
 ```
 
 For this slice, a value may declare only functions. An entity may declare functions, queries,
-and commands. A use case may also declare actions, the highest supported effect grade.
+and commands. Use cases and adapters may also declare actions, the highest supported effect grade.
 Messages permit no operations, including functions:
 
 ```bounded
@@ -35,6 +35,8 @@ and transitive boundary-safety checks remain unimplemented.
 
 Nothing else is being decided yet: no parameters, return types, bodies, calls, or runtime
 meaning for an ArcheOperation.
+An adapter currently exposes declaration metadata; foreign JVM calls, port implementation and
+binding, and capabilities remain unimplemented.
 
 ## 2. Represent the idea with a hand-built AST
 
@@ -60,7 +62,8 @@ should eventually learn from the source text.
 MESSAGE(OperationPermissions.noOperations(), "message", "MESSAGE", "Message"),
 VALUE(OperationPermissions.through(ArcheOperationKind.FUNCTION), "value", "VALUE", "Value"),
 ENTITY(OperationPermissions.through(ArcheOperationKind.COMMAND), "entity", "ENTITY", "Entity"),
-USECASE(OperationPermissions.through(ArcheOperationKind.ACTION), "usecase", "USECASE", "Use case");
+USECASE(OperationPermissions.through(ArcheOperationKind.ACTION), "usecase", "USECASE", "Use case"),
+ADAPTER(OperationPermissions.through(ArcheOperationKind.ACTION), "adapter", "ADAPTER", "Adapter");
 ```
 
 `ArcheOperationKind` exposes its numeric effect grade through `effectGrade()`:
@@ -98,7 +101,7 @@ if (!archeClass.kind().allows(operation.kind())) {
 - a value may declare a function;
 - a value may not declare a query, command, or action;
 - an entity may declare a function, query, or command, but not an action;
-- a use case may declare any of the four operation kinds.
+- a use case or adapter may declare any of the four operation kinds.
 
 `ProgramChecker` implements `api.check.SemanticChecker` and composes `DeclarationChecker`
 and `EffectChecker`, each returning diagnostics for its own rule. Duplicate names are rejected
@@ -190,6 +193,9 @@ a message function is rejected with `BND1001`. The use case example exposes `USE
 and all four operation kinds, including `ACTION`. An entity action is rejected with `BND1001` because
 it exceeds the entity's command ceiling. Invalid examples assert that no output exists. A semantically
 invalid Bounded program must stop before bytecode generation.
+
+The adapter example similarly exposes `ADAPTER` metadata and all four operation kinds through its
+action ceiling. This checks declarations and loading; adapter execution and port bindings remain deferred.
 
 ## 7. Cross the backend boundary into JVM bytecode
 

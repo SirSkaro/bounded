@@ -24,12 +24,14 @@ cohesive helper into its own file. A separate test library can follow if reuse w
   already exercises the compiler assembled by `Main`, compares diagnostics, loads emitted
   classes, and invokes their metadata methods. It also covers failures and default locales.
 - [Bounded.g4](../src/main/antlr4/dev/bounded/compiler/grammar/Bounded.g4) currently accepts
-  one `message`, `value`, `entity`, or `usecase`, with bodyless `function`, `query`, `command`, and
-  `action` operation syntax. Semantic checking rejects all operation kinds in messages.
+  one `message`, `value`, `entity`, `usecase`, or `adapter`, with bodyless `function`, `query`,
+  `command`, and `action` operation syntax. Semantic checking rejects all operation kinds in messages.
 - The generated class exposes declaration metadata. There are no operation parameters,
   return types, executable bodies, or program entry point yet.
 - Messages compile as empty declarations. Message fields, immutable data construction, and
   transitive boundary-safety checks remain deferred.
+- Adapters support declaration metadata. Foreign JVM calls, port implementation and binding,
+  capabilities, and executable operation bodies remain deferred.
 - [The language specification](Language-Spec-v0.0.1.md) describes broader, partly provisional
   semantics. This roadmap does not decide their syntax or make them implemented features.
 
@@ -96,6 +98,8 @@ The existing fixture tests now use reusable support and cover:
 9. An empty message compiles and exposes `MESSAGE` metadata with an empty operation map.
 10. A message containing even a function is rejected with `BND1001`, the specified diagnostic,
     and no artifacts.
+11. An adapter containing all four operation kinds compiles through its action ceiling and exposes
+    `ADAPTER` metadata with the complete operation map.
 
 For example, using today's Bounded syntax:
 

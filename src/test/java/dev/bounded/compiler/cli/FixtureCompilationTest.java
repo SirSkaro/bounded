@@ -115,6 +115,32 @@ class FixtureCompilationTest {
         }
 
         @LocaleSensitiveTest
+        @DisplayName("An adapter with ArcheOperations up to its ceiling effect grade compiles and appears in declaration metadata")
+        void compilesAnAdapterThroughItsEffectCeiling() throws Exception {
+            var compilation = compiler.compile("""
+                    adapter AccountStore {
+                        function format;
+                        query load;
+                        command save;
+                        action synchronize;
+                    }
+                """);
+
+            assertThat(compilation, accepted());
+
+            try (var program = compilation.load()) {
+                var archeClass = program.archeClass();
+                assertThat(archeClass.kind(), is("ADAPTER"));
+                assertThat(archeClass.operations(), is(Map.of(
+                    "format", "FUNCTION",
+                    "load", "QUERY",
+                    "save", "COMMAND",
+                    "synchronize", "ACTION"
+                )));
+            }
+        }
+
+        @LocaleSensitiveTest
         @DisplayName("A message compiles with no operation metadata")
         void compilesAMessageWithoutOperations() throws Exception {
             var compilation = compiler.compile("""

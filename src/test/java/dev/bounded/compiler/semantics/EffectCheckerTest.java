@@ -12,6 +12,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
+import static dev.bounded.compiler.ast.ArcheClassKind.ADAPTER;
 import static dev.bounded.compiler.ast.ArcheClassKind.ENTITY;
 import static dev.bounded.compiler.ast.ArcheClassKind.MESSAGE;
 import static dev.bounded.compiler.ast.ArcheClassKind.USECASE;
@@ -39,7 +40,11 @@ class EffectCheckerTest {
                 Arguments.of(USECASE, FUNCTION),
                 Arguments.of(USECASE, QUERY),
                 Arguments.of(USECASE, COMMAND),
-                Arguments.of(USECASE, ACTION)
+                Arguments.of(USECASE, ACTION),
+                Arguments.of(ADAPTER, FUNCTION),
+                Arguments.of(ADAPTER, QUERY),
+                Arguments.of(ADAPTER, COMMAND),
+                Arguments.of(ADAPTER, ACTION)
             );
         }
         @ParameterizedTest(name = "{0} archeclass can have a {1} archeop")

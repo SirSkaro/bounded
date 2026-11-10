@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class ArcheClassKindTest {
     @DisplayName("Provides stable metadata independent of the Java enum name")
     @ParameterizedTest(name = "{0} exposes metadata {1}")
-    @CsvSource({"VALUE, VALUE", "ENTITY, ENTITY", "USECASE, USECASE", "MESSAGE, MESSAGE"})
+    @CsvSource({"VALUE, VALUE", "ENTITY, ENTITY", "USECASE, USECASE", "ADAPTER, ADAPTER", "MESSAGE, MESSAGE"})
     void providesMetadataName(ArcheClassKind kind, String expected) {
         assertThat(kind.metadataName(), is(expected));
     }
@@ -35,6 +35,10 @@ class ArcheClassKindTest {
         "USECASE, QUERY, true",
         "USECASE, COMMAND, true",
         "USECASE, ACTION, true",
+        "ADAPTER, FUNCTION, true",
+        "ADAPTER, QUERY, true",
+        "ADAPTER, COMMAND, true",
+        "ADAPTER, ACTION, true",
         "MESSAGE, FUNCTION, false",
         "MESSAGE, QUERY, false",
         "MESSAGE, COMMAND, false",
@@ -46,7 +50,7 @@ class ArcheClassKindTest {
 
     @DisplayName("Provides a human-readable label for each archeclass kind")
     @ParameterizedTest(name = "Labels {0} as {1}")
-    @CsvSource({"VALUE, Value", "ENTITY, Entity", "USECASE, Use case", "MESSAGE, Message"})
+    @CsvSource({"VALUE, Value", "ENTITY, Entity", "USECASE, Use case", "ADAPTER, Adapter", "MESSAGE, Message"})
     void providesLabel(ArcheClassKind kind, String expectedLabel) {
         assertThat(kind.label(), is(expectedLabel));
     }
@@ -83,9 +87,17 @@ class ArcheClassKindTest {
         assertThat(ArcheClassKind.fromKeyword("Message"), is(ArcheClassKind.MESSAGE));
     }
 
+    @Test
+    @DisplayName("Converts adapter regardless of letter case")
+    void convertsAdapter() {
+        assertThat(ArcheClassKind.fromKeyword("adapter"), is(ArcheClassKind.ADAPTER));
+        assertThat(ArcheClassKind.fromKeyword("ADAPTER"), is(ArcheClassKind.ADAPTER));
+        assertThat(ArcheClassKind.fromKeyword("Adapter"), is(ArcheClassKind.ADAPTER));
+    }
+
     @DisplayName("Exposes a ceiling only when operations are permitted")
     @ParameterizedTest(name = "{0} exposes optional ceiling {1}")
-    @CsvSource({"VALUE, FUNCTION", "ENTITY, COMMAND", "USECASE, ACTION", "MESSAGE,"})
+    @CsvSource({"VALUE, FUNCTION", "ENTITY, COMMAND", "USECASE, ACTION", "ADAPTER, ACTION", "MESSAGE,"})
     void exposesOptionalCeiling(ArcheClassKind kind, ArcheOperationKind expected) {
         assertThat(kind.maximumOperationKind(), is(Optional.ofNullable(expected)));
     }

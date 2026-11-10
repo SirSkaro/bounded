@@ -13,6 +13,7 @@ archeClassKind
     : VALUE
     | ENTITY
     | USECASE
+    | ADAPTER
     | MESSAGE
     ;
 
@@ -30,6 +31,7 @@ archeOperationKind
 VALUE      : 'value';
 ENTITY     : 'entity';
 USECASE    : 'usecase';
+ADAPTER    : 'adapter';
 MESSAGE    : 'message';
 FUNCTION   : 'function';
 QUERY      : 'query';

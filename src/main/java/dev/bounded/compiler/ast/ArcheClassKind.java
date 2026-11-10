@@ -14,6 +14,7 @@ public enum ArcheClassKind {
     VALUE(through(FUNCTION), "value", "VALUE", "Value"),
     ENTITY(through(COMMAND), "entity", "ENTITY", "Entity"),
     USECASE(through(ACTION), "usecase", "USECASE", "Use case"),
+    ADAPTER(through(ACTION), "adapter", "ADAPTER", "Adapter"),
     MESSAGE(noOperations(), "message", "MESSAGE", "Message");
 
     private final OperationPermissions operationPermissions;

@@ -38,12 +38,13 @@ Preserve the ports and adapters architecture and inward dependency direction:
 - Treat `CompilerArchitectureTest` as executable architecture policy. New production
   packages must be explicitly incorporated into its rules while preserving these boundaries.
 
-The implemented language currently supports one `message`, `value`, `entity`, or `usecase` with
-bodyless `function`, `query`, `command`, and `action` declarations with unique, case-sensitive names.
+The implemented language currently supports one `message`, `value`, `entity`, `usecase`, or `adapter`
+with bodyless `function`, `query`, `command`, and `action` declarations with unique, case-sensitive names.
 Messages permit no operations; values permit only functions; entities permit operations through
-command grade; use cases permit all four operation kinds. Message fields, immutable data construction,
-and boundary-safety checks remain unimplemented. The language specification is a discussion draft
-covering a broader design.
+command grade; use cases and adapters permit all four operation kinds. Message fields, immutable
+data construction, boundary-safety checks, foreign JVM calls, port implementation and binding,
+capabilities, and executable bodies remain unimplemented. The language specification is a discussion
+draft covering a broader design.
 Read it before language changes, and distinguish proposed features from behavior implemented in
 the grammar and tests.
 

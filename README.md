@@ -4,9 +4,9 @@ This is a deliberately tiny but end-to-end compiler for the first Bounded slice:
 
 - one source file;
 - one ArcheClass declaration;
-- `message`, `value`, `entity`, and `usecase` ArcheClasses;
+- `message`, `value`, `entity`, `usecase`, and `adapter` ArcheClasses;
 - `function`, `query`, `command`, and `action` ArcheOperations without bodies;
-- effect ceilings of `function` for values, `command` for entities, and `action` for use cases;
+- effect ceilings of `function` for values, `command` for entities, and `action` for use cases and adapters;
 - messages permit no operations, including functions;
 - unique, case-sensitive operation names within each archeclass;
 - stable syntax (`BND0001`), effect (`BND1001`), duplicate-name (`BND1002`), and backend (`BND9001`) diagnostics;
@@ -18,6 +18,9 @@ shows the complete compiler plumbing without prematurely deciding how Bounded bo
 
 Messages currently support empty declarations and `MESSAGE` metadata. Message fields, immutable
 data construction, and transitive boundary-safety checks remain unimplemented.
+
+Adapters support bodyless declarations and `ADAPTER` metadata. Foreign JVM calls, port implementation
+and binding, capabilities, and executable operation bodies remain unimplemented.
 
 ## Requirements
 

@@ -11,6 +11,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import static dev.bounded.compiler.grammar.BoundedParser.ACTION;
+import static dev.bounded.compiler.grammar.BoundedParser.ADAPTER;
 import static dev.bounded.compiler.grammar.BoundedParser.COMMAND;
 import static dev.bounded.compiler.grammar.BoundedParser.ENTITY;
 import static dev.bounded.compiler.grammar.BoundedParser.FUNCTION;
@@ -74,6 +75,18 @@ class BoundedAstMapperTest {
             assertThat(declaration.kind(), is(ArcheClassKind.MESSAGE));
             assertThat(declaration.name(), is("TransferRequest"));
             assertThat(declaration.span(), is(new SourceSpan("transfer-request.bounded", 2, 5)));
+        }
+
+        @Test
+        @DisplayName("Maps an adapter context with its name and source span")
+        void mapsAdapterClass() {
+            var context = program(at(archeClass(ADAPTER, "BankAdapter"), 2, 4));
+
+            var declaration = mapper.map(context, "bank-adapter.bounded").archeClass();
+
+            assertThat(declaration.kind(), is(ArcheClassKind.ADAPTER));
+            assertThat(declaration.name(), is("BankAdapter"));
+            assertThat(declaration.span(), is(new SourceSpan("bank-adapter.bounded", 2, 5)));
         }
 
         @Test

@@ -97,7 +97,7 @@ class JvmBackendTest {
 
     @DisplayName("Reports the declared archeclass kind")
     @ParameterizedTest(name = "Reports {1} for an archeclass of kind {0}")
-    @CsvSource({"VALUE, VALUE", "ENTITY, ENTITY", "USECASE, USECASE", "MESSAGE, MESSAGE"})
+    @CsvSource({"VALUE, VALUE", "ENTITY, ENTITY", "USECASE, USECASE", "ADAPTER, ADAPTER", "MESSAGE, MESSAGE"})
     void reportsArcheClassKind(ArcheClassKind kind, String expectedKind) throws Exception {
         var generatedClass = load(program(kind, List.of()));
 
