@@ -113,6 +113,23 @@ class FixtureCompilationTest {
                 )));
             }
         }
+
+        @LocaleSensitiveTest
+        @DisplayName("A message compiles with no operation metadata")
+        void compilesAMessageWithoutOperations() throws Exception {
+            var compilation = compiler.compile("""
+                message TransferRequest {}
+            """);
+
+            assertThat(compilation, accepted());
+            assertThat(compilation.result().artifacts(), hasSize(1));
+
+            try (var program = compilation.load()) {
+                var archeClass = program.archeClass();
+                assertThat(archeClass.kind(), is("MESSAGE"));
+                assertThat(archeClass.operations(), is(Map.of()));
+            }
+        }
     }
 
     @Nested
@@ -145,6 +162,15 @@ class FixtureCompilationTest {
             assertThat(compilation, rejectedWithCode("BND1002"));
             assertThat(compilation.formattedDiagnostics(), is(expectedDiagnostics("cases/invalid/duplicate-operation.diag")));
         }
+
+        @Test
+        @DisplayName("A message cannot declare even a function")
+        void rejectsEvenAFunctionInAMessage() throws IOException {
+            var compilation = compiler.compile(fixture("cases/invalid/message-function.bounded"));
+            assertThat(compilation, rejectedWithCode("BND1001"));
+            assertThat(compilation.formattedDiagnostics(), is(expectedDiagnostics("cases/invalid/message-function.diag")));
+        }
+
     }
 
     @Nested

@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.stream.Stream;
 
 import static dev.bounded.compiler.ast.ArcheClassKind.ENTITY;
+import static dev.bounded.compiler.ast.ArcheClassKind.MESSAGE;
 import static dev.bounded.compiler.ast.ArcheClassKind.USECASE;
 import static dev.bounded.compiler.ast.ArcheClassKind.VALUE;
 import static dev.bounded.compiler.ast.ArcheOperationKind.ACTION;
@@ -60,7 +61,11 @@ class EffectCheckerTest {
                 Arguments.of(VALUE, QUERY),
                 Arguments.of(VALUE, COMMAND),
                 Arguments.of(VALUE, ACTION),
-                Arguments.of(ENTITY, ACTION)
+                Arguments.of(ENTITY, ACTION),
+                Arguments.of(MESSAGE, FUNCTION),
+                Arguments.of(MESSAGE, QUERY),
+                Arguments.of(MESSAGE, COMMAND),
+                Arguments.of(MESSAGE, ACTION)
             );
         }
         @ParameterizedTest(name = "{0} archeclass cannot have a {1} archeop")
@@ -82,7 +87,11 @@ class EffectCheckerTest {
         "VALUE, QUERY, exchangeRate, Value 'Money' permits operations through FUNCTION; 'exchangeRate' is QUERY.",
         "VALUE, COMMAND, changeCurrency, Value 'Money' permits operations through FUNCTION; 'changeCurrency' is COMMAND.",
         "VALUE, ACTION, commit, Value 'Money' permits operations through FUNCTION; 'commit' is ACTION.",
-        "ENTITY, ACTION, commit, Entity 'Money' permits operations through COMMAND; 'commit' is ACTION."
+        "ENTITY, ACTION, commit, Entity 'Money' permits operations through COMMAND; 'commit' is ACTION.",
+        "MESSAGE, FUNCTION, describe, Message 'Money' permits no operations; 'describe' is FUNCTION.",
+        "MESSAGE, QUERY, describe, Message 'Money' permits no operations; 'describe' is QUERY.",
+        "MESSAGE, COMMAND, describe, Message 'Money' permits no operations; 'describe' is COMMAND.",
+        "MESSAGE, ACTION, describe, Message 'Money' permits no operations; 'describe' is ACTION."
     })
     void constructsDiagnosticForIllegalEffect(ArcheClassKind classKind, ArcheOperationKind kind,
                                              String name, String expectedMessage) {

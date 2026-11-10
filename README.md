@@ -4,9 +4,10 @@ This is a deliberately tiny but end-to-end compiler for the first Bounded slice:
 
 - one source file;
 - one ArcheClass declaration;
-- `value`, `entity`, and `usecase` ArcheClasses;
+- `message`, `value`, `entity`, and `usecase` ArcheClasses;
 - `function`, `query`, `command`, and `action` ArcheOperations without bodies;
 - effect ceilings of `function` for values, `command` for entities, and `action` for use cases;
+- messages permit no operations, including functions;
 - unique, case-sensitive operation names within each archeclass;
 - stable syntax (`BND0001`), effect (`BND1001`), duplicate-name (`BND1002`), and backend (`BND9001`) diagnostics;
 - valid input is lowered directly to a JVM `.class` file using the JDK Class-File API.
@@ -14,6 +15,9 @@ This is a deliberately tiny but end-to-end compiler for the first Bounded slice:
 The generated class is only an **interoperable metadata shell**. Because this slice has no
 operation bodies or `main`, it cannot yet perform useful work. That is intentional: the example
 shows the complete compiler plumbing without prematurely deciding how Bounded bodies lower to JVM instructions.
+
+Messages currently support empty declarations and `MESSAGE` metadata. Message fields, immutable
+data construction, and transitive boundary-safety checks remain unimplemented.
 
 ## Requirements
 

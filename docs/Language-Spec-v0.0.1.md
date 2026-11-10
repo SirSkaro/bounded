@@ -160,7 +160,8 @@ An ArcheOp's grade is part of its public type and API contract.
 
 ## 5. ArcheClass effect ceilings
 
-Every ArcheClass has a maximum effect grade. Every ArcheOp declared within it MUST be at or below that ceiling.
+An ArcheClass either forbids operations or permits them through a maximum effect grade. Every
+ArcheOp declared within it MUST be permitted by that policy.
 
 The initial proposed built-in ArcheClasses are:
 
@@ -174,7 +175,8 @@ The initial proposed built-in ArcheClasses are:
 | `adapter` | `action` | Technical detail that implements or consumes declared ports |
 | `compose` | special | Construction and binding authority, not ordinary application behavior |
 
-The initial checker MUST reject an ArcheOp whose grade exceeds the enclosing ArcheClass ceiling.
+The initial checker MUST reject an ArcheOp whose grade exceeds the enclosing ArcheClass ceiling,
+or any ArcheOp when the enclosing ArcheClass permits no operations.
 
 Examples:
 
@@ -397,15 +399,20 @@ Use a deliberately familiar bootstrap stack:
 
 The backend consumes the analyzed program and produces class bytes in memory; a separate writer persists the class files. Generated classes explicitly target Java 25. This replaces the initial generated-Java experiment and requires no external bytecode library or preview flags. Emitted classes can be inspected with the Class-File API or `javap`.
 
-The current vertical slice supports one `value`, `entity`, or `usecase` with bodyless `function`,
-`query`, `command`, and `action` declarations. Values permit only functions; entities permit operations
-through command grade; use cases permit all four operation kinds. `function` is the keyword for a
-pure operation. Operation names are case-sensitive and MUST be unique within their archeclass,
+The current vertical slice supports one `message`, `value`, `entity`, or `usecase` with bodyless
+`function`, `query`, `command`, and `action` declarations. Messages permit no operations, including
+derived functions; values permit only functions; entities permit operations through command grade;
+use cases permit all four operation kinds. `function` is the keyword for a pure operation.
+Operation names are case-sensitive and MUST be unique within their archeclass,
 regardless of operation kind;
 overloading is not supported in this slice. Each redeclaration produces `BND1002` at the
 later declaration. Syntax errors use `BND0001`, forbidden effects use `BND1001`, and backend
 failures use `BND9001`. These implemented codes are distinct from the proposed diagnostic
 categories in Section 11.
+
+The implemented `message` is an empty declaration with `MESSAGE` metadata and an empty operation
+map. A message containing even a `function` is rejected with `BND1001`. Message fields, immutable
+data construction, and transitive boundary-safety checks remain unimplemented.
 
 Semantic analysis retains the parsed program and a declaration index. The backend consumes
 that analysis and returns a nonempty collection of uniquely named generated classes. The
@@ -564,7 +571,8 @@ These are deferred so the first implementation can test the language's architect
 2. Should entity `query` operations and externally backed port queries share one grade despite observing different scopes of state?
 3. What may a `command` return without collapsing command-query separation?
 4. Should a mapper be required to be total in the first language release?
-5. May messages contain derived `function` ArcheOps, or must boundary data remain behavior-free?
+5. Messages are behavior-free in the current slice, including rejection of derived `function`
+   ArcheOps. Would allowing derived functions be justified in a later design?
 6. Which ArcheClass owns pure domain behavior that fits neither an entity nor a value?
 7. Are ArcheClass ceilings fixed language rules or eventually user-definable under compiler-verified constraints?
 8. Which portions of an operation's capability set must appear explicitly in source, and which may be inferred?

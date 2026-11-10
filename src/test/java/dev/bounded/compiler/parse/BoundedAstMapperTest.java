@@ -14,6 +14,7 @@ import static dev.bounded.compiler.grammar.BoundedParser.ACTION;
 import static dev.bounded.compiler.grammar.BoundedParser.COMMAND;
 import static dev.bounded.compiler.grammar.BoundedParser.ENTITY;
 import static dev.bounded.compiler.grammar.BoundedParser.FUNCTION;
+import static dev.bounded.compiler.grammar.BoundedParser.MESSAGE;
 import static dev.bounded.compiler.grammar.BoundedParser.QUERY;
 import static dev.bounded.compiler.grammar.BoundedParser.VALUE;
 import static dev.bounded.compiler.grammar.BoundedParser.USECASE;
@@ -61,6 +62,18 @@ class BoundedAstMapperTest {
             assertThat(declaration.kind(), is(ArcheClassKind.USECASE));
             assertThat(declaration.name(), is("AccountTransfer"));
             assertThat(declaration.span(), is(new SourceSpan("transfer.bounded", 2, 5)));
+        }
+
+        @Test
+        @DisplayName("Maps a message context with its name and source span")
+        void mapsMessageClass() {
+            var context = program(at(archeClass(MESSAGE, "TransferRequest"), 2, 4));
+
+            var declaration = mapper.map(context, "transfer-request.bounded").archeClass();
+
+            assertThat(declaration.kind(), is(ArcheClassKind.MESSAGE));
+            assertThat(declaration.name(), is("TransferRequest"));
+            assertThat(declaration.span(), is(new SourceSpan("transfer-request.bounded", 2, 5)));
         }
 
         @Test

@@ -84,7 +84,7 @@ class ArcheOperationKindTest {
     @DisplayName("Rejects text that is not a keyword")
     @ParameterizedTest(name = "Rejects keyword [{0}]")
     @EmptySource
-    @ValueSource(strings = {"entity", " function "})
+    @ValueSource(strings = {"entity", " function ", "none"})
     void rejectsUnknownKeywords(String keyword) {
         assertThrows(IllegalArgumentException.class, () -> ArcheOperationKind.fromKeyword(keyword));
     }

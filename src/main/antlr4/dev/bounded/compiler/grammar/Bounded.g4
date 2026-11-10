@@ -13,6 +13,7 @@ archeClassKind
     : VALUE
     | ENTITY
     | USECASE
+    | MESSAGE
     ;
 
 archeOperation
@@ -29,6 +30,7 @@ archeOperationKind
 VALUE      : 'value';
 ENTITY     : 'entity';
 USECASE    : 'usecase';
+MESSAGE    : 'message';
 FUNCTION   : 'function';
 QUERY      : 'query';
 COMMAND    : 'command';

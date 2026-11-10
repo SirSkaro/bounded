@@ -28,10 +28,13 @@ public final class EffectChecker implements SemanticRule {
     }
 
     private Diagnostic constructDiagnostic(ArcheClassDeclaration archeClass, ArcheOperationDeclaration operation) {
-        var message = format("%s '%s' permits operations through %s; '%s' is %s.",
+        var permission = archeClass.kind().maximumOperationKind()
+                .map(kind -> "permits operations through " + kind.metadataName())
+                .orElse("permits no operations");
+        var message = format("%s '%s' %s; '%s' is %s.",
             archeClass.kind().label(),
             archeClass.name(),
-            archeClass.kind().maximumOperationKind().metadataName(),
+            permission,
             operation.name(),
             operation.kind().metadataName()
         );

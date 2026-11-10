@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 
 import static dev.bounded.compiler.grammar.BoundedLexer.ACTION;
 import static dev.bounded.compiler.grammar.BoundedLexer.COMMAND;
+import static dev.bounded.compiler.grammar.BoundedLexer.MESSAGE;
 import static dev.bounded.compiler.grammar.BoundedLexer.USECASE;
 import static dev.bounded.compiler.grammar.BoundedLexer.VALUE;
 import static dev.bounded.compiler.grammar.BoundedLexer.ENTITY;
@@ -90,6 +91,15 @@ class BoundedLexerTest {
         assertThat(lex("usecase usecaseRunner"), hasTokens(
                 token(USECASE, "usecase"),
                 token(IDENTIFIER, "usecaseRunner")
+        ));
+    }
+
+    @Test
+    @DisplayName("Tokenizes the 'message' archeclass without reserving identifiers with its prefix")
+    void tokenizesMessageFragment() {
+        assertThat(lex("message messageEnvelope"), hasTokens(
+                token(MESSAGE, "message"),
+                token(IDENTIFIER, "messageEnvelope")
         ));
     }
 

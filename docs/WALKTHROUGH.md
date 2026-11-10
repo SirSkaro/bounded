@@ -24,6 +24,14 @@ value Money {
 
 For this slice, a value may declare only functions. An entity may declare functions, queries,
 and commands. A use case may also declare actions, the highest supported effect grade.
+Messages permit no operations, including functions:
+
+```bounded
+message TransferRequest {}
+```
+
+This message declaration exposes metadata only. Message fields, immutable data construction,
+and transitive boundary-safety checks remain unimplemented.
 
 Nothing else is being decided yet: no parameters, return types, bodies, calls, or runtime
 meaning for an ArcheOperation.
@@ -46,12 +54,13 @@ var program = new BoundedProgram(new ArcheClassDeclaration(
 At this point, no parser is involved. The Java expression says exactly what the compiler
 should eventually learn from the source text.
 
-`ArcheClassKind` owns the maximum operation kind it permits:
+`ArcheClassKind` owns an `OperationPermissions` policy:
 
 ```java
-VALUE(ArcheOperationKind.FUNCTION, "value", "VALUE", "Value"),
-ENTITY(ArcheOperationKind.COMMAND, "entity", "ENTITY", "Entity"),
-USECASE(ArcheOperationKind.ACTION, "usecase", "USECASE", "Use case");
+MESSAGE(OperationPermissions.noOperations(), "message", "MESSAGE", "Message"),
+VALUE(OperationPermissions.through(ArcheOperationKind.FUNCTION), "value", "VALUE", "Value"),
+ENTITY(OperationPermissions.through(ArcheOperationKind.COMMAND), "entity", "ENTITY", "Entity"),
+USECASE(OperationPermissions.through(ArcheOperationKind.ACTION), "usecase", "USECASE", "Use case");
 ```
 
 `ArcheOperationKind` exposes its numeric effect grade through `effectGrade()`:
@@ -63,8 +72,14 @@ COMMAND(2, "command", "COMMAND", "Command"),
 ACTION(3, "action", "ACTION", "Action");
 ```
 
-`ArcheClassKind.allows(operationKind)` compares the requested operation's grade with
-its ceiling. The checker asks that domain question without comparing grades itself. Explicit
+`OperationPermissions.through(...)` builds an immutable set containing all operation kinds at or
+below the specified numeric effect grade. `noOperations()` represents an empty allowed set.
+`ArcheClassKind.allows(operationKind)` delegates to that policy's membership check. Its
+`maximumOperationKind()` returns an `Optional`: empty for messages, or the ceiling for a policy
+created through an operation kind. The absence of a ceiling has a domain meaning rather than a
+numeric sentinel value.
+
+The checker asks whether an operation is allowed without comparing grades itself. Explicit
 keywords, metadata names, and human-readable labels do not depend on Java enum constant names.
 
 ## 3. Test the semantic checker before parsing
@@ -79,6 +94,7 @@ if (!archeClass.kind().allows(operation.kind())) {
 
 `EffectCheckerTest` constructs the AST by hand and proves these permissions:
 
+- a message may not declare any operation, including a function;
 - a value may declare a function;
 - a value may not declare a query, command, or action;
 - an entity may declare a function, query, or command, but not an action;
@@ -92,6 +108,12 @@ The failure is data rather than an exception:
 
 ```text
 money.bounded:BND1001:3:3 Value 'Money' permits operations through FUNCTION; 'exchangeRate' is QUERY.
+```
+
+When the permission policy has no ceiling, the diagnostic says so explicitly:
+
+```text
+message-function.bounded:BND1001:2:5 Message 'TransferRequested' permits no operations; 'describe' is FUNCTION.
 ```
 
 `BND1001` is part of the compiler's user-facing contract. The test deliberately checks the
@@ -163,10 +185,11 @@ compare with value-query.diag
 ```
 
 Valid inline acceptance examples continue into the backend, covering operations at and below
-each ArcheClass ceiling. The use case example exposes `USECASE` class metadata and all four
-operation kinds, including `ACTION`. An entity action is rejected with `BND1001` because it exceeds
-the entity's command ceiling. Invalid examples assert that no output exists. A semantically invalid
-Bounded program must stop before bytecode generation.
+each applicable ArcheClass ceiling. An empty message exposes `MESSAGE` metadata and no operations;
+a message function is rejected with `BND1001`. The use case example exposes `USECASE` class metadata
+and all four operation kinds, including `ACTION`. An entity action is rejected with `BND1001` because
+it exceeds the entity's command ceiling. Invalid examples assert that no output exists. A semantically
+invalid Bounded program must stop before bytecode generation.
 
 ## 7. Cross the backend boundary into JVM bytecode
 

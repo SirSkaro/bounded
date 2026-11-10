@@ -29,6 +29,8 @@ class BoundedGrammarTest {
                 named("an empty value class", "value Money {}"),
                 named("an empty entity class", "entity Account {}"),
                 named("an empty usecase class", "usecase AccountTransfer {}"),
+                named("an empty message class", "message TransferRequest {}"),
+                named("a message with a syntactically valid function", "message TransferRequest { function format; }"),
                 named("a value with a function", "value Money { function format; }"),
                 named("an entity with a query", "entity Account { query balance; }"),
                 named("an entity with a command", "entity Account { command deposit; }"),
@@ -71,6 +73,9 @@ class BoundedGrammarTest {
                 named("action used as an operation name", "usecase AccountTransfer { function action; }"),
                 named("a capitalized usecase keyword", "Usecase AccountTransfer {}"),
                 named("a capitalized action keyword", "usecase AccountTransfer { Action commit; }"),
+                named("message used as a class name", "value message {}"),
+                named("message used as an operation name", "value Money { function message; }"),
+                named("a capitalized message keyword", "Message TransferRequest {}"),
                 named("an unsupported operation kind", "entity Account { activity deposit; }"),
                 named("an unrecognized character", "value Money { @ }")
             );
@@ -110,7 +115,7 @@ class BoundedGrammarTest {
     class GrammarRules {
         @DisplayName("Accepts a complete archeclass kind")
         @ParameterizedTest(name = "Accepts {0} as an archeclass kind")
-        @ValueSource(strings = {"value", "entity", "usecase"})
+        @ValueSource(strings = {"value", "entity", "usecase", "message"})
         void acceptsArcheClassKinds(String source) {
             assertThat(parse(source, BoundedParser::archeClassKind), is(accepted()));
         }

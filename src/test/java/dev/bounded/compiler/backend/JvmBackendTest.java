@@ -23,6 +23,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static dev.bounded.compiler.ast.ArcheClassKind.ENTITY;
+import static dev.bounded.compiler.ast.ArcheClassKind.MESSAGE;
 import static dev.bounded.compiler.ast.ArcheClassKind.USECASE;
 import static dev.bounded.compiler.ast.ArcheClassKind.VALUE;
 import static dev.bounded.compiler.ast.ArcheOperationKind.ACTION;
@@ -96,7 +97,7 @@ class JvmBackendTest {
 
     @DisplayName("Reports the declared archeclass kind")
     @ParameterizedTest(name = "Reports {1} for an archeclass of kind {0}")
-    @CsvSource({"VALUE, VALUE", "ENTITY, ENTITY", "USECASE, USECASE"})
+    @CsvSource({"VALUE, VALUE", "ENTITY, ENTITY", "USECASE, USECASE", "MESSAGE, MESSAGE"})
     void reportsArcheClassKind(ArcheClassKind kind, String expectedKind) throws Exception {
         var generatedClass = load(program(kind, List.of()));
 
@@ -111,6 +112,7 @@ class JvmBackendTest {
         var action = new ArcheOperationDeclaration(ACTION, "commit", span);
         return Stream.of(
                 Arguments.of("no operations", ENTITY, List.of(), Map.of()),
+                Arguments.of("a message without operations", MESSAGE, List.of(), Map.of()),
                 Arguments.of("a function", ENTITY, List.of(function), Map.of("calculate", "FUNCTION")),
                 Arguments.of("a query", ENTITY, List.of(query), Map.of("total", "QUERY")),
                 Arguments.of("a command", ENTITY, List.of(command), Map.of("deposit", "COMMAND")),

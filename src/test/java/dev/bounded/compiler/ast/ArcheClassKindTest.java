@@ -6,6 +6,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.Optional;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -13,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class ArcheClassKindTest {
     @DisplayName("Provides stable metadata independent of the Java enum name")
     @ParameterizedTest(name = "{0} exposes metadata {1}")
-    @CsvSource({"VALUE, VALUE", "ENTITY, ENTITY", "USECASE, USECASE"})
+    @CsvSource({"VALUE, VALUE", "ENTITY, ENTITY", "USECASE, USECASE", "MESSAGE, MESSAGE"})
     void providesMetadataName(ArcheClassKind kind, String expected) {
         assertThat(kind.metadataName(), is(expected));
     }
@@ -32,7 +34,11 @@ class ArcheClassKindTest {
         "USECASE, FUNCTION, true",
         "USECASE, QUERY, true",
         "USECASE, COMMAND, true",
-        "USECASE, ACTION, true"
+        "USECASE, ACTION, true",
+        "MESSAGE, FUNCTION, false",
+        "MESSAGE, QUERY, false",
+        "MESSAGE, COMMAND, false",
+        "MESSAGE, ACTION, false"
     })
     void allowsOperationKinds(ArcheClassKind classKind, ArcheOperationKind operationKind, boolean expected) {
         assertThat(classKind.allows(operationKind), is(expected));
@@ -40,7 +46,7 @@ class ArcheClassKindTest {
 
     @DisplayName("Provides a human-readable label for each archeclass kind")
     @ParameterizedTest(name = "Labels {0} as {1}")
-    @CsvSource({"VALUE, Value", "ENTITY, Entity", "USECASE, Use case"})
+    @CsvSource({"VALUE, Value", "ENTITY, Entity", "USECASE, Use case", "MESSAGE, Message"})
     void providesLabel(ArcheClassKind kind, String expectedLabel) {
         assertThat(kind.label(), is(expectedLabel));
     }
@@ -67,6 +73,21 @@ class ArcheClassKindTest {
         assertThat(ArcheClassKind.fromKeyword("usecase"), is(ArcheClassKind.USECASE));
         assertThat(ArcheClassKind.fromKeyword("USECASE"), is(ArcheClassKind.USECASE));
         assertThat(ArcheClassKind.fromKeyword("UseCase"), is(ArcheClassKind.USECASE));
+    }
+
+    @Test
+    @DisplayName("Converts message regardless of letter case")
+    void convertsMessage() {
+        assertThat(ArcheClassKind.fromKeyword("message"), is(ArcheClassKind.MESSAGE));
+        assertThat(ArcheClassKind.fromKeyword("MESSAGE"), is(ArcheClassKind.MESSAGE));
+        assertThat(ArcheClassKind.fromKeyword("Message"), is(ArcheClassKind.MESSAGE));
+    }
+
+    @DisplayName("Exposes a ceiling only when operations are permitted")
+    @ParameterizedTest(name = "{0} exposes optional ceiling {1}")
+    @CsvSource({"VALUE, FUNCTION", "ENTITY, COMMAND", "USECASE, ACTION", "MESSAGE,"})
+    void exposesOptionalCeiling(ArcheClassKind kind, ArcheOperationKind expected) {
+        assertThat(kind.maximumOperationKind(), is(Optional.ofNullable(expected)));
     }
 
     @DisplayName("Rejects text that is not a keyword")
