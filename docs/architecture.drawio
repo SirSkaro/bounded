@@ -1,4 +1,4 @@
-<mxfile host="drawio-plugin" compressed="false" modified="2026-11-02T05:07:20.027Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36" version="22.1.22" type="embed" pages="1">
+<mxfile host="drawio-plugin" compressed="false" modified="2026-11-14T17:10:21.552Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36" version="22.1.22" etag="BXDIErME_vPWozHp1b4B" type="embed" pages="3">
   <diagram id="ports-and-adapters" name="Ports and adapters">
     <mxGraphModel dx="952" dy="659" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1920" background="#F8FAFC" math="0" shadow="0">
       <root>
@@ -286,6 +286,424 @@
         </mxCell>
         <mxCell id="reference" value="Design reference: Robert C. Martin, The Clean Architecture (2012)  |  blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=12;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
           <mxGeometry x="60" y="1885" width="1690" height="25" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="language-authority-draft" name="Language authority (draft)">
+    <mxGraphModel dx="952" dy="659" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1540" background="#F8FAFC" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="draft-label" value="BOUNDED  /  LANGUAGE DESIGN  /  WORKING HYPOTHESIS" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=14;fontColor=#52657B;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="60" y="30" width="1680" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="draft-title" value="Architecture authorizes. Modules expose. Compose assembles." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=32;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="60" y="68" width="1680" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="draft-subtitle" value="Proposed relationships, not implemented compiler structure. Declaration classification remains open." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=17;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="60" y="125" width="1680" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="architecture" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#EAF2FC;strokeColor=#5B8EC2;strokeWidth=1.5;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="300" y="200" width="1200" height="205" as="geometry" />
+        </mxCell>
+        <mxCell id="architecture-title" value="architecture Commerce  |  system authority" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=24;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="architecture" vertex="1" connectable="0">
+          <mxGeometry x="24" y="20" width="1152" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="architecture-body" value="Names all participating modules and permitted communication boundaries.&#xa;Declares logical port connections / bindings against module-owned contracts.&#xa;Contract ownership and private implementations stay with their modules." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=18;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="architecture" vertex="1" connectable="0">
+          <mxGeometry x="24" y="72" width="1152" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="module" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#F5F1FF;strokeColor=#8B6CD1;strokeWidth=1.5;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="60" y="500" width="780" height="360" as="geometry" />
+        </mxCell>
+        <mxCell id="module-title" value="module orders  |  contract authority" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=24;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="module" vertex="1" connectable="0">
+          <mxGeometry x="24" y="20" width="732" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="public-api" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#FFFFFF;strokeColor=#8B6CD1;strokeWidth=1.5;dashed=0;" parent="module" vertex="1">
+          <mxGeometry x="24" y="75" width="732" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="public-api-title" value="Public API surface" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=18;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="public-api" vertex="1" connectable="0">
+          <mxGeometry x="18" y="11" width="696" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="public-api-body" value="Inbound ports: offered operations&#xa;Outbound ports: required capabilities&#xa;Parameter + return types: boundary-safe data graph" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=17;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="public-api" vertex="1" connectable="0">
+          <mxGeometry x="18" y="49" width="696" height="78" as="geometry" />
+        </mxCell>
+        <mxCell id="module-private" value="Private: usecases, entities, adapters and technical types." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=17;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="module" vertex="1" connectable="0">
+          <mxGeometry x="24" y="235" width="732" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="module-owner" value="The module owns both inbound and outbound contracts." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=17;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="module" vertex="1" connectable="0">
+          <mxGeometry x="24" y="295" width="732" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="compose" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#FFF1D6;strokeColor=#B58635;strokeWidth=1.5;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="960" y="500" width="780" height="360" as="geometry" />
+        </mxCell>
+        <mxCell id="compose-title" value="compose Commerce  |  assembly authority" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=24;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="compose" vertex="1" connectable="0">
+          <mxGeometry x="24" y="20" width="732" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="compose-body" value="Constructs instances and supplies configuration.&#xa;Realizes authorized bindings using module contracts." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=18;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="compose" vertex="1" connectable="0">
+          <mxGeometry x="24" y="75" width="732" height="76" as="geometry" />
+        </mxCell>
+        <mxCell id="compose-limits" value="Scoped construction rights; no blanket private-state access.&#xa;Cannot add undeclared modules or connections.&#xa;Ordinary application code cannot invoke composition.&#xa;Construction authority is separate from effect grade." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=17;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="compose" vertex="1" connectable="0">
+          <mxGeometry x="24" y="180" width="732" height="145" as="geometry" />
+        </mxCell>
+        <mxCell id="architecture-module" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;strokeWidth=2;strokeColor=#5B8EC2;dashed=0;exitX=0.15;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="architecture" target="module" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="480" y="450" />
+              <mxPoint x="450" y="450" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="architecture-compose" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;strokeWidth=2;strokeColor=#5B8EC2;dashed=0;exitX=0.85;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="architecture" target="compose" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1320" y="450" />
+              <mxPoint x="1350" y="450" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="module-constraint" value="Enumerates modules and authorizes their connections" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=15;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="75" y="430" width="650" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="architecture-constraint" value="Assembly must realize the permitted&#xa;topology and bindings" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=15;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="980" y="427" width="320" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="module-compose" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;strokeWidth=2;strokeColor=#8B6CD1;dashed=0;exitX=1;exitY=0.65;exitDx=0;exitDy=0;entryX=0;entryY=0.65;entryDx=0;entryDy=0;" parent="1" source="module" target="compose" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="contract-edge-label" value="API&#xa;contracts" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=14;fontColor=#8B6CD1;fontStyle=1;align=center;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="847" y="679" width="106" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="composition-family" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="60" y="920" width="1680" height="410" as="geometry" />
+        </mxCell>
+        <mxCell id="composition-family-title" value="Reusable composition  |  one selected root per executable (proposal)" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=22;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="composition-family" vertex="1" connectable="0">
+          <mxGeometry x="24" y="17" width="1632" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="root-compose" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#FFF1D6;strokeColor=#B58635;strokeWidth=1.5;dashed=0;" parent="composition-family" vertex="1">
+          <mxGeometry x="640" y="80" width="400" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="root-compose-title" value="compose Commerce" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=20;fontColor=#172B4D;fontStyle=1;align=center;verticalAlign=middle;spacing=0;resizable=1;" parent="root-compose" vertex="1" connectable="0">
+          <mxGeometry x="20" y="9" width="360" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="root-compose-body" value="Selected startup root" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=16;fontColor=#52657B;fontStyle=0;align=center;verticalAlign=middle;spacing=0;resizable=1;" parent="root-compose" vertex="1" connectable="0">
+          <mxGeometry x="20" y="45" width="360" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="launcher-note" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;dashed=0;" parent="composition-family" vertex="1">
+          <mxGeometry x="24" y="75" width="550" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="launcher-note-text" value="The launcher builds the selected graph,&#xa;then starts behavior through an entry port." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=17;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="launcher-note" vertex="1" connectable="0">
+          <mxGeometry x="18" y="16" width="514" height="81" as="geometry" />
+        </mxCell>
+        <mxCell id="delegation-note" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;dashed=0;" parent="composition-family" vertex="1">
+          <mxGeometry x="1080" y="75" width="570" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="delegation-note-text" value="Proposed: acyclic composition delegation.&#xa;Instance sharing and lifetimes need explicit rules." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=17;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="delegation-note" vertex="1" connectable="0">
+          <mxGeometry x="18" y="16" width="534" height="81" as="geometry" />
+        </mxCell>
+        <mxCell id="web-compose" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#FFF8EB;strokeColor=#B58635;strokeWidth=1.5;dashed=0;" parent="composition-family" vertex="1">
+          <mxGeometry x="80" y="250" width="400" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="web-compose-text" value="compose WebAssembly" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=20;fontColor=#172B4D;fontStyle=1;align=center;verticalAlign=middle;spacing=0;resizable=1;" parent="web-compose" vertex="1" connectable="0">
+          <mxGeometry x="15" y="20" width="370" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="orders-compose" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#FFF8EB;strokeColor=#B58635;strokeWidth=1.5;dashed=0;" parent="composition-family" vertex="1">
+          <mxGeometry x="640" y="250" width="400" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="orders-compose-text" value="compose OrdersAssembly" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=20;fontColor=#172B4D;fontStyle=1;align=center;verticalAlign=middle;spacing=0;resizable=1;" parent="orders-compose" vertex="1" connectable="0">
+          <mxGeometry x="15" y="20" width="370" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="jdbc-compose" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#FFF8EB;strokeColor=#B58635;strokeWidth=1.5;dashed=0;" parent="composition-family" vertex="1">
+          <mxGeometry x="1200" y="250" width="400" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="jdbc-compose-text" value="compose JdbcAssembly" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=20;fontColor=#172B4D;fontStyle=1;align=center;verticalAlign=middle;spacing=0;resizable=1;" parent="jdbc-compose" vertex="1" connectable="0">
+          <mxGeometry x="15" y="20" width="370" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="composition-context" value="Only a composition context may delegate to another compose; each remains within its granted authority." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=17;fontColor=#52657B;fontStyle=0;align=center;verticalAlign=middle;spacing=0;resizable=1;" parent="composition-family" vertex="1" connectable="0">
+          <mxGeometry x="24" y="362" width="1632" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="delegates-web" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;strokeWidth=2;strokeColor=#B58635;dashed=1;exitX=0.2;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="root-compose" target="web-compose" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="780" y="1120" />
+              <mxPoint x="340" y="1120" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="delegates-orders" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;strokeWidth=2;strokeColor=#B58635;dashed=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="root-compose" target="orders-compose" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="delegates-jdbc" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;strokeWidth=2;strokeColor=#B58635;dashed=1;exitX=0.8;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="root-compose" target="jdbc-compose" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1020" y="1120" />
+              <mxPoint x="1460" y="1120" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="open-decisions" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#F5F1FF;strokeColor=#8B6CD1;strokeWidth=1.5;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="60" y="1360" width="1680" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="open-decisions-title" value="Open language decisions" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=20;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="open-decisions" vertex="1" connectable="0">
+          <mxGeometry x="24" y="12" width="1632" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="open-decisions-body" value="Are module and architecture dedicated declarations or ArcheClasses? This view leaves that classification open.&#xa;Composition-export syntax remains open; architecture owns logical bindings in this hypothesis." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=16;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="open-decisions" vertex="1" connectable="0">
+          <mxGeometry x="24" y="51" width="1632" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="authority-legend" value="Solid arrows = authority / contract constraints   |   Dashed amber arrows = composition delegation" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=14;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="60" y="1490" width="1680" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="authority-reference" value="Design basis: Language-Spec-v0.0.1.md sections 2, 5-8 and the composition discussion. All relationships on this tab are proposed." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=12;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="60" y="1518" width="1680" height="20" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="module-api-draft" name="Module API (draft)">
+    <mxGraphModel dx="952" dy="659" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1660" background="#F8FAFC" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="draft-label" value="BOUNDED  /  LANGUAGE DESIGN  /  WORKING HYPOTHESIS" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=14;fontColor=#52657B;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="60" y="30" width="1680" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="draft-title" value="A module&#39;s public surface includes its dependencies." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=32;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="60" y="68" width="1680" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="draft-subtitle" value="Example: orders owns PlaceOrders and OrderStore. An implementation provider does not become the contract owner." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=17;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="60" y="125" width="1680" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="logical-bindings" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#EAF2FC;strokeColor=#5B8EC2;strokeWidth=1.5;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="60" y="190" width="1680" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="logical-bindings-title" value="architecture Commerce  |  logical bindings" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=22;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="logical-bindings" vertex="1" connectable="0">
+          <mxGeometry x="24" y="13" width="1632" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="logical-bindings-examples" value="web.placeOrders  -&gt;  orders.PlaceOrders&#xa;orders.OrderStore  -&gt;  jdbc.orderStore" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=18;fontColor=#172B4D;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="logical-bindings" vertex="1" connectable="0">
+          <mxGeometry x="24" y="58" width="860" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="logical-bindings-note" value="Endpoint aliases are illustrative, not finalized syntax.&#xa;Each binding must match the declared module contracts." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=16;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="logical-bindings" vertex="1" connectable="0">
+          <mxGeometry x="940" y="58" width="700" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="source-section" value="MODULE CONTRACTS  /  SOURCE DEPENDENCIES POINT TOWARD THE CONTRACT OWNER" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=14;fontColor=#52657B;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="60" y="379" width="1680" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="web-module" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="60" y="440" width="420" height="600" as="geometry" />
+        </mxCell>
+        <mxCell id="web-module-title" value="module web" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=24;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="web-module" vertex="1" connectable="0">
+          <mxGeometry x="24" y="21" width="372" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="web-requires" value="Required capability" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=18;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="web-module" vertex="1" connectable="0">
+          <mxGeometry x="24" y="70" width="372" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="web-port" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#F5F1FF;strokeColor=#8B6CD1;strokeWidth=1.5;dashed=0;" parent="web-module" vertex="1">
+          <mxGeometry x="24" y="110" width="372" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="web-port-title" value="web.placeOrders" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=18;fontColor=#172B4D;fontStyle=1;align=center;verticalAlign=middle;spacing=0;resizable=1;" parent="web-port" vertex="1" connectable="0">
+          <mxGeometry x="18" y="10" width="336" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="web-port-body" value="Requires orders.PlaceOrders&#xa;Contract owner: orders" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=15;fontColor=#52657B;fontStyle=0;align=center;verticalAlign=middle;spacing=0;resizable=1;" parent="web-port" vertex="1" connectable="0">
+          <mxGeometry x="18" y="44" width="336" height="43" as="geometry" />
+        </mxCell>
+        <mxCell id="web-contract-note" value="Names exposed contracts and&#xa;boundary-safe data.&#xa;Cannot name Order or PlaceOrder." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=17;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="web-module" vertex="1" connectable="0">
+          <mxGeometry x="24" y="246" width="372" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="web-private" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#F1F5F9;strokeColor=#94A3B8;strokeWidth=1.5;dashed=1;" parent="web-module" vertex="1">
+          <mxGeometry x="24" y="500" width="372" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="web-private-title" value="PRIVATE IMPLEMENTATION" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=14;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="web-private" vertex="1" connectable="0">
+          <mxGeometry x="14" y="9" width="344" height="23" as="geometry" />
+        </mxCell>
+        <mxCell id="web-private-body" value="HTTP adapter / web framework" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=15;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="web-private" vertex="1" connectable="0">
+          <mxGeometry x="14" y="41" width="344" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="orders-module" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#F5F1FF;strokeColor=#8B6CD1;strokeWidth=1.5;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="600" y="440" width="600" height="600" as="geometry" />
+        </mxCell>
+        <mxCell id="orders-module-title" value="module orders  |  public API" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=24;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="orders-module" vertex="1" connectable="0">
+          <mxGeometry x="24" y="21" width="552" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="inbound-port" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#FFFFFF;strokeColor=#8B6CD1;strokeWidth=1.5;dashed=0;" parent="orders-module" vertex="1">
+          <mxGeometry x="24" y="80" width="552" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="inbound-title" value="INBOUND  PlaceOrders" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=18;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="inbound-port" vertex="1" connectable="0">
+          <mxGeometry x="18" y="12" width="516" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="inbound-body" value="action place(PlaceOrderInput) -&gt; PlaceOrderOutput" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=16;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="inbound-port" vertex="1" connectable="0">
+          <mxGeometry x="18" y="55" width="516" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="outbound-port" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#FFFFFF;strokeColor=#8B6CD1;strokeWidth=1.5;dashed=0;" parent="orders-module" vertex="1">
+          <mxGeometry x="24" y="210" width="552" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="outbound-title" value="OUTBOUND  OrderStore" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=18;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="outbound-port" vertex="1" connectable="0">
+          <mxGeometry x="18" y="12" width="516" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="outbound-body" value="query load(OrderId) -&gt; StoredOrder?&#xa;command save(StoredOrder)" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=16;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="outbound-port" vertex="1" connectable="0">
+          <mxGeometry x="18" y="55" width="516" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="boundary-data" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#E8F5EE;strokeColor=#58966E;strokeWidth=1.5;dashed=0;" parent="orders-module" vertex="1">
+          <mxGeometry x="24" y="370" width="552" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="boundary-data-title" value="BOUNDARY DATA" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=17;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="boundary-data" vertex="1" connectable="0">
+          <mxGeometry x="18" y="10" width="516" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="boundary-data-body" value="PlaceOrderInput, PlaceOrderOutput, OrderId, StoredOrder&#xa;Every referenced type must also be boundary-safe." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=15;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="boundary-data" vertex="1" connectable="0">
+          <mxGeometry x="18" y="46" width="516" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="orders-private" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#F1F5F9;strokeColor=#94A3B8;strokeWidth=1.5;dashed=1;" parent="orders-module" vertex="1">
+          <mxGeometry x="24" y="500" width="552" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="orders-private-title" value="PRIVATE IMPLEMENTATION" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=14;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="orders-private" vertex="1" connectable="0">
+          <mxGeometry x="14" y="9" width="524" height="23" as="geometry" />
+        </mxCell>
+        <mxCell id="orders-private-body" value="PlaceOrder usecase / Order entity" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=15;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="orders-private" vertex="1" connectable="0">
+          <mxGeometry x="14" y="41" width="524" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="jdbc-module" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="1320" y="440" width="420" height="600" as="geometry" />
+        </mxCell>
+        <mxCell id="jdbc-module-title" value="module jdbc" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=24;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="jdbc-module" vertex="1" connectable="0">
+          <mxGeometry x="24" y="21" width="372" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="jdbc-provides" value="Provided implementation" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=18;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="jdbc-module" vertex="1" connectable="0">
+          <mxGeometry x="24" y="70" width="372" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="jdbc-port" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#F5F1FF;strokeColor=#8B6CD1;strokeWidth=1.5;dashed=0;" parent="jdbc-module" vertex="1">
+          <mxGeometry x="24" y="110" width="372" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="jdbc-port-title" value="jdbc.orderStore" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=18;fontColor=#172B4D;fontStyle=1;align=center;verticalAlign=middle;spacing=0;resizable=1;" parent="jdbc-port" vertex="1" connectable="0">
+          <mxGeometry x="18" y="10" width="336" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="jdbc-port-body" value="Provides orders.OrderStore&#xa;Contract owner: orders" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=15;fontColor=#52657B;fontStyle=0;align=center;verticalAlign=middle;spacing=0;resizable=1;" parent="jdbc-port" vertex="1" connectable="0">
+          <mxGeometry x="18" y="44" width="336" height="43" as="geometry" />
+        </mxCell>
+        <mxCell id="jdbc-contract-note" value="Provider-side construction is local.&#xa;SQL implementation types stay private." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=17;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="jdbc-module" vertex="1" connectable="0">
+          <mxGeometry x="24" y="246" width="372" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="jdbc-private" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#F1F5F9;strokeColor=#94A3B8;strokeWidth=1.5;dashed=1;" parent="jdbc-module" vertex="1">
+          <mxGeometry x="24" y="500" width="372" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="jdbc-private-title" value="PRIVATE IMPLEMENTATION" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=14;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="jdbc-private" vertex="1" connectable="0">
+          <mxGeometry x="14" y="9" width="344" height="23" as="geometry" />
+        </mxCell>
+        <mxCell id="jdbc-private-body" value="SQL adapter / database driver" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=15;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="jdbc-private" vertex="1" connectable="0">
+          <mxGeometry x="14" y="41" width="344" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="web-source-use" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;strokeWidth=2;strokeColor=#64748B;dashed=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="web-port" target="inbound-port" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="540" y="600" />
+              <mxPoint x="540" y="575" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="web-source-label" value="uses" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=14;fontColor=#64748B;fontStyle=1;align=center;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="478" y="542" width="120" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="jdbc-implements" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=0;startArrow=none;strokeWidth=2;strokeColor=#5B8EC2;dashed=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="jdbc-port" target="outbound-port" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1260" y="600" />
+              <mxPoint x="1260" y="720" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="jdbc-source-label" value="implements" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=14;fontColor=#5B8EC2;fontStyle=1;align=center;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="1200" y="745" width="120" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="runtime-control" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#E8F5EE;strokeColor=#58966E;strokeWidth=1.5;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="60" y="1100" width="1680" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="runtime-control-title" value="RUNTIME CONTROL  /  SEPARATE FROM SOURCE DEPENDENCIES" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=14;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="runtime-control" vertex="1" connectable="0">
+          <mxGeometry x="24" y="11" width="1632" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="runtime-web" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#FFFFFF;strokeColor=#58966E;strokeWidth=1.5;dashed=0;" parent="runtime-control" vertex="1">
+          <mxGeometry x="50" y="60" width="300" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="runtime-web-text" value="web adapter" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=18;fontColor=#172B4D;fontStyle=0;align=center;verticalAlign=middle;spacing=0;resizable=1;" parent="runtime-web" vertex="1" connectable="0">
+          <mxGeometry x="12" y="8" width="276" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="runtime-orders" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#FFFFFF;strokeColor=#58966E;strokeWidth=1.5;dashed=0;" parent="runtime-control" vertex="1">
+          <mxGeometry x="690" y="60" width="300" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="runtime-orders-text" value="orders usecase" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=18;fontColor=#172B4D;fontStyle=0;align=center;verticalAlign=middle;spacing=0;resizable=1;" parent="runtime-orders" vertex="1" connectable="0">
+          <mxGeometry x="12" y="8" width="276" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="runtime-jdbc" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#FFFFFF;strokeColor=#58966E;strokeWidth=1.5;dashed=0;" parent="runtime-control" vertex="1">
+          <mxGeometry x="1330" y="60" width="300" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="runtime-jdbc-text" value="jdbc provider" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=18;fontColor=#172B4D;fontStyle=0;align=center;verticalAlign=middle;spacing=0;resizable=1;" parent="runtime-jdbc" vertex="1" connectable="0">
+          <mxGeometry x="12" y="8" width="276" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="runtime-place-label" value="PlaceOrders.place" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=16;fontColor=#58966E;fontStyle=0;align=center;verticalAlign=middle;spacing=0;resizable=1;" parent="runtime-control" vertex="1" connectable="0">
+          <mxGeometry x="395" y="48" width="250" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="runtime-store-label" value="OrderStore.load / save" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=16;fontColor=#58966E;fontStyle=0;align=center;verticalAlign=middle;spacing=0;resizable=1;" parent="runtime-control" vertex="1" connectable="0">
+          <mxGeometry x="1035" y="48" width="250" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="runtime-place" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;strokeWidth=2;strokeColor=#58966E;dashed=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="runtime-web" target="runtime-orders" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="runtime-store" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;strokeWidth=2;strokeColor=#58966E;dashed=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="runtime-orders" target="runtime-jdbc" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="assembly" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#FFF1D6;strokeColor=#B58635;strokeWidth=1.5;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="60" y="1270" width="1680" height="175" as="geometry" />
+        </mxCell>
+        <mxCell id="assembly-title" value="COMPOSITION REALIZES BOTH CONTRACTS AND ARCHITECTURE" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=14;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="assembly" vertex="1" connectable="0">
+          <mxGeometry x="24" y="12" width="1632" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="assembly-jdbc" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#FFFFFF;strokeColor=#B58635;strokeWidth=1.5;dashed=0;" parent="assembly" vertex="1">
+          <mxGeometry x="24" y="50" width="500" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="assembly-jdbc-title" value="1. JdbcAssembly" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=18;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="assembly-jdbc" vertex="1" connectable="0">
+          <mxGeometry x="16" y="8" width="468" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="assembly-jdbc-body" value="Builds a provider of orders.OrderStore." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=16;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="assembly-jdbc" vertex="1" connectable="0">
+          <mxGeometry x="16" y="43" width="468" height="27" as="geometry" />
+        </mxCell>
+        <mxCell id="assembly-orders" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#FFFFFF;strokeColor=#B58635;strokeWidth=1.5;dashed=0;" parent="assembly" vertex="1">
+          <mxGeometry x="590" y="50" width="500" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="assembly-orders-title" value="2. OrdersAssembly" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=18;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="assembly-orders" vertex="1" connectable="0">
+          <mxGeometry x="16" y="8" width="468" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="assembly-orders-body" value="Receives OrderStore; provides PlaceOrders." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=16;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="assembly-orders" vertex="1" connectable="0">
+          <mxGeometry x="16" y="43" width="468" height="27" as="geometry" />
+        </mxCell>
+        <mxCell id="assembly-web" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#FFFFFF;strokeColor=#B58635;strokeWidth=1.5;dashed=0;" parent="assembly" vertex="1">
+          <mxGeometry x="1156" y="50" width="500" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="assembly-web-title" value="3. WebAssembly" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=18;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="assembly-web" vertex="1" connectable="0">
+          <mxGeometry x="16" y="8" width="468" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="assembly-web-body" value="Receives PlaceOrders; builds the web adapter." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=16;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="assembly-web" vertex="1" connectable="0">
+          <mxGeometry x="16" y="43" width="468" height="27" as="geometry" />
+        </mxCell>
+        <mxCell id="assembly-note" value="The selected Commerce root coordinates these assemblies. Arrows show supplied port instances, not compose invocation order." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=16;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="assembly" vertex="1" connectable="0">
+          <mxGeometry x="24" y="141" width="1632" height="27" as="geometry" />
+        </mxCell>
+        <mxCell id="assembly-supply-store" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;strokeWidth=2;strokeColor=#B58635;dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="assembly-jdbc" target="assembly-orders" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="assembly-supply-place" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;startArrow=none;strokeWidth=2;strokeColor=#B58635;dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="assembly-orders" target="assembly-web" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="module-open" value="" style="rounded=1;whiteSpace=wrap;html=0;arcSize=10;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;dashed=0;" parent="1" vertex="1">
+          <mxGeometry x="60" y="1485" width="1680" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="module-open-title" value="Open language decisions" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=18;fontColor=#172B4D;fontStyle=1;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="module-open" vertex="1" connectable="0">
+          <mxGeometry x="24" y="10" width="1632" height="27" as="geometry" />
+        </mxCell>
+        <mxCell id="module-open-body" value="Module / architecture classification and composition-export syntax remain open. The diagram proposes ownership and authority, not final grammar." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=16;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="module-open" vertex="1" connectable="0">
+          <mxGeometry x="24" y="48" width="1632" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="module-legend" value="Solid slate = source use   |   Dashed blue hollow = implements contract   |   Solid green = runtime call   |   Dashed amber = assembly supply" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=14;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="60" y="1600" width="1680" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="module-reference" value="Design basis: Language-Spec-v0.0.1.md sections 3, 7-8. Module signatures and endpoint aliases are illustrative." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=12;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="60" y="1632" width="1680" height="20" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
