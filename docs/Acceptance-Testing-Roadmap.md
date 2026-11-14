@@ -32,7 +32,7 @@ cohesive helper into its own file. A separate test library can follow if reuse w
   transitive boundary-safety checks remain deferred.
 - Adapters support declaration metadata. Foreign JVM calls, port implementation and binding,
   capabilities, and executable operation bodies remain deferred.
-- [The language specification](Language-Spec-v0.0.1.md) describes broader, partly provisional
+- [The language specification](Language-Spec-v0.0.2.md) describes broader, partly provisional
   semantics. This roadmap does not decide their syntax or make them implemented features.
 
 ## Test architecture

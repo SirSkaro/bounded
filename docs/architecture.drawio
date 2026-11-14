@@ -453,7 +453,7 @@
         <mxCell id="authority-legend" value="Solid arrows = authority / contract constraints   |   Dashed amber arrows = composition delegation" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=14;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
           <mxGeometry x="60" y="1490" width="1680" height="26" as="geometry" />
         </mxCell>
-        <mxCell id="authority-reference" value="Design basis: Language-Spec-v0.0.1.md sections 2, 5-8 and the composition discussion. All relationships on this tab are proposed." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=12;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+        <mxCell id="authority-reference" value="Design basis: Language-Spec-v0.0.2.md sections 2, 5-8 and the composition discussion. All relationships on this tab are proposed." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=12;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
           <mxGeometry x="60" y="1518" width="1680" height="20" as="geometry" />
         </mxCell>
       </root>
@@ -702,7 +702,7 @@
         <mxCell id="module-legend" value="Solid slate = source use   |   Dashed blue hollow = implements contract   |   Solid green = runtime call   |   Dashed amber = assembly supply" style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=14;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
           <mxGeometry x="60" y="1600" width="1680" height="28" as="geometry" />
         </mxCell>
-        <mxCell id="module-reference" value="Design basis: Language-Spec-v0.0.1.md sections 3, 7-8. Module signatures and endpoint aliases are illustrative." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=12;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
+        <mxCell id="module-reference" value="Design basis: Language-Spec-v0.0.2.md sections 3, 7-8. Module signatures and endpoint aliases are illustrative." style="text;html=0;whiteSpace=wrap;overflow=hidden;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=12;fontColor=#52657B;fontStyle=0;align=left;verticalAlign=middle;spacing=0;resizable=1;" parent="1" vertex="1" connectable="0">
           <mxGeometry x="60" y="1632" width="1680" height="20" as="geometry" />
         </mxCell>
       </root>

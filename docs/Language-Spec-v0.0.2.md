@@ -1,12 +1,14 @@
 # Bounded Language Specification
 
-**Status:** Discussion Draft 0.1  
-**Date:** 2026-08-18  
-**Scope:** Semantic core and first compiler milestone  
+**Status:** Discussion Draft 0.0.2\
+**Date:** 2026-11-14\
+**Scope:** Semantic core, module boundaries, composition, and first compiler milestone
 
 This document captures the current design direction for Bounded. It is intentionally incomplete. Its purpose is to make the central claims precise enough to implement, test, challenge, and revise.
 
 Normative words such as **MUST**, **MUST NOT**, **SHOULD**, and **MAY** describe intended language rules. Syntax examples are provisional unless explicitly described as normative.
+
+Revision 0.0.2 separates architecture, module, and composition authority; keeps SPI implementation mappings private to their providing module; and adopts one provider instance per port contract in each executable assembly. These are intended semantics, not newly implemented compiler features. Section 13 describes the implemented slice.
 
 ## 1. Vision
 
@@ -61,11 +63,13 @@ The phonetic resemblance between ArcheOps and the Pokemon Archeops is acknowledg
 
 ### 3.3 Module
 
-A **module** owns implementation declarations, state, and contracts. Its internal declarations are unnameable outside the module except through explicitly exposed architectural contracts.
+A **module** owns implementation declarations, state, and contracts. Its declaration describes its public contracts and boundary data, required capabilities, provided capabilities, and private mappings from provided contracts to implementations. Internal declarations are unnameable outside the module; authorized callers interact with their instances through exposed contracts.
 
 ### 3.4 Port
 
-A **port** is a module-owned contract through which authorized communication may occur. A port describes a dependency required or provided by a module; composition binds requirements to providers.
+A **port** is a module-owned contract through which authorized communication may occur. A port describes a dependency required or provided by a module. The architecture selects the providing module, that module maps the contract to a private implementation, and composition constructs the instance used by the compiler's generated wiring.
+
+An outbound port is also a service provider interface (**SPI**): its owning module defines the policy contract that an external provider must satisfy. Providing that SPI does not transfer ownership of the contract to the provider.
 
 ### 3.5 Boundary data
 
@@ -73,7 +77,11 @@ A **port** is a module-owned contract through which authorized communication may
 
 ### 3.6 Architecture
 
-The **architecture** is a top-level declaration of modules, ports, permitted dependencies, and bindings. It authorizes communication; it does not merely document communication discovered elsewhere.
+The **architecture** is the authoritative top-level declaration of all participating modules, permitted dependencies, and logical port bindings. It refers to module-owned contracts and selects providing modules. It does not name the private classes or members that satisfy those contracts. It authorizes communication; it does not merely document communication discovered elsewhere.
+
+### 3.7 Composition
+
+A **compose** declaration constructs and configures instances within the authority granted by a module and architecture. An **executable assembly** is the instance graph constructed for one executable target under a selected architecture and root compose. Composition realizes the declared graph; it does not independently choose port bindings or redefine module provisions.
 
 ## 4. ArcheOp effect grades
 
@@ -173,7 +181,9 @@ The initial proposed built-in ArcheClasses are:
 | `entity` | `command` | Identity-bearing domain concept with queries and controlled transitions |
 | `usecase` | `action` | Stateless orchestration of domain behavior and declared ports |
 | `adapter` | `action` | Technical detail that implements or consumes declared ports |
-| `compose` | special | Construction and binding authority, not ordinary application behavior |
+| `compose` | special | Scoped construction, configuration, and lifetime authority for a declared assembly |
+
+Composition authority is separate from the ordinary effect-grade ordering. It is not a grade above `action`. This discussion provisionally calls `module` and `architecture` ArcheClasses as well; whether they are ultimately classified as ArcheClasses or dedicated structural declarations remains open. Neither classification grants ordinary application behavior or unrestricted construction rights.
 
 The initial checker MUST reject an ArcheOp whose grade exceeds the enclosing ArcheClass ceiling,
 or any ArcheOp when the enclosing ArcheClass permits no operations.
@@ -229,9 +239,23 @@ For example, an entity command cannot call a repository merely because both oper
 
 ## 7. Ports and dependency inversion
 
+### 7.1 Distributed authority
+
+The architecture, modules, and composition have distinct responsibilities:
+
+| Declaration | Authority |
+| --- | --- |
+| `architecture` | Enumerates all participating modules, authorizes their relationships, and selects logical bindings from required contracts to providing modules. |
+| `module` | Owns its contracts and boundary data, declares requirements and provisions, and privately maps each provision to its implementing class or members. |
+| `compose` | Constructs and configures instances and manages their lifetime within the declared module and architecture constraints. |
+
+Module declarations MUST satisfy the architecture. Composition MUST satisfy both. No declaration may use its own authority to bypass the constraints owned by another declaration.
+
+### 7.2 Module contracts and private provisions
+
 A module owns both its inbound and outbound policy contracts. Runtime control direction and compile-time source dependency direction are modeled separately.
 
-Provisional syntax:
+Provisional declaration syntax follows. Implementation bodies, detailed member mappings, and boundary-data declarations are omitted; these examples are not complete programs or implemented grammar.
 
 ```bounded
 module orders {
@@ -243,12 +267,28 @@ module orders {
         query load(id: OrderId) -> StoredOrder?
         command save(order: StoredOrder)
     }
+
+    provides PlaceOrders using PlaceOrder
+}
+
+module web {
+    requires orders.PlaceOrders
+}
+
+module jdbc {
+    provides orders.OrderStore using SqlOrderStore
 }
 ```
 
-An inbound adapter requires `orders.PlaceOrders`. An outbound persistence adapter provides `orders.OrderStore`. Both compile-time dependencies point toward the module that owns the policy contracts even though runtime calls travel in different directions.
+Here `PlaceOrder` is a private use case and `SqlOrderStore` is a private adapter. The `using` clause sketches a module-owned association; final syntax for class and member mappings remains open. The compiler MUST verify that a provision satisfies the complete port contract, including operation signatures and effect grades.
 
-Provisional composition syntax:
+The web adapter requires `orders.PlaceOrders`. The JDBC adapter provides `orders.OrderStore`. Both compile-time dependencies point toward `orders`, which owns the policy contracts, even though runtime calls travel from web to orders and from orders to the JDBC provider.
+
+The fact that `jdbc` provides `orders.OrderStore` is architecture-visible assembly metadata. `SqlOrderStore` and its implementing members remain private to `jdbc`; they do not become members of its public application API. An authorized consumer invokes the provider through `orders.OrderStore`.
+
+### 7.3 Authoritative architecture
+
+Provisional architecture syntax:
 
 ```bounded
 architecture Commerce {
@@ -256,23 +296,57 @@ architecture Commerce {
     module orders
     module jdbc
 
-    bind web.placeOrders to orders.PlaceOrders
-    bind orders.OrderStore to jdbc.orderStore
+    bind web via orders.PlaceOrders to orders
+    bind orders via orders.OrderStore to jdbc
 }
 ```
 
-Normal application code cannot acquire composition's privileged construction authority. Composition may construct and bind implementations but MUST NOT receive blanket access to their internal behavior or state.
+Each illustrative `bind` names a consuming module, a port contract, and a providing module. It authorizes that relationship and selects a provision declared by the provider. The module list MUST be exhaustive for the executable assembly. A module's requirement or provision does not itself authorize an undeclared architectural relationship.
+
+The architecture MUST NOT refer to `SqlOrderStore`, `PlaceOrder`, their constructors, or their implementing members. Any named provision syntax introduced later must identify a contract-level provision rather than expose a private implementation member.
+
+The binding through `orders.OrderStore` does not make the JDBC implementation nameable from orders. The compiler preserves the source dependency from the provider to the contract-owning module while generating the runtime connection to the provider instance.
+
+### 7.4 One provider instance per contract
+
+Within one executable assembly, port contract identity MUST identify one provider instance. Identity is the port declaration in its owning module, not an unqualified name or a structurally equivalent set of operations.
+
+- Each required port MUST have exactly one selected providing module and one implementing instance.
+- All authorized uses of the same port contract MUST resolve to that same instance. Composition MUST NOT create a separate provider instance for each consumer or injection site.
+- An adapter-provided SPI therefore has one adapter instance in the assembly. A use-case-provided inbound port follows the same provider-identity rule.
+- Multiple selected provisions or provider instances for one contract MUST be rejected rather than resolved by declaration order, type scanning, or runtime selection.
+- Alternative implementations may exist in the codebase; an assembly selects only one provision for a given contract. Qualified parallel instances and runtime provider replacement are outside this draft.
+
+The rule is scoped to an executable assembly, not to an entire JVM or all executions of a program. Separate assemblies may select different implementations and construct different instances.
+
+This constrains provider count, not caller count. Multiple architecturally authorized consumers may share the instance. Provider uniqueness alone does not guarantee that a contract has only one client or one reason to change; the contract must still express its owning module's policy needs.
+
+### 7.5 Composition and generated wiring
+
+The compiler MUST derive port wiring from the architecture's bindings and the modules' verified provisions. Application-level compose source does not need to name ports or know which private class or member provides them. It constructs and configures module instances and coordinates their assembly. It MUST NOT independently select or override a binding or implementation mapping.
+
+Module-local composition may name its own private implementation types and the dependencies needed to construct them. It assembles those implementations according to the module's declared provisions. Knowledge of private constructors and implementation details remains inside the owning module.
+
+A program MAY contain multiple compose declarations to divide construction work. Each executable target MUST select exactly one root compose; a library may supply composition fragments without selecting a root. Only composition contexts may invoke or delegate to another compose, and delegation MUST remain within the architecture and module authority granted to those contexts. The selected root realizes the declared assembly; it does not acquire unrestricted access to every participating module's private declarations.
+
+Normal application code MUST NOT invoke compose or acquire its privileged construction authority. Composition MUST NOT receive blanket access to an implementation's internal behavior or state. Construction of the graph and invocation of application entry behavior are distinct responsibilities.
+
+Detailed construction syntax, delegation syntax, lifecycle and shutdown rules, and cycle handling remain open. These open details do not permit composition to introduce undeclared modules, communication paths, or additional instances of a port provider.
 
 ## 8. Module APIs and boundary data
 
-A module API SHOULD contain only:
+A module's public application API SHOULD contain only:
 
-- ports;
+- its owned inbound and outbound ports;
 - immutable boundary data;
 - sum types and enums used by port signatures;
 - branded primitive types approved for the boundary.
 
 Concrete implementations, entities, use cases, framework types, and foreign library types MUST NOT appear in a module API.
+
+Reading a module declaration SHOULD reveal its public port signatures, parameter and return data, required capabilities, and provided capabilities. Requirements and provisions form an assembly contract for architecture checking; they do not expose callable implementation classes or members to ordinary application code. A provider references another module's port contract without re-exporting its implementation or taking ownership of that contract.
+
+Private implementation mappings belong to the module declaration. Replacing an implementation that satisfies the same provision, configuration, and lifetime requirements SHOULD leave the architecture and application-level composition unchanged.
 
 Boundary safety is recursive. For every type exposed by a port signature, the compiler MUST inspect the complete reachable type graph, including:
 
@@ -340,6 +414,8 @@ proposals do not rename those existing codes.
 | `BND210` | Internal or unsafe type crosses a boundary |
 | `BND220` | Required port is unbound |
 | `BND230` | ArcheOp lacks a required named capability |
+
+Architecture and assembly diagnostics MUST also identify multiple selected providers for one contract, a selected module that lacks the promised provision, an implementation that fails its contract, and an unauthorized use of composition authority. Codes for these additional categories remain undecided.
 
 Example:
 
@@ -417,6 +493,10 @@ data construction, and transitive boundary-safety checks remain unimplemented.
 The implemented `adapter` supports bodyless declarations and emits `ADAPTER` metadata with all
 four operation kinds permitted through its action ceiling. Foreign JVM calls, port implementation
 and binding, capabilities, and executable operation bodies remain unimplemented.
+
+`module`, `architecture`, `compose`, requirements and provisions, provider-instance uniqueness,
+and generated port wiring are also unimplemented. Sections 3, 7, and 8 define the design direction
+for those features rather than describe current compiler behavior.
 
 Semantic analysis retains the parsed program and a declaration index. The backend consumes
 that analysis and returns a nonempty collection of uniquely named generated classes. The
@@ -530,6 +610,18 @@ Test filesystem output separately, including package paths, exact byte preservat
 
 Every discovered compiler bug MUST receive a minimal failing source fixture before or alongside the fix.
 
+### 14.7 Planned architecture and composition coverage
+
+When the corresponding features are implemented, acceptance examples MUST cover:
+
+- an authorized binding to a module whose SPI implementation stays private, including rejection of attempts to name its concrete class or members across the boundary;
+- replacement of a private implementation without changing the architecture or application-level composition when its assembly requirements are unchanged;
+- rejection of unbound requirements, incompatible provisions, undeclared modules or connections, and multiple selected providers for one contract;
+- one shared provider instance for all authorized uses of a contract within an assembly;
+- composition fragments assembled under one selected executable root, with ordinary application calls to compose rejected.
+
+These are planned contracts, not acceptance tests already present in the compiler suite.
+
 ## 15. AI-assisted development
 
 Bounded SHOULD be designed so that its architectural model is legible to humans, build tools, IDEs, and software agents.
@@ -546,7 +638,7 @@ Helpful properties include:
 
 These features do not make an architecture wise. They allow generated and human-written changes to be checked against the same declared model. Bounded may therefore be friendly to AI-assisted implementation while remaining hostile to "vibe architecture."
 
-## 16. Explicit non-goals for Draft 0.1
+## 16. Explicit non-goals for Draft 0.0.2
 
 This draft does not yet specify:
 
@@ -564,6 +656,8 @@ This draft does not yet specify:
 - complete JVM lowering for operation bodies;
 - package management;
 - incremental compilation;
+- qualified parallel provider instances or runtime provider replacement for one port contract;
+- complete construction, lifecycle, shutdown, or composition-delegation syntax;
 - custom user-defined ArcheClasses;
 - a complete effect-capability algebra.
 
@@ -582,10 +676,14 @@ These are deferred so the first implementation can test the language's architect
 8. Which portions of an operation's capability set must appear explicitly in source, and which may be inferred?
 9. How should domain events relate to entity commands and application actions?
 10. What is the smallest Java ABI that allows polyglot adapters without weakening the core guarantees?
+11. Should `module` and `architecture` remain structural ArcheClasses or become dedicated declaration forms?
+12. How should modules expose scoped construction authority to composition while keeping private implementations unnameable outside the module?
+13. What syntax should express private class/member mappings, module configuration, compose delegation, and executable-root selection?
+14. What are the construction order, cycle, failure, and shutdown rules for an executable assembly with one provider instance per contract?
 
 ## 18. Immediate next steps
 
-1. Review and revise Sections 4 through 7 until the effect and authority model feels internally coherent.
+1. Review and revise Sections 4 through 8 until the effect, authority, and boundary model feels internally coherent.
 2. Choose the smallest provisional syntax needed by the seven milestone cases in Section 12.
 3. Create the compiler repository and a single `EffectGrade` enum with exhaustive unit tests.
 4. Add ArcheClass ceiling validation against hand-built AST objects.

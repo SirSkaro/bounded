@@ -53,7 +53,7 @@ the grammar and tests.
 | File or directory | Use |
 | --- | --- |
 | [README.md](README.md) and [docs/WALKTHROUGH.md](docs/WALKTHROUGH.md) | Build instructions, implemented scope, and a compiler walkthrough. |
-| [docs/Language-Spec-v0.0.1.md](docs/Language-Spec-v0.0.1.md) | Language design and intended semantics. |
+| [docs/Language-Spec-v0.0.2.md](docs/Language-Spec-v0.0.2.md) | Language design and intended semantics. |
 | [docs/architecture.drawio](docs/architecture.drawio) | Current production architecture in the `Ports and adapters` tab. |
 | [ADR 0001: Explicit construction of value objects](docs/adr/0001-explicit-value-object-construction.md) | Constructor policy, named factories, and test fixture defaults. Read when considering constructors. |
 | [docs/Acceptance-Testing-Roadmap.md](docs/Acceptance-Testing-Roadmap.md) | Acceptance DSL stages, test boundaries, examples, and completion criteria; Stage 1 is implemented. Read before acceptance-testing work. |
